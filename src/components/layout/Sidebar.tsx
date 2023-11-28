@@ -96,7 +96,7 @@ function Sidebar({ isSidebarShowing, toggleSidebar }: SidebarProps) {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {onlyLabelRoutes.slice(1, 4).map((route) => (
+        {onlyLabelRoutes.map((route) => (
           <SidebarIconButton
             route={route as ILabeledRoute}
             key={route.id}

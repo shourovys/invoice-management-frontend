@@ -1,7 +1,6 @@
 import classNames from 'classnames'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Navbar from './Navbar'
-import NavMenu from './NavMenu'
+// import NavMenu from './NavMenu'
 
 interface IWorkerLayoutProps {
   children: JSX.Element | JSX.Element[]
@@ -15,10 +14,10 @@ function WorkerLayout({ children }: IWorkerLayoutProps): JSX.Element {
           <Navbar />
         </div>
       </div>
-      <div className="flex flex-col grow h-full ">
-        <div className="top-0 left-0 z-40 ">
+      <div className="flex flex-col h-full grow ">
+        {/* <div className="top-0 left-0 z-40 ">
           <NavMenu />
-        </div>
+        </div> */}
         <main
           className={classNames(
             'relative flex-1 pb-6 h-full md:pb-8 focus:outline-none overflow-x-hidden min-h-[calc(100vh-56px)] no-scrollbar duration-300'

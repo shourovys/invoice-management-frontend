@@ -18,60 +18,60 @@ function ProfileForm({ formData, handleInputChange, formErrors, disabled, isLoad
   return (
     <FormCardWithHeader icon={userIcon} header={t`Profile`}>
       <Input
-        name="UserId"
-        label={t`User ID`}
-        value={formData?.UserId}
+        name="name"
+        label={t`Name`}
+        value={formData?.name}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.UserId}
+        error={formErrors?.name}
         isLoading={isLoading}
       />
       <Input
-        name="OldPassword"
+        name="email"
+        label={t`Email`}
+        value={formData?.email}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.email}
+        isLoading={isLoading}
+      />
+      <Input
+        name="oldPassword"
         label={t`Old Password`}
         type="password"
-        value={formData?.OldPassword}
+        value={formData?.oldPassword}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.OldPassword}
+        error={formErrors?.oldPassword}
         isLoading={isLoading}
       />
       <Input
-        name="NewPassword"
+        name="newPassword"
         label={t`New Password`}
         type="password"
-        value={formData?.NewPassword}
+        value={formData?.newPassword}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.NewPassword}
+        error={formErrors?.newPassword}
         isLoading={isLoading}
       />
       <Input
-        name="ConfirmPassword"
+        name="confirmPassword"
         label={t`Confirm Password`}
         type="password"
-        value={formData?.ConfirmPassword}
+        value={formData?.confirmPassword}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.ConfirmPassword}
+        error={formErrors?.confirmPassword}
         isLoading={isLoading}
       />
       <Input
-        name="UserDesc"
-        label={t`Description`}
-        value={formData?.UserDesc}
+        name="contactNumber"
+        label={t`Contact Number`}
+        value={formData?.contactNumber}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.UserDesc}
-        isLoading={isLoading}
-      />
-      <Input
-        name="Email"
-        label={t`Email`}
-        value={formData?.Email}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.Email}
+        error={formErrors?.contactNumber}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

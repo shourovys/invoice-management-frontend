@@ -21,7 +21,7 @@ function Navbar() {
   const [openProfileModal, setOpenProfileModal] = useState(false)
 
   const { trigger: logout, isMutating } = useSWRMutation(authApi.logout, fetcher, {
-    onSuccess: () => {
+    onSuccess: (data) => {
       navigate(routeProperty.login.path(), { state: { previousPath: pathname } })
       contextLogout()
     },
@@ -44,7 +44,8 @@ function Navbar() {
     <div className="z-50 flex flex-col">
       <div className="relative z-10 flex h-12 shadow shrink-0 bg-navbarBg md:h-14">
         <div className="flex items-center px-4 shrink-0 ">
-          <img className="w-auto h-7 md:h-8" src={'/images/logo/full_logo.svg'} alt="Workflow" />
+          {/* <img className="w-auto h-7 md:h-8" src={'/images/logo/full_logo.svg'} alt="Workflow" /> */}
+          <h1 className="text-xl font-medium md:text-2xl">Invoice Management</h1>
         </div>
         <div className="flex justify-end flex-1 px-4 py-2">
           <div className="flex items-center gap-8 ml-4 md:gap-10 md:ml-6">

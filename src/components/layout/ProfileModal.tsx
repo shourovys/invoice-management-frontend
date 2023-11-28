@@ -1,19 +1,18 @@
 import { AxiosError } from 'axios'
 import { useEffect, useState } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
-import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import { sendPutRequest } from '../../api/swrConfig'
 import { authApi } from '../../api/urls'
+import useAuth from '../../hooks/useAuth'
 import useStateWithCallback from '../../hooks/useStateWithCallback'
 import { THandleInputChange } from '../../types/components/common'
 import {
   IFormErrors,
   IServerCommandErrorResponse,
   IServerErrorResponse,
-  ISingleServerResponse,
 } from '../../types/pages/common'
-import { IProfileFormData, IProfileResult } from '../../types/pages/profile'
+import { IProfileFormData } from '../../types/pages/profile'
 import Icon, { applyIcon, cancelIcon } from '../../utils/icons'
 import isValidEmail from '../../utils/isValidEmail'
 import scrollToErrorElement from '../../utils/scrollToErrorElement'
@@ -34,33 +33,35 @@ function ProfileModal({ setOpenModal }: IProps) {
   // Prompt the user before unloading the page if there are unsaved changes
   useBeforeunload(() => t('You will lose your changes!'))
 
+  const { user, loading } = useAuth()
+
   // Define the initial state of the form data and form errors
   const [formData, setFormData] = useState<IProfileFormData>({
-    UserId: '',
-    OldPassword: '',
-    NewPassword: '',
-    ConfirmPassword: '',
-    Email: '',
-    UserDesc: '',
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+    name: '',
+    email: '',
+    contactNumber: '',
   })
   const [formErrors, setFormErrors] = useStateWithCallback<IFormErrors>({}, scrollToErrorElement)
 
   // Fetch the details of the Profile from the server
-  const { isLoading, data } = useSWR<ISingleServerResponse<IProfileResult>>(authApi.profile)
+  // const { isLoading, data } = useSWR<ISingleServerResponse<IUserResult>>(authApi.profile)
   useEffect(() => {
     // Set the form data to the fetched data once it's available
-    // if (data) {
-    //   const { UserId, UserDesc, emall } = data.data.user
-    //   setFormData({
-    //     UserId,
-    //     OldPassword: '',
-    //     NewPassword: '',
-    //     ConfirmPassword: '',
-    //     Email:email,
-    //     UserDesc: UserDesc ?? '',
-    //   })
-    // }
-  }, [data])
+    if (user) {
+      const { name, email, contactNumber } = user
+      setFormData({
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+        name,
+        email,
+        contactNumber,
+      })
+    }
+  }, [user])
 
   // Update the form data when any input changes
   const handleInputChange: THandleInputChange = (name, value) => {
@@ -85,22 +86,22 @@ function ProfileModal({ setOpenModal }: IProps) {
   const handleSubmit = async () => {
     // Validate the form data
     const errors: IFormErrors = {}
-    if (!formData.UserId) {
-      errors.UserId = t`User ID is required`
+    if (!formData.name) {
+      errors.name = t`Name is required`
     }
-    if (!formData.OldPassword) {
-      errors.OldPassword = t`Old Password is required`
+    if (!formData.oldPassword) {
+      errors.oldPassword = t`Old Password is required`
     }
-    if (!formData.NewPassword) {
-      errors.NewPassword = t`New Password is required`
+    // if (!formData.newPassword) {
+    //   errors.newPassword = t`New Password is required`
+    // }
+    if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
+      errors.confirmPassword = t`Passwords do not match`
     }
-    if (formData.NewPassword !== formData.ConfirmPassword) {
-      errors.ConfirmPassword = t`Passwords do not match`
-    }
-    if (!formData.Email) {
-      errors.Email = t`Email is required`
-    } else if (!isValidEmail(formData.Email)) {
-      errors.Email = t`Please enter a valid email address`
+    if (!formData.email) {
+      errors.email = t`Email is required`
+    } else if (!isValidEmail(formData.email)) {
+      errors.email = t`Please enter a valid email address`
     }
 
     // If there are errors, display them and do not submit the form
@@ -116,11 +117,11 @@ function ProfileModal({ setOpenModal }: IProps) {
 
     // Modify form data to match API requirements and trigger the mutation
     const modifiedFormData = {
-      UserId: formData.UserId,
-      OldPassword: formData.OldPassword,
-      NewPassword: formData.NewPassword,
-      Email: formData.Email,
-      UserDesc: formData.UserDesc,
+      currentPassword: formData.oldPassword,
+      newPassword: formData.newPassword,
+      name: formData.name,
+      email: formData.email,
+      contactNumber: formData.contactNumber,
     }
     trigger(modifiedFormData)
   }
@@ -155,7 +156,7 @@ function ProfileModal({ setOpenModal }: IProps) {
           formData={formData}
           handleInputChange={handleInputChange}
           formErrors={formErrors}
-          isLoading={isLoading}
+          isLoading={loading}
         />
       </FormContainer>
       <FormActionButtonsContainer allowsShow>

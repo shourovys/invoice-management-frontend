@@ -88,6 +88,7 @@ import {
   faEye,
   faFile,
   faFileImport,
+  faFileInvoice,
   faFileLines,
   faFilter,
   faFingerprint,
@@ -168,6 +169,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // pages icons
 export const addIcon = faAdd
+export const invoiceIcon = faFileInvoice
 export const downloadIcon = faDownload
 export const selectIcon = faSquareCheck
 export const importIcon = faArrowRightToBracket
@@ -196,7 +198,6 @@ export const accessDeviceIcon = faMobile
 export const inactiveIcon = faPersonArrowDownToLine
 export const activeIcon = faPersonArrowUpFromLine
 export const autoIcon = faRobot
-export const invoiceIcon = faRectangleXmark
 export const lockDownIcon = faRectangleXmark
 export const lockDownWithRexIcon = faHillRockslide
 export const lockIcon = faLock

@@ -1,10 +1,9 @@
 import { AxiosError } from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import { sendPostRequest } from '../../api/swrConfig'
-import { authApi, logApi } from '../../api/urls'
+import { authApi } from '../../api/urls'
 import Page from '../../components/HOC/Page'
 import FormContainer from '../../components/HOC/style/form/FormContainer'
 import Button from '../../components/atomic/Button'
@@ -18,7 +17,7 @@ import {
   IServerErrorResponse,
   ISingleServerResponse,
 } from '../../types/pages/common'
-import { IOemResult, IUserWithToken } from '../../types/pages/login'
+import { IUserWithToken } from '../../types/pages/login'
 import { setSession } from '../../utils/jwt'
 import serverErrorHandler from '../../utils/serverErrorHandler'
 import { warningToast } from '../../utils/toast'
@@ -62,7 +61,7 @@ export default function Login() {
   function handleRedirection(data: IUserWithToken) {
     const role = data?.user?.role
     if (role === 'agent') {
-      navigate(routeProperty.user.path())
+      navigate(routeProperty.invoice.path())
       return // No need to proceed further
     } else if (role === 'admin') {
       navigate(routeProperty.user.path())
@@ -97,17 +96,17 @@ export default function Login() {
   }
 
   // Fetch the system oems from the server
-  const { isLoading: isOemLoading, data } = useSWR<ISingleServerResponse<IOemResult>>(logApi.oems, {
-    onError: (error: AxiosError<IServerErrorResponse | IServerCommandErrorResponse>) => {
-      refreshAuthData()
-      if (error.code === 'ERR_NETWORK') {
-        return warningToast(`Server is not responding. Please restart your device`)
-      }
-      if (error.status !== 403 && error.status !== 404) {
-        return warningToast(error.message)
-      }
-    },
-  })
+  // const { isLoading: isOemLoading, data } = useSWR<ISingleServerResponse<IOemResult>>(logApi.oems, {
+  //   onError: (error: AxiosError<IServerErrorResponse | IServerCommandErrorResponse>) => {
+  //     refreshAuthData()
+  //     if (error.code === 'ERR_NETWORK') {
+  //       return warningToast(`Server is not responding. Please restart your device`)
+  //     }
+  //     if (error.status !== 403 && error.status !== 404) {
+  //       return warningToast(error.message)
+  //     }
+  //   },
+  // })
 
   const oemNo = '0'
 
@@ -131,22 +130,22 @@ export default function Login() {
     }
   }, [oemNo])
 
-  const isOemNoPresent = (_oemNo: number | undefined): boolean => {
-    return typeof _oemNo !== 'undefined' && !Number.isNaN(_oemNo)
-  }
+  // const isOemNoPresent = (_oemNo: number | undefined): boolean => {
+  //   return typeof _oemNo !== 'undefined' && !Number.isNaN(_oemNo)
+  // }
   return (
     <Page>
       <GuestGuard>
         <div
-          className="flex items-center justify-center min-h-screen bg-white bg-no-repeat bg-cover md:justify-end "
-          style={{
-            ...(!isOemLoading &&
-              isOemNoPresent(Number(oemNo)) && {
-                backgroundImage: `url('/oem/${oemNo}/images/LoginBg.png')`,
-              }),
-          }}
+          className="flex items-center justify-center min-h-screen bg-white bg-no-repeat bg-cover md:justify-center "
+          // style={{
+          //   ...(!isOemLoading &&
+          //     isOemNoPresent(Number(oemNo)) && {
+          //       backgroundImage: `url('/oem/${oemNo}/images/LoginBg.png')`,
+          //     }),
+          // }}
         >
-          <div className="flex justify-center w-full m-4 md:justify-end sm:m-10 md:mx-20 lg:mx-40">
+          <div className="flex justify-center w-full m-4 md:justify-center sm:m-10 md:mx-20 lg:mx-40">
             <div className="w-full max-w-xs sm:max-w-md min-w-max bg-[rgba(250,250,250,0.8)] rounded-md px-8 py-6 sm:py-12 lg:px-12 xl:px-16 sm:px-6 shadow-lg">
               <div className="max-w-xs mx-auto text-center sm:w-full">
                 <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900 break-words">

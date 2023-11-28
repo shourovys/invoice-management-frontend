@@ -19,6 +19,7 @@ import TableBodyLoading from '../../components/loading/table/TableBodyLoading'
 import InvoiceTableRow from '../../components/pages/invoice/InvoiceTableRow'
 import InvoiceTableToolbar from '../../components/pages/invoice/InvoiceTableToolbar'
 import useAlert from '../../hooks/useAlert'
+import useAuth from '../../hooks/useAuth'
 import useTable, { emptyRows } from '../../hooks/useTable'
 import useUpdateRouteQueryWithReplace from '../../hooks/useUpdateRouteQueryWithReplace'
 import { IActionsButton } from '../../types/components/actionButtons'
@@ -59,6 +60,8 @@ function Invoice() {
   const updateRouteQueryWithReplace = useUpdateRouteQueryWithReplace()
   // hook to open alert dialog modal
   const { openAlertDialogWithPromise } = useAlert()
+
+  const { user } = useAuth()
 
   // apply property use for apply filter. filter will apply when apply is true
   const initialFilterState: IInvoiceFilters = {
@@ -132,6 +135,9 @@ function Invoice() {
     sort_by: 'createdAt',
     order,
 
+    ...(user?.role === 'agent' && {
+      agentId: user._id,
+    }),
     ...(filterStateRef.current.agentName && {
       agentName: filterStateRef.current.agentName,
     }),
