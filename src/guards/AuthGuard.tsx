@@ -1,12 +1,11 @@
+import { pathToRegexp } from 'path-to-regexp'
+import { useEffect, useMemo } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import LoadingSvg from '../components/loading/atomic/LoadingSvg'
 import HelperPages from '../components/pages/helperPages'
 import useAuth from '../hooks/useAuth'
-import { useEffect, useMemo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
 import routeProperty, { ReactRoutes } from '../routes/routeProperty'
-import checkPermission from '../utils/checkPermission'
 import { LOCAL_STORAGE_KEY } from '../utils/config'
-import { pathToRegexp } from 'path-to-regexp'
 import t from '../utils/translator'
 
 interface IProps {
@@ -37,7 +36,7 @@ function AuthGuard({ children }: IProps) {
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
-  const { isAuthenticated, loading, permissions, layout } = useAuth()
+  const { isAuthenticated, loading, user } = useAuth()
 
   let token: string | null = null
   if (typeof window !== 'undefined') {
@@ -79,16 +78,14 @@ function AuthGuard({ children }: IProps) {
       return true
     }
 
-    // get the user's permissions
-    const userPermissions = permissions.map((permission) => permission)
-
     // check if the user has the required permissions for the current route
-    return checkPermission(routePermissions, userPermissions)
-    // return checkPermission(['*'], userPermissions)
-  }, [isAuthenticated, pathname, permissions])
+    // return checkPermission(routePermissions, user?.role)
+    // return checkPermission(routePermissions, user?.role)
+    return true
+  }, [isAuthenticated, pathname, user?.role])
 
   if (!loading && !isPermitted) {
-    if (layout !== 'Master' && pathname === '/') {
+    if (pathname === '/') {
       navigate(routeProperty.licenseInfo.path())
     } else {
       return (

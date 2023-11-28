@@ -1,4 +1,4 @@
-import { IPermission, IPermissionResult } from '../types/context/auth'
+import { IPermission } from '../types/context/auth'
 
 /**
  * Check if the user has permission to access the route.
@@ -7,25 +7,16 @@ import { IPermission, IPermissionResult } from '../types/context/auth'
  * @param userPermissions The permissions of the current user
  * @returns `true` if the user has permission to access the route, `false` otherwise
  */
-function checkPermission(
-  routePermission: IPermission,
-  userPermissions: IPermissionResult[]
-): boolean {
+function checkPermission(routePermission: IPermission, userRole: 'admin' | 'agent'): boolean {
   // If route permission is a string, check if it matches the user's permission
   if (typeof routePermission === 'string') {
-    // if (routePermission === '') {
-    //   return false
-    // }
-    if (routePermission === '*') {
+    if (routePermission === '*' || userRole === 'admin') {
       return true
     }
-  }
 
-  // If route permission is an array, check each permission and return `true` if at least one matches the user's permission
-  if (routePermission.url) {
-    return !!userPermissions.find(
-      (userPermission) => userPermission.url === routePermission.url && userPermission.access
-    )
+    if (routePermission === 'user' && userRole === 'agent') {
+      return false
+    }
   }
 
   // If none of the conditions above are met, return false
