@@ -25,7 +25,7 @@ export default function Hamburger({ close }: IProps) {
   }))
 
   return (
-    <div className="flex flex-col grow overflow-y-auto">
+    <div className="flex flex-col overflow-y-auto grow">
       <div className="flex flex-col grow mt-5 py-0.5">
         <nav className="flex-1 px-1 space-y-1 " aria-label={t`Sidebar`}>
           {navigation.map((item) =>

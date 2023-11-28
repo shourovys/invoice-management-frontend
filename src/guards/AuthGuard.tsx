@@ -65,10 +65,6 @@ function AuthGuard({ children }: IProps) {
       return false
     }
 
-    if (pathname === routeProperty.favorite.path()) {
-      return true
-    }
-
     // get the required permissions for the current route
     const routePermissions = ReactRoutes.find((route) => route.routePath === currentRoutePath)
       ?.permissions

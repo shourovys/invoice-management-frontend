@@ -1,6 +1,6 @@
 import { Menu, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import useSWRMutation from 'swr/mutation'
 import { fetcher } from '../../api/swrConfig'
 import { authApi } from '../../api/urls'
@@ -43,9 +43,9 @@ function Navbar() {
   return (
     <div className="z-50 flex flex-col">
       <div className="relative z-10 flex h-12 shadow shrink-0 bg-navbarBg md:h-14">
-        <Link to={routeProperty.dashboard.path()} className="flex items-center px-4 shrink-0 ">
+        <div className="flex items-center px-4 shrink-0 ">
           <img className="w-auto h-7 md:h-8" src={'/images/logo/full_logo.svg'} alt="Workflow" />
-        </Link>
+        </div>
         <div className="flex justify-end flex-1 px-4 py-2">
           <div className="flex items-center gap-8 ml-4 md:gap-10 md:ml-6">
             {/* Profile dropdown */}

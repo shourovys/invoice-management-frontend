@@ -1,7 +1,6 @@
 import classNames from 'classnames'
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useFavoritePages } from '../../hooks/useFavoritePages'
 import usePermittedLabelRoutes from '../../hooks/usePermittedLabelRoutes'
 import { ILabeledRoute, ILabeledRoutes } from '../../types/routes'
 import Icon from '../../utils/icons'
@@ -16,11 +15,9 @@ function TopMenu({ isSidebarShowing, selectedRouteGroup, setSelectedRouteGroup }
   const permittedLabeledRoutes = usePermittedLabelRoutes()
 
   const { pathname } = useLocation()
-  const { favoritePages } = useFavoritePages()
 
   const modifiedLabeledRoutes: ILabeledRoutes = {
     ...permittedLabeledRoutes,
-    favorite: favoritePages,
   }
 
   const isCurrentRouteGroup = (routePath: string) => {

@@ -1,10 +1,8 @@
 import classNames from 'classnames'
 import { useEffect } from 'react'
-import { matchPath, useLocation, useNavigate } from 'react-router-dom'
-import { useFavoritePages } from '../../hooks/useFavoritePages'
+import { useLocation, useNavigate } from 'react-router-dom'
 import usePermittedLabelRoutes from '../../hooks/usePermittedLabelRoutes'
-import { routesArrayInGroup } from '../../routes/menu'
-import { ILabeledRoutes, IRoute } from '../../types/routes'
+import { ILabeledRoutes } from '../../types/routes'
 import capitalize from '../../utils/capitalize'
 import Icon, { TIcon } from '../../utils/icons'
 import t from '../../utils/translator'
@@ -30,11 +28,9 @@ function SideMenuIconButton({
   const navigate = useNavigate()
 
   const { pathname } = useLocation()
-  const { favoritePages } = useFavoritePages()
 
-  const isRouteActiveGroup = routesArrayInGroup[label]?.find((route: IRoute) =>
-    matchPath(pathname, route.routePath)
-  )
+  const isRouteActiveGroup = false
+
   useEffect(() => {
     if (isRouteActiveGroup) {
       handleClick(label)
@@ -43,7 +39,6 @@ function SideMenuIconButton({
 
   const modifiedLabeledRoutes: ILabeledRoutes = {
     ...permittedLabeledRoutes,
-    favorite: favoritePages,
   }
 
   const handleGroupClick = () => {

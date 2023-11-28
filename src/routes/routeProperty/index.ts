@@ -1,28 +1,49 @@
+import { lazy } from 'react'
+import Login from '../../pages/login'
 import { IRoute, IRouteProperty } from '../../types/routes'
-import authRouteProperty from './auth'
-import deviceRouteProperty from './device'
-import externalRouteProperty from './external'
-import maintenanceRouteProperty from './maintenance'
-import monitorRouteProperty from './monitor'
-import personRouteProperty from './person'
-import reportRouteProperty from './report'
-import serviceRouteProperty from './service'
-import systemRouteProperty from './system'
-import userRouteProperty from './user'
-import workRouteProperty from './work'
+import { userIcon } from '../../utils/icons'
+import t from '../../utils/translator'
+
+const User = lazy(() => import('../../pages/user'))
+const CreateUser = lazy(() => import('../../pages/user/add'))
+const EditUser = lazy(() => import('../../pages/user/edit/[id]'))
+const UserInfo = lazy(() => import('../../pages/user/info/[id]'))
 
 const routeProperty: IRouteProperty = {
-  ...monitorRouteProperty, // dashboard, floor, ack, live, playback, floor, view,
-  ...reportRouteProperty, // logReport, accessReport, ackReport, smartReport
-  ...userRouteProperty, // partition, user, userRole
-  ...personRouteProperty, // person, definedField, credential, format, access
-  ...deviceRouteProperty, // node, nodeScan, door, doorRule, region, input, output, elevator, relay, trigger, threat
-  ...externalRouteProperty, // camera, nvr, channel, gateway, lockset, facegate, serial, subnode,
-  ...workRouteProperty, // task, eventAction, eventCode, schedule, holiday, group,
-  ...serviceRouteProperty, // email, ftp, restAPI, logAPI, gemini, sip
-  ...maintenanceRouteProperty, // update, backup, backupSchedule, restore, archive, archiveSchedule, getBack, default, database, reboot, miscellaneous,
-  ...systemRouteProperty, // license, system, network, time
-  ...authRouteProperty, // login, profile, favorite
+  // User
+  user: {
+    id: '8', // ID of "User"
+    label: t`User`,
+    path: () => '/user',
+    routePath: '/user',
+    icon: userIcon,
+    component: User,
+    permissions: '*',
+  },
+  userCreate: {
+    path: () => '/user/add',
+    routePath: '/user/add',
+    component: CreateUser,
+    permissions: '*',
+  },
+  userEdit: {
+    path: (id?: number | string) => `/user/edit/${id}`,
+    routePath: '/user/edit/:id',
+    component: EditUser,
+    permissions: '*',
+  },
+  userInfo: {
+    path: (id?: number | string) => `/user/info/${id}`,
+    routePath: '/user/info/:id',
+    component: UserInfo,
+    permissions: '*',
+  },
+  login: {
+    path: () => '/login',
+    permissions: '*',
+    routePath: '/login',
+    component: Login, // replace Login with your actual login component
+  },
 }
 export default routeProperty
 

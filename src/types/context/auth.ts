@@ -1,11 +1,6 @@
 import { IUserResult } from '../pages/user'
 
-export type IPermission =
-  | {
-      name: string
-      url: string
-    }
-  | '*'
+export type IPermission = 'admin' | 'agent' | '*'
 
 export interface IPermissionResult {
   id: number

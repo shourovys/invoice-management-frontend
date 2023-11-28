@@ -49,17 +49,17 @@ function ProfileModal({ setOpenModal }: IProps) {
   const { isLoading, data } = useSWR<ISingleServerResponse<IProfileResult>>(authApi.profile)
   useEffect(() => {
     // Set the form data to the fetched data once it's available
-    if (data) {
-      const { UserId, UserDesc, Email } = data.data.user
-      setFormData({
-        UserId,
-        OldPassword: '',
-        NewPassword: '',
-        ConfirmPassword: '',
-        Email,
-        UserDesc: UserDesc ?? '',
-      })
-    }
+    // if (data) {
+    //   const { UserId, UserDesc, emall } = data.data.user
+    //   setFormData({
+    //     UserId,
+    //     OldPassword: '',
+    //     NewPassword: '',
+    //     ConfirmPassword: '',
+    //     Email:email,
+    //     UserDesc: UserDesc ?? '',
+    //   })
+    // }
   }, [data])
 
   // Update the form data when any input changes

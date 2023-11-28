@@ -45,33 +45,32 @@ function UserInfo() {
 
   useEffect(() => {
     if (data) {
-      const { UserNo, UserId, UserDesc, Email, Role, Person, Partition } = data.data
-
-      setFormData({
-        UserNo: UserNo.toString(),
-        UserId,
-        Password: '',
-        UserDesc,
-        Email,
-        Role: Role?.role
-          ? {
-              value: Role.RoleNo.toString(),
-              label: Role.role,
-            }
-          : null,
-        Person: Person?.LastName
-          ? {
-              value: Person.PersonNo.toString(),
-              label: Person.LastName,
-            }
-          : null,
-        Partition: Partition.PartitionName
-          ? {
-              value: Partition.PartitionNo.toString(),
-              label: Partition.PartitionName,
-            }
-          : null,
-      })
+      // const { UserNo, UserId, UserDesc, Email, Role, Person, Partition } = data.data
+      // setFormData({
+      //   UserNo: UserNo.toString(),
+      //   UserId,
+      //   Password: '',
+      //   UserDesc,
+      //   Email,
+      //   Role: Role?.role
+      //     ? {
+      //         value: Role.RoleNo.toString(),
+      //         label: Role.role,
+      //       }
+      //     : null,
+      //   Person: Person?.LastName
+      //     ? {
+      //         value: Person.PersonNo.toString(),
+      //         label: Person.LastName,
+      //       }
+      //     : null,
+      //   Partition: Partition.PartitionName
+      //     ? {
+      //         value: Partition.PartitionNo.toString(),
+      //         label: Partition.PartitionName,
+      //       }
+      //     : null,
+      // })
     }
   }, [data])
 

@@ -1,9 +1,7 @@
 import classNames from 'classnames'
-import useAuth from '../../hooks/useAuth'
 import { Link, useLocation } from 'react-router-dom'
 import { ReactRoutes } from '../../routes/routeProperty'
 import { IRoute } from '../../types/routes'
-import checkPermission from '../../utils/checkPermission'
 import Icon from '../../utils/icons'
 
 interface IProps {
@@ -51,14 +49,8 @@ function NavMenuIconButton({ item }: IProps) {
 // interface INavbarProps {}
 
 function NavMenu() {
-  const { permissions } = useAuth()
-
   const premisedRoutes = ReactRoutes.filter(
-    (route) =>
-      Object.prototype.hasOwnProperty.call(route, 'label') &&
-      route.label &&
-      route.id &&
-      checkPermission(route.permissions, permissions)
+    (route) => Object.prototype.hasOwnProperty.call(route, 'label') && route.label && route.id
   )
 
   // console.log("Permisso", premisedRoutes)
