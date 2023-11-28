@@ -12,11 +12,11 @@ import useAlert from '../../../hooks/useAlert'
 import routeProperty from '../../../routes/routeProperty'
 import { IActionsButton } from '../../../types/components/actionButtons'
 import { ISingleServerResponse } from '../../../types/pages/common'
-import { IUserFormData, IUserResult } from '../../../types/pages/user'
-import { deleteIcon, editIcon, listIcon } from '../../../utils/icons'
+import { IUserFormData, IUserResult, userRoleOptions } from '../../../types/pages/user'
+import { findSelectOption } from '../../../utils/findSelectOption'
+import { listIcon } from '../../../utils/icons'
 import t from '../../../utils/translator'
 
-// Component to show details of a user
 function UserInfo() {
   const navigate = useNavigate()
   // Get the user ID from the router query
@@ -27,14 +27,11 @@ function UserInfo() {
 
   // Define the initial state of the form data and is data deleted
   const [formData, setFormData] = useState<IUserFormData>({
-    UserNo: '',
-    UserId: '',
-    Password: '',
-    UserDesc: '',
-    Email: '',
-    Partition: null,
-    Role: null,
-    Person: null,
+    name: '',
+    email: '',
+    password: '',
+    contactNumber: '',
+    role: null,
   })
   const [isDeleted, setIsDeleted] = useState(false)
 
@@ -45,32 +42,14 @@ function UserInfo() {
 
   useEffect(() => {
     if (data) {
-      // const { UserNo, UserId, UserDesc, Email, Role, Person, Partition } = data.data
-      // setFormData({
-      //   UserNo: UserNo.toString(),
-      //   UserId,
-      //   Password: '',
-      //   UserDesc,
-      //   Email,
-      //   Role: Role?.role
-      //     ? {
-      //         value: Role.RoleNo.toString(),
-      //         label: Role.role,
-      //       }
-      //     : null,
-      //   Person: Person?.LastName
-      //     ? {
-      //         value: Person.PersonNo.toString(),
-      //         label: Person.LastName,
-      //       }
-      //     : null,
-      //   Partition: Partition.PartitionName
-      //     ? {
-      //         value: Partition.PartitionNo.toString(),
-      //         label: Partition.PartitionName,
-      //       }
-      //     : null,
-      // })
+      const { name, email, contactNumber, role } = data.data
+      setFormData({
+        name,
+        email,
+        password: '',
+        contactNumber,
+        role: findSelectOption(userRoleOptions, role),
+      })
     }
   }, [data])
 
@@ -100,42 +79,42 @@ function UserInfo() {
 
   // Define the actions for the breadcrumbs bar
   const breadcrumbsActions: IActionsButton[] =
-    queryId === '0'
-      ? [
-          {
-            color: 'danger',
-            icon: editIcon,
-            text: t`Edit`,
-            link: routeProperty.userEdit.path(queryId),
-          },
-          {
-            color: 'danger',
-            icon: listIcon,
-            text: t`List`,
-            link: routeProperty.user.path(),
-          },
-        ]
-      : [
-          {
-            color: 'danger',
-            icon: editIcon,
-            text: t`Edit`,
-            link: routeProperty.userEdit.path(queryId),
-          },
-          {
-            color: 'danger',
-            icon: deleteIcon,
-            text: t`Delete`,
-            onClick: handleDelete,
-            isLoading: deleteIsLoading,
-          },
-          {
-            color: 'danger',
-            icon: listIcon,
-            text: t`List`,
-            link: routeProperty.user.path(),
-          },
-        ]
+    // queryId === '1'
+    //   ? [
+    //       {
+    //         color: 'danger',
+    //         icon: editIcon,
+    //         text: t`Edit`,
+    //         link: routeProperty.userEdit.path(queryId),
+    //       },
+    //       {
+    //         color: 'danger',
+    //         icon: listIcon,
+    //         text: t`List`,
+    //         link: routeProperty.user.path(),
+    //       },
+    //     ]:
+    [
+      // {
+      //   color: 'danger',
+      //   icon: editIcon,
+      //   text: t`Edit`,
+      //   link: routeProperty.userEdit.path(queryId),
+      // },
+      // {
+      //   color: 'danger',
+      //   icon: deleteIcon,
+      //   text: t`Delete`,
+      //   onClick: handleDelete,
+      //   isLoading: deleteIsLoading,
+      // },
+      {
+        color: 'danger',
+        icon: listIcon,
+        text: t`List`,
+        link: routeProperty.user.path(),
+      },
+    ]
 
   return (
     <Page>

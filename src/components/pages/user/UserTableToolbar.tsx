@@ -1,11 +1,5 @@
-import useSWR from 'swr'
-import { partitionApi, userRoleApi } from '../../../api/urls'
 import { THandleFilterInputChange } from '../../../types/components/common'
-import { IListServerResponse } from '../../../types/pages/common'
-import { IPartitionResult } from '../../../types/pages/partition'
-import { IUserFilters } from '../../../types/pages/user'
-import { IUserRoleResult } from '../../../types/pages/userRole'
-import { SERVER_QUERY } from '../../../utils/config'
+import { IUserFilters, userRoleOptions } from '../../../types/pages/user'
 import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import t from '../../../utils/translator'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
@@ -26,50 +20,28 @@ function UserTableToolbar({
   handleFilterStateReset,
   handleInputChange,
 }: IProps) {
-  const { isLoading: partitionIsLoading, data: partitionData } = useSWR<
-    IListServerResponse<IPartitionResult[]>
-  >(partitionApi.list(SERVER_QUERY.selectorDataQuery))
-
-  const { isLoading: roleIsLoading, data: roleData } = useSWR<
-    IListServerResponse<IUserRoleResult[]>
-  >(userRoleApi.list(SERVER_QUERY.selectorDataQuery))
-
   return (
     <TableToolbarContainer>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
-        <Input
-          name="UserNo"
-          placeholder={t`User No`}
-          value={filterState.UserNo}
-          onChange={handleInputChange}
-        />
+        <Input name="no" placeholder={t`No`} value={filterState.no} onChange={handleInputChange} />
         <Selector
-          name="Partition"
-          placeholder={t`Partition`}
-          value={filterState.Partition}
-          options={partitionData?.data.map((result) => ({
-            value: result.PartitionNo.toString(),
-            label: result.PartitionName,
-          }))}
+          name="role"
+          placeholder="Role"
+          value={filterState?.role}
+          options={userRoleOptions}
           onChange={handleInputChange}
-          isLoading={partitionIsLoading}
         />
         <Input
-          name="UserId"
-          placeholder={t`User ID`}
-          value={filterState.UserId}
+          name="name"
+          placeholder={t`Name`}
+          value={filterState.name}
           onChange={handleInputChange}
         />
-        <Selector
-          name="Role"
-          placeholder={t`Role`}
-          value={filterState.Role}
-          options={roleData?.data.map((result) => ({
-            value: result.RoleNo.toString(),
-            label: result.role,
-          }))}
+        <Input
+          name="email"
+          placeholder={t`Email`}
+          value={filterState.email}
           onChange={handleInputChange}
-          isLoading={roleIsLoading}
         />
       </div>
       <div className="flex gap-3.5 lg:gap-4">

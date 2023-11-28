@@ -49,7 +49,7 @@ export default function Breadcrumbs({
         // isSticky && 'bg-gray-bg pt-12 md:pt-14 border-b-4 border-gray-50'
       )}
     >
-      <div className="flex items-center justify-between max-w-full px-4 py-3 overflow-x-auto sm:flex-nowrap md:pb-4 md:pt-2 md:px-0 gap-y-1 gap-x-8">
+      <div className="flex items-center justify-between max-w-full px-4 py-3 overflow-x-auto sm:flex-nowrap md:py-4 md:px-0 gap-y-1 gap-x-8">
         <nav
           className="flex gap-y-1.5 items-center flex-wrap gap-x-6 lg:gap-x-12 lg:min-h-[36px] w-fit max-w-fit"
           aria-label={t`Breadcrumb`}

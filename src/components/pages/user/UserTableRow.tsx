@@ -1,9 +1,7 @@
 import TableData from '../../../components/HOC/style/table/TableData'
-import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
 import TableRow from '../../../components/HOC/style/table/TableRow'
 import routeProperty from '../../../routes/routeProperty'
 import { IUserResult } from '../../../types/pages/user'
-import Checkbox from '../../atomic/Checkbox'
 
 type IProps = {
   row: IUserResult
@@ -14,26 +12,23 @@ type IProps = {
 function UserTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.UserNo}
-      link={routeProperty.userInfo.path(row.UserNo)}
-      selected={selected.indexOf(row.UserNo.toString()) !== -1}
+      key={row._id}
+      link={routeProperty.userInfo.path(row._id)}
+      selected={selected.indexOf(row._id.toString()) !== -1}
     >
-      <TableData>{row.UserNo}</TableData>
-      <TableData>{row.Partition?.PartitionName}</TableData>
-      <TableData>{row.UserId}</TableData>
-      <TableData>{row.UserDesc}</TableData>
-      <TableData>{row.Role.role}</TableData>
-      <TableDataAction selected={selected.indexOf(row.UserNo.toString()) !== -1}>
-        {row.UserNo !== 0 && (
-          <Checkbox
-            value={`select-row-${row.UserNo}`}
-            checked={selected.indexOf(row.UserNo.toString()) !== -1}
-            onChange={() => {
-              handleSelectRow(row.UserNo.toString())
-            }}
-          />
-        )}
-      </TableDataAction>
+      <TableData>{row.no}</TableData>
+      <TableData>{row.name}</TableData>
+      <TableData>{row.email}</TableData>
+      <TableData>{row.contactNumber}</TableData>
+      {/* <TableDataAction selected={selected.indexOf(row._id.toString()) !== -1}>
+        <Checkbox
+          value={`select-row-${row._id}`}
+          checked={selected.indexOf(row._id.toString()) !== -1}
+          onChange={() => {
+            handleSelectRow(row._id.toString())
+          }}
+        />
+      </TableDataAction> */}
     </TableRow>
   )
 }

@@ -1,7 +1,10 @@
 import { ISelectOption } from '../../components/atomic/Selector'
+import optionsToObject from '../../utils/optionsToObject'
+import t from '../../utils/translator'
+import { IApiQueryParamsBase } from './common'
 
 export interface IUserResult {
-  id: string
+  _id: string
   no: number
   name: string
   email: string
@@ -11,36 +14,47 @@ export interface IUserResult {
   updatedAt: Date
 }
 
+export interface IUserRouteQueryParams {
+  page: number
+  no: string
+  roleValue?: string
+  roleLabel?: string
+  name: string
+  email: string
+}
+
+export interface IUserApiQueryParams extends IApiQueryParamsBase {
+  no?: string
+  role?: string
+  name?: string
+  email?: string
+}
+
 export interface IUserFormData {
-  UserNo: string // Primary Key. 0: Administrator
-  UserId: string // Validate Text, Unique
-  Password: string // Validate Text
-  UserDesc: string // User Description
-  Email: string // Email Notification
-  Partition: ISelectOption | null // Partitions -> PartitionNo
-  Role: ISelectOption | null // Validate Integer, Roles -> RoleNo
-  Person: ISelectOption | null // Persons -> PersonNo
+  password: string
+  name: string
+  email: string
+  contactNumber: string
+  role: ISelectOption | null
 }
 
 export interface IUserFilters {
-  UserNo: string
-  UserId: string
-  Partition: ISelectOption | null
-  Role: ISelectOption | null
+  no: string
+  role: ISelectOption | null
+  name: string
+  email: string
   Apply: boolean
 }
 
-// export const systemMediaOptions = [
-//   {
-//     label: t`User`,
-//     value: '0',
-//   },
-//   {
-//     label: t`SD Card`,
-//     value: '1',
-//   },
-//   {
-//     label: t`USB Memory`,
-//     value: '2',
-//   },
-// ]
+export const userRoleOptions = [
+  {
+    label: t`Agent`,
+    value: 'agent',
+  },
+  {
+    label: t`Admin`,
+    value: 'admin',
+  },
+]
+
+export const userRoleObject = optionsToObject(userRoleOptions)

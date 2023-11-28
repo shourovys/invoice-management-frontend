@@ -1,16 +1,16 @@
-import { sendPostRequest } from '../../api/swrConfig'
-import { userApi } from '../../api/urls'
 import { AxiosError } from 'axios'
-import Page from '../../components/HOC/Page'
-import FormContainer from '../../components/HOC/style/form/FormContainer'
-import Breadcrumbs from '../../components/layout/Breadcrumbs'
-import { useDefaultPartitionOption, useDefaultUserRoleOption } from '../../hooks/useDefaultOption'
-import useStateWithCallback from '../../hooks/useStateWithCallback'
 import { useState } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import { useNavigate } from 'react-router-dom'
-import routeProperty from '../../routes/routeProperty'
 import useSWRMutation from 'swr/mutation'
+import { sendPostRequest } from '../../api/swrConfig'
+import { userApi } from '../../api/urls'
+import Page from '../../components/HOC/Page'
+import FormContainer from '../../components/HOC/style/form/FormContainer'
+import Breadcrumbs from '../../components/layout/Breadcrumbs'
+import UserForm from '../../components/pages/user/form/UserForm'
+import useStateWithCallback from '../../hooks/useStateWithCallback'
+import routeProperty from '../../routes/routeProperty'
 import { IActionsButton } from '../../types/components/actionButtons'
 import { THandleInputChange } from '../../types/components/common'
 import {
@@ -18,14 +18,12 @@ import {
   IServerCommandErrorResponse,
   IServerErrorResponse,
 } from '../../types/pages/common'
-import { IUserFormData } from '../../types/pages/user'
-import { SERVER_QUERY } from '../../utils/config'
+import { IUserFormData, userRoleOptions } from '../../types/pages/user'
 import { applyIcon, cancelIcon } from '../../utils/icons'
 import scrollToErrorElement from '../../utils/scrollToErrorElement'
+import serverErrorHandler from '../../utils/serverErrorHandler'
 import { addSuccessfulToast } from '../../utils/toast'
 import t from '../../utils/translator'
-import UserForm from '../../components/pages/user/form/UserForm'
-import serverErrorHandler from '../../utils/serverErrorHandler'
 
 // Component to create a User
 function CreateUser() {
@@ -35,24 +33,15 @@ function CreateUser() {
 
   // Define state variables for the form data and form errors
   const [formData, setFormData] = useState<IUserFormData>({
-    UserNo: '',
-    UserId: '',
-    Password: '',
-    UserDesc: '',
-    Email: '',
-    Partition: null,
-    Role: null,
-    Person: null,
+    password: '',
+    name: '',
+    email: '',
+    contactNumber: '',
+    role: userRoleOptions[0],
   })
   const [formErrors, setFormErrors] = useStateWithCallback<INewFormErrors<IUserFormData>>(
     {},
     scrollToErrorElement
-  )
-  // Set default Partition and Role
-  useDefaultPartitionOption<IUserFormData>(setFormData)
-  useDefaultUserRoleOption<IUserFormData>(
-    setFormData,
-    `${SERVER_QUERY.selectorDataQuery}&PartitionNo=${formData?.Partition?.value}`
   )
 
   // Update the form data when any input changes
@@ -77,23 +66,15 @@ function CreateUser() {
   const handleSubmit = async () => {
     // Validate the form data
     const errors: INewFormErrors<IUserFormData> = {}
-    if (!formData.UserId) {
-      errors.UserId = t`User ID is required`
+
+    if (!formData.name) {
+      errors.name = t`Name is required`
     }
-    // if (!formData.Email) {
-    //   errors.Email= t`Email is required`
-    // }
-    if (!formData.Password) {
-      errors.Password = t`Password is required`
+    if (!formData.email) {
+      errors.email = t`Email is required`
     }
-    if (!formData.Role?.value) {
-      errors.Role = t`Role is required`
-    }
-    // if (!formData.Person?.value) {
-    //   errors.Person= t`Person is required`
-    // }
-    if (!formData.Partition?.value) {
-      errors.Partition = t`Partition is required`
+    if (!formData.role?.value) {
+      errors.role = t`Role is required`
     }
 
     // If there are errors, display them and do not submit the form
@@ -109,13 +90,11 @@ function CreateUser() {
 
     // Modify form data to match API requirements and trigger the mutation
     const modifiedFormData = {
-      UserId: formData.UserId,
-      Password: formData.Password,
-      UserDesc: formData.UserDesc,
-      Email: formData.Email,
-      PartitionNo: formData.Partition?.value,
-      RoleNo: formData.Role?.value,
-      PersonNo: formData.Person?.value,
+      name: formData.name,
+      password: formData.password,
+      contactNumber: formData.contactNumber,
+      email: formData.email,
+      role: formData.role?.value,
     }
 
     trigger(modifiedFormData)

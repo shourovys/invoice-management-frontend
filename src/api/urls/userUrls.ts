@@ -10,13 +10,12 @@ export const partitionApi = {
 }
 
 export const userApi = {
-  list: (queryString: string) => `/users/users/?${queryString}`,
-  add: '/users/users/',
-  edit: (id: string) => `/users/users/${id}/`,
-  delete: (id: string) => `/users/users/${id}/`,
-  deleteMultiple: '/users/users/',
-  details: (id: string) => `/users/users/${id}/`,
-  export: '/users/users/export/',
+  list: (queryString: string) => `/user/?${queryString}`,
+  add: '/user/',
+  edit: (id: string) => `/user/${id}/`,
+  delete: (id: string) => `/user/${id}/`,
+  deleteMultiple: '/user/',
+  details: (id: string) => `/user/${id}/`,
 }
 
 export const userRoleApi = {

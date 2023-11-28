@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import { sendPutRequest } from '../../../api/swrConfig'
-import { userApi, userRoleApi } from '../../../api/urls'
+import { userApi } from '../../../api/urls'
 import Page from '../../../components/HOC/Page'
 import FormContainer from '../../../components/HOC/style/form/FormContainer'
 import Breadcrumbs from '../../../components/layout/Breadcrumbs'
@@ -16,15 +16,13 @@ import routeProperty from '../../../routes/routeProperty'
 import { IActionsButton } from '../../../types/components/actionButtons'
 import { THandleInputChange } from '../../../types/components/common'
 import {
-  IListServerResponse,
   INewFormErrors,
   IServerCommandErrorResponse,
   IServerErrorResponse,
   ISingleServerResponse,
 } from '../../../types/pages/common'
-import { IUserFormData, IUserResult } from '../../../types/pages/user'
-import { IUserRoleResult } from '../../../types/pages/userRole'
-import { SERVER_QUERY } from '../../../utils/config'
+import { IUserFormData, IUserResult, userRoleOptions } from '../../../types/pages/user'
+import { findSelectOption } from '../../../utils/findSelectOption'
 import { applyIcon, cancelIcon } from '../../../utils/icons'
 import scrollToErrorElement from '../../../utils/scrollToErrorElement'
 import serverErrorHandler from '../../../utils/serverErrorHandler'
@@ -45,14 +43,11 @@ function EditUser() {
 
   // Define the initial state of the form data and form errors
   const [formData, setFormData] = useState<IUserFormData>({
-    UserNo: '',
-    UserId: '',
-    Password: '',
-    UserDesc: '',
-    Email: '',
-    Partition: null,
-    Role: null,
-    Person: null,
+    name: '',
+    password: '',
+    email: '',
+    contactNumber: '',
+    role: null,
   })
   const [formErrors, setFormErrors] = useStateWithCallback<INewFormErrors<IUserFormData>>(
     {},
@@ -65,63 +60,21 @@ function EditUser() {
   )
   useEffect(() => {
     if (data) {
-      const { UserNo, UserId, UserDesc, Email, Role, Person, Partition } = data.data
+      const { name, email, contactNumber, role } = data.data
 
       setFormData({
-        UserNo: UserNo.toString(),
-        UserId,
-        Password: '',
-        UserDesc,
-        Email,
-        Role: Role?.role
-          ? {
-              value: Role.RoleNo.toString(),
-              label: Role.role,
-            }
-          : null,
-        Person: Person?.LastName
-          ? {
-              value: Person.PersonNo.toString(),
-              label: Person.LastName,
-            }
-          : null,
-        Partition: Partition.PartitionName
-          ? {
-              value: Partition.PartitionNo.toString(),
-              label: Partition.PartitionName,
-            }
-          : null,
+        name,
+        password: '',
+        email,
+        contactNumber,
+        role: findSelectOption(userRoleOptions, role),
       })
     }
   }, [data])
 
-  const { data: userRoleData } = useSWR<IListServerResponse<IUserRoleResult[]>>(
-    userRoleApi.list(SERVER_QUERY.selectorDataQuery)
-  )
-
   // Update the form data when any input changes
   const handleInputChange: THandleInputChange = (name, value) => {
-    if (name === 'Partition' && value && typeof value === 'object' && 'value' in value) {
-      const selectedPartitionRole = userRoleData?.data?.find(
-        (role) => role.Partition.PartitionNo.toString() === value.value
-      )
-      setFormData(
-        (state) =>
-          ({
-            ...state,
-            [name]: value,
-            Role: selectedPartitionRole
-              ? {
-                  label: selectedPartitionRole?.role,
-                  value: selectedPartitionRole?.RoleNo.toString(),
-                }
-              : null,
-            Person: null,
-          }) as IUserFormData
-      )
-    } else {
-      setFormData((state) => ({ ...state, [name]: value }))
-    }
+    setFormData((state) => ({ ...state, [name]: value }))
     setFormErrors({ ...formErrors, [name]: null })
   }
 
@@ -141,50 +94,35 @@ function EditUser() {
   const handleSubmit = async () => {
     // Validate the form data
     const errors: INewFormErrors<IUserFormData> = {}
-    if (!formData.UserId) {
-      errors.UserId = t`User ID is required`
+    if (!formData.name) {
+      errors.name = t`User ID is required`
     }
-    // if (!formData.Email) {
-    //   errors.Email= t`Email is required`
-    // }
-    if (!formData.Password) {
-      errors.Password = t`Password is required`
+    if (!formData.password) {
+      errors.password = t`Password is required`
     }
-    if (!formData.Role?.value) {
-      errors.Role = t`Role is required`
+    if (!formData.role?.value) {
+      errors.role = t`Role is required`
     }
-    // if (!formData.Person?.value) {
-    //   errors.Person= t`Person is required`
-    // }
-    if (!formData.Partition?.value) {
-      errors.Partition = t`Partition is required`
+    if (!formData.email) {
+      errors.email = t`Email is required`
     }
 
     // If there are errors, display them and do not submit the form
     if (Object.keys(errors).length) {
       setFormErrors(errors)
-      //Object.entries(errors).forEach(([, value]) => {
-      //   if (value) {
-      //     errorToast(value)
-      //   }
-      // })
       return
     }
 
     // Modify form data to match API requirements and trigger the mutation
     const modifiedFormData = {
-      UserId: formData.UserId,
-      Password: formData.Password,
-      UserDesc: formData.UserDesc,
-      Email: formData.Email,
-      PartitionNo: formData.Partition?.value,
-      RoleNo: formData.Role?.value,
-      PersonNo: formData.Person?.value,
+      name: formData.name,
+      password: formData.password,
+      email: formData.email,
+      contactNumber: formData.contactNumber,
+      role: formData.role?.value,
     }
     trigger(modifiedFormData)
   }
-
-  // Define the actions for the breadcrumbs bar
 
   // Define the actions for the breadcrumbs bar
   const breadcrumbsActionsButtons: IActionsButton[] = [
@@ -216,16 +154,6 @@ function EditUser() {
           isLoading={isLoading}
         />
       </FormContainer>
-      {/* <FormActionButtonsContainer>
-        <Button color="apply" size="large" onClick={handleSubmit} isLoading={isMutating}>
-          <Icon icon={applyIcon} />
-          <span>{t`Apply`}</span>
-        </Button>
-        <Button size="large" color="cancel" link={routeProperty.userInfo.path(queryId)}>
-          <Icon icon={cancelIcon} />
-          <span>{t`Cancel`}</span>
-        </Button>
-      </FormActionButtonsContainer> */}
     </Page>
   )
 }

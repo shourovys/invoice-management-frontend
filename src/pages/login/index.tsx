@@ -31,7 +31,7 @@ export default function Login() {
   // if user is present then go back
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(routeProperty.dashboard.path())
+      navigate(routeProperty.user.path())
     }
   }, [isAuthenticated])
 
@@ -62,10 +62,10 @@ export default function Login() {
   function handleRedirection(data: IUserWithToken) {
     const role = data?.user?.role
     if (role === 'agent') {
-      navigate(routeProperty.licenseInfo.path())
+      navigate(routeProperty.user.path())
       return // No need to proceed further
     } else if (role === 'admin') {
-      navigate(routeProperty.dashboard.path())
+      navigate(routeProperty.user.path())
       return // No need to proceed further
     }
   }

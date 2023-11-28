@@ -1,6 +1,10 @@
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { faAdd } from '@fortawesome/free-solid-svg-icons'
-import { fetcher, sendMultiDeleteRequest } from '../../api/swrConfig'
+import QueryString from 'qs'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import useSWR from 'swr'
+import useSWRMutation from 'swr/mutation'
+import { sendMultiDeleteRequest } from '../../api/swrConfig'
 import { userApi } from '../../api/urls'
 import Page from '../../components/HOC/Page'
 import Table from '../../components/HOC/style/table/Table'
@@ -17,26 +21,23 @@ import UserTableToolbar from '../../components/pages/user/UserTableToolbar'
 import useAlert from '../../hooks/useAlert'
 import useTable, { emptyRows } from '../../hooks/useTable'
 import useUpdateRouteQueryWithReplace from '../../hooks/useUpdateRouteQueryWithReplace'
-import QueryString from 'qs'
-import { useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import useSWR from 'swr'
-import useSWRMutation from 'swr/mutation'
 import { IActionsButton } from '../../types/components/actionButtons'
 import { THandleFilterInputChange } from '../../types/components/common'
-import { ITableAction, ITableHead } from '../../types/components/table'
+import { ITableHead } from '../../types/components/table'
 import { IListServerResponse } from '../../types/pages/common'
-import { IUserFilters, IUserResult } from '../../types/pages/user'
-import downloadCsv from '../../utils/downloadCsv'
-import { csvIcon } from '../../utils/icons'
+import {
+  IUserApiQueryParams,
+  IUserFilters,
+  IUserResult,
+  IUserRouteQueryParams,
+} from '../../types/pages/user'
 import t from '../../utils/translator'
 
 const TABLE_HEAD: ITableHead[] = [
-  { id: 'UserNo', label: t`User No`, filter: true },
-  { id: 'PartitionNo', label: t`Partition`, filter: true },
-  { id: 'UserId', label: t`User ID`, filter: true },
-  { id: 'UserDesc', label: t`Description`, filter: true },
-  { id: 'RoleNo', label: t`User Role`, filter: true },
+  { id: 'no', label: t`No`, filter: true },
+  { id: 'name', label: t`Name`, filter: true },
+  { id: 'email', label: t`Email`, filter: true },
+  { id: 'contactNumber', label: t`Contact Number`, filter: true },
 ]
 
 function User() {
@@ -63,16 +64,14 @@ function User() {
   // apply property use for apply filter. filter will apply when apply is true
   const initialFilterState: IUserFilters = {
     Apply: false,
-    UserNo: '',
-    UserId: '',
-    Partition: null,
-    Role: null,
+    no: '',
+    role: null,
+    name: '',
+    email: '',
   }
 
   // state to store the filter values
   const [filterState, setFilterState] = useState(initialFilterState)
-  // state to store deleted rows ids
-  const [isDeletedIds, setIsDeletedIds] = useState<string[]>([])
 
   // ref to store the applied filter values
   const filterStateRef = useRef(filterState)
@@ -86,17 +85,18 @@ function User() {
   const updateFilterStateToQuery = () => {
     handleChangePage(1)
 
+    const queryParams: IUserRouteQueryParams = {
+      page: 1,
+      no: filterStateRef.current.no,
+      roleValue: filterStateRef.current.role?.value,
+      roleLabel: filterStateRef.current.role?.label,
+      name: filterStateRef.current.name,
+      email: filterStateRef.current.email,
+    }
+
     updateRouteQueryWithReplace({
       pathName: location.pathname,
-      query: {
-        page: 1,
-        UserNo: filterStateRef.current.UserNo,
-        UserID: filterStateRef.current.UserId,
-        PartitionValue: filterStateRef.current.Partition?.value,
-        PartitionLabel: filterStateRef.current.Partition?.label,
-        RoleValue: filterStateRef.current.Role?.value,
-        RoleLabel: filterStateRef.current.Role?.label,
-      },
+      query: queryParams,
     })
   }
   // handle the apply button for the filters
@@ -114,33 +114,52 @@ function User() {
     setFilterState(initialFilterState)
   }
 
+  // in route change or reload - filter state update by query value and apply to filter
+  useEffect(() => {
+    const queryParse = QueryString.parse(location.search)
+
+    const queryState: IUserFilters = {
+      no: typeof queryParse.no === 'string' ? queryParse.no : '',
+      role:
+        typeof queryParse.roleValue === 'string' && typeof queryParse.roleLabel === 'string'
+          ? {
+              label: queryParse.roleLabel,
+              value: queryParse.roleValue,
+            }
+          : null,
+      name: typeof queryParse.name === 'string' ? queryParse.name : '',
+      email: typeof queryParse.email === 'string' ? queryParse.email : '',
+      Apply: true,
+    }
+
+    setFilterState(queryState)
+    filterStateRef.current = queryState
+  }, [location.search, location.pathname])
+
   // create the query object for the API call
-  const apiQueryParams = {
+  const apiQueryParams: IUserApiQueryParams = {
     offset: (page - 1) * rowsPerPage,
     limit: rowsPerPage,
     sort_by: orderBy,
     order,
-    ...(filterStateRef.current.UserNo && {
-      UserNo: filterStateRef.current.UserNo,
+
+    ...(filterStateRef.current.no && {
+      no: filterStateRef.current.no,
     }),
-    ...(filterStateRef.current.UserId && {
-      UserId: filterStateRef.current.UserId,
+    ...(filterStateRef.current.role?.value && {
+      role: filterStateRef.current.role?.value,
     }),
-    ...(filterStateRef.current.Partition?.value && {
-      Partition: filterStateRef.current.Partition.value,
+    ...(filterStateRef.current.name && {
+      name: filterStateRef.current.name,
     }),
-    ...(filterStateRef.current.Role?.value && {
-      Role: filterStateRef.current.Role.value,
-    }),
-    // query for fetch table data after delete row
-    ...(isDeletedIds.length && {
-      isDeletedIds: JSON.stringify(isDeletedIds),
+    ...(filterStateRef.current.email && {
+      email: filterStateRef.current.email,
     }),
   }
 
   const apiQueryString = QueryString.stringify(apiQueryParams)
 
-  const { isLoading, data } = useSWR<IListServerResponse<IUserResult[]>>(
+  const { isLoading, data, mutate } = useSWR<IListServerResponse<IUserResult[]>>(
     userApi.list(apiQueryString)
   )
 
@@ -151,11 +170,8 @@ function User() {
     {
       // Show a success message and redirect to partition list page on successful delete
       onSuccess: () => {
+        mutate()
         handleSelectAllRow(false, [])
-      },
-      // If error occurred - make delete false
-      onError: () => {
-        setIsDeletedIds([])
       },
     }
   )
@@ -169,9 +185,6 @@ function User() {
       const handleDelete = () => {
         return multipleDeleteTrigger({
           data: requestData,
-        }).then(() => {
-          // update detected rows id for refetch table data
-          setIsDeletedIds(selected)
         })
       }
 
@@ -179,27 +192,7 @@ function User() {
     }
   }
 
-  // mutation for fetch csv data from server and call downloadCsc
-  const { trigger: csvDataTrigger, isMutating: csvDataLoading } = useSWRMutation(
-    userApi.export,
-    fetcher,
-    {
-      onSuccess: (csvData) => {
-        downloadCsv(csvData, location)
-      },
-    }
-  )
-
   const breadcrumbsActions: IActionsButton[] = [
-    {
-      color: 'csv',
-      icon: csvIcon,
-      text: t`CSV`,
-      onClick: () => {
-        csvDataTrigger()
-      },
-      isLoading: csvDataLoading,
-    },
     {
       icon: faAdd,
       text: t`Add`,
@@ -207,13 +200,13 @@ function User() {
     },
   ]
 
-  const tableActions: ITableAction[] = [
-    {
-      icon: faTrashCan,
-      tooltip: 'Delete',
-      onClick: handleDeleteMultiple,
-    },
-  ]
+  // const tableActions: ITableAction[] = [
+  //   {
+  //     icon: faTrashCan,
+  //     tooltip: 'Delete',
+  //     onClick: handleDeleteMultiple,
+  //   },
+  // ]
 
   const isNotFound = !data?.data.length && !isLoading
 
@@ -227,7 +220,7 @@ function User() {
           handleFilterApply={handleFilterApply}
           handleInputChange={handleFilterInputChange}
         />
-        <TableAction tableActions={tableActions} numSelected={selected.length} />
+        <TableAction numSelected={selected.length} />
         <Table>
           <TableHeader
             order={order}
@@ -236,14 +229,11 @@ function User() {
             rowCount={data?.data.length}
             handleSort={handleSort}
             handleOrder={handleOrder}
-            selectAllRow={(isAllSelected: boolean) => {
-              if (data?.data) {
-                handleSelectAllRow(
-                  isAllSelected,
-                  data?.data.map((result) => result.UserNo.toString())
-                )
-              }
-            }}
+            // selectAllRow={(isAllSelected: boolean) => {
+            //   if (data?.data) {
+            //     handleSelectAllRow(isAllSelected, data?.data.map((result) => result._id.toString()))
+            //   }
+            // }}
             headerData={TABLE_HEAD}
           />
           <tbody>
@@ -251,7 +241,7 @@ function User() {
               <>
                 {data?.data.map((row) => (
                   <UserTableRow
-                    key={row.UserNo}
+                    key={row._id}
                     row={row}
                     selected={selected}
                     handleSelectRow={handleSelectRow}

@@ -1,16 +1,10 @@
 import { useParams } from 'react-router-dom'
-import useSWR from 'swr'
-import { partitionApi, personApi, userRoleApi } from '../../../../api/urls'
 import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
 import Input from '../../../../components/atomic/Input'
 import Selector from '../../../../components/atomic/Selector'
 import { THandleInputChange } from '../../../../types/components/common'
-import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
-import { IPartitionResult } from '../../../../types/pages/partition'
-import { IPersonResult } from '../../../../types/pages/person'
-import { IUserFormData } from '../../../../types/pages/user'
-import { IUserRoleResult } from '../../../../types/pages/userRole'
-import { SERVER_QUERY } from '../../../../utils/config'
+import { IFormErrors } from '../../../../types/pages/common'
+import { IUserFormData, userRoleOptions } from '../../../../types/pages/user'
 import { userIcon } from '../../../../utils/icons'
 import t from '../../../../utils/translator'
 
@@ -27,126 +21,63 @@ function UserForm({ formData, handleInputChange, formErrors, disabled, isLoading
   const params = useParams()
   const queryId = params.id as string
 
-  const { isLoading: partitionIsLoading, data: partitionData } = useSWR<
-    IListServerResponse<IPartitionResult[]>
-  >(
-    disabled || typeof handleInputChange === 'undefined'
-      ? null
-      : partitionApi.list(SERVER_QUERY.selectorDataQuery)
-  )
-
-  const { isLoading: roleIsLoading, data: roleData } = useSWR<
-    IListServerResponse<IUserRoleResult[]>
-  >(
-    disabled || typeof handleInputChange === 'undefined'
-      ? null
-      : userRoleApi.list(
-          `${SERVER_QUERY.selectorDataQuery}&PartitionNo=${formData?.Partition?.value}`
-        )
-  )
-
-  const { isLoading: personIsLoading, data: personData } = useSWR<
-    IListServerResponse<IPersonResult[]>
-  >(
-    disabled || typeof handleInputChange === 'undefined'
-      ? null
-      : personApi.list(
-          `${SERVER_QUERY.selectorDataQuery}&PartitionNo=${formData?.Partition?.value}`
-        )
-  )
-
   return (
     <FormCardWithHeader icon={userIcon} header={t`User`}>
-      {queryId !== '0' && (
+      {queryId !== '1' && (
         <Selector
-          name="Partition"
-          label={t`Partition`}
-          value={formData?.Partition}
-          options={partitionData?.data.map((result) => ({
-            value: result.PartitionNo.toString(),
-            label: result.PartitionName,
-          }))}
+          name="role"
+          label={t`Role`}
+          value={formData?.role}
+          options={userRoleOptions}
           isClearable={false}
           onChange={handleInputChange}
-          disabled={
-            disabled || typeof handleInputChange === 'undefined' || formData?.UserNo === '0'
-          }
-          error={formErrors?.Partition}
-          isLoading={isLoading || partitionIsLoading}
-        />
-      )}
-
-      <Input
-        name="UserId"
-        label={t`User ID`}
-        value={formData?.UserId}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.UserId}
-        isLoading={isLoading}
-      />
-      {!(disabled || typeof handleInputChange === 'undefined') && (
-        <Input
-          name="Password"
-          label={t`Password`}
-          type="password"
-          value={formData?.Password}
-          onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.Password}
+          error={formErrors?.Role}
           isLoading={isLoading}
         />
       )}
+
       <Input
-        name="UserDesc"
-        label={t`Description`}
-        value={formData?.UserDesc}
+        name="name"
+        label={t`Name`}
+        value={formData?.name}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.UserDesc}
+        error={formErrors?.name}
         isLoading={isLoading}
       />
+
       <Input
-        name="Email"
+        name="email"
         label={t`Email`}
-        value={formData?.Email}
+        value={formData?.email}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.Email}
+        error={formErrors?.email}
         isLoading={isLoading}
       />
-      {queryId !== '0' && (
-        <Selector
-          name="Role"
-          label={t`User Role`}
-          value={formData?.Role}
-          options={roleData?.data.map((result) => ({
-            value: result.RoleNo.toString(),
-            label: result.role,
-          }))}
-          isClearable={false}
+
+      {!(disabled || typeof handleInputChange === 'undefined') && (
+        <Input
+          name="password"
+          label={t`Password`}
+          type="password"
+          value={formData?.password}
           onChange={handleInputChange}
-          disabled={
-            disabled || typeof handleInputChange === 'undefined' || formData?.UserNo === '0'
-          }
-          error={formErrors?.Role}
-          isLoading={isLoading || roleIsLoading}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.password}
+          isLoading={isLoading}
         />
       )}
 
-      <Selector
-        name="Person"
-        label={t`Person`}
-        value={formData?.Person}
-        options={personData?.data.map((result) => ({
-          value: result.PersonNo.toString(),
-          label: result.LastName,
-        }))}
-        isClearable={true}
+      <Input
+        name="contactNumber"
+        label={t`Contact Number`}
+        value={formData?.contactNumber}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.Person}
-        isLoading={isLoading || personIsLoading}
+        error={formErrors?.contactNumber}
+        isLoading={isLoading}
       />
     </FormCardWithHeader>
   )

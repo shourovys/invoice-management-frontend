@@ -82,7 +82,7 @@ function AuthGuard({ children }: IProps) {
 
   if (!loading && !isPermitted) {
     if (pathname === '/') {
-      navigate(routeProperty.licenseInfo.path())
+      navigate(routeProperty.user.path())
     } else {
       return (
         <HelperPages
@@ -96,11 +96,6 @@ function AuthGuard({ children }: IProps) {
 
   // if current page is not login page and user is not authenticated or is loading , show loading screen
   if (pathname !== routeProperty.login.path() && (loading || !isAuthenticated)) {
-    console.log(
-      '🚀 ~ file: AuthGuard.tsx:103 ~ AuthGuard ~ loading || !isAuthenticated:',
-      loading,
-      isAuthenticated
-    )
     return (
       <div
         className="flex items-center justify-center w-screen h-screen"

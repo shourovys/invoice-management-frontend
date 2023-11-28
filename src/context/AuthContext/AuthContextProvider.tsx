@@ -59,7 +59,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const { mutate: configMutate } = useSWR(token ? authApi.config : null, {
     // const { mutate: configMutate } = useSWR(token && !state.isAuthenticated ? authApi.config : null, {
     onSuccess: (data: ISingleServerResponse<IUserResult>) => {
-      console.log('🚀 ~ file: AuthContextProvider.tsx:95 ~ data:', data)
       if (data.data?.no) {
         setState((prevState) => ({
           ...prevState,
