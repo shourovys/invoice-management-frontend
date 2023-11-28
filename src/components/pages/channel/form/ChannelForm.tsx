@@ -1,15 +1,17 @@
-import { nvrApi, partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { nvrApi, partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IChannelFormData } from 'types/pages/channel'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { INvrResult } from 'types/pages/nvr'
-import { IPartitionResult } from 'types/pages/partition'
-import { SERVER_QUERY } from 'utils/config'
-import { channelIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IChannelFormData } from '../../../../types/pages/channel'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { INvrResult } from '../../../../types/pages/nvr'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { channelIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IChannelFormData
@@ -35,61 +37,80 @@ function ChannelForm({ formData, handleInputChange, formErrors, disabled, isLoad
   )
 
   return (
-    <FormCardWithHeader icon={channelIcon} header="Channel">
+    <FormCardWithHeader icon={channelIcon} header={t`Channel`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Channel Name"
-        value={formData?.name}
+        name="ChannelName"
+        label={t`Channel Name`}
+        value={formData?.ChannelName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.ChannelName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="ChannelDesc"
+        label={t`Description`}
+        value={formData?.ChannelDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.ChannelDesc}
         isLoading={isLoading}
       />
       <Selector
-        name="nvr"
-        label="NVR"
-        value={formData?.nvr}
-        options={nvrData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Nvr"
+        label={t`NVR`}
+        value={formData?.Nvr}
+        options={nvrData?.data.map((result) => ({
+          value: result.NvrNo.toString(),
+          label: result.NvrName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.nvr}
+        error={formErrors?.Nvr}
         isLoading={isLoading || nvrIsLoading}
       />
       <Input
-        name="channel_no"
+        name="ChannelId"
         type="number"
-        label="Channel ID"
-        value={formData?.channel_no}
+        label={t`Channel ID`}
+        value={formData?.ChannelId}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.channel_no}
+        error={formErrors?.ChannelId}
         isLoading={isLoading}
       />
+      <SwitchButtonSelect
+        name="Streaming"
+        label={t`Streaming`}
+        value={formData?.Streaming}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        isLoading={isLoading}
+      />
+      {(disabled || typeof handleInputChange === 'undefined') && (
+        <Input
+          name="Online"
+          label={t`Online`}
+          value={formData?.Online}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Online}
+          isLoading={isLoading}
+        />
+      )}
     </FormCardWithHeader>
   )
 }

@@ -1,15 +1,16 @@
-import { gatewayApi, partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { gatewayApi, partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IGatewayResult } from 'types/pages/gateway'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IGatewayResult } from '../../../../types/pages/gateway'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { locksetIcon } from '../../../../utils/icons'
 import { ILocksetFormData } from '../../../../types/pages/lockset'
-import { IPartitionResult } from 'types/pages/partition'
-import { SERVER_QUERY } from 'utils/config'
-import { locksetIcon } from 'utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: ILocksetFormData
@@ -37,101 +38,89 @@ function LocksetForm({ formData, handleInputChange, formErrors, disabled, isLoad
   )
 
   return (
-    <FormCardWithHeader icon={locksetIcon} header="Device">
+    <FormCardWithHeader icon={locksetIcon} header={t`Device`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Lockset Name"
-        value={formData?.name}
+        name="LocksetName"
+        label={t`Lockset Name`}
+        value={formData?.LocksetName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.LocksetName}
         isLoading={isLoading}
       />
 
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="LocksetDesc"
+        label={t`Description`}
+        value={formData?.LocksetDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.LocksetDesc}
         isLoading={isLoading}
       />
 
       <Selector
-        name="gateway"
-        label="Gateway"
-        value={formData?.gateway}
-        options={gatewayData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Gateway"
+        label={t`Gateway`}
+        value={formData?.Gateway}
+        options={gatewayData?.data.map((result) => ({
+          value: result.GatewayNo.toString(),
+          label: result.GatewayName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.gateway}
+        error={formErrors?.Gateway}
         isLoading={isLoading || gatewayIsLoading}
       />
 
       <Input
-        name="link_id"
-        label="Link ID"
+        name="LinkId"
+        label={t`Link ID`}
         type="number"
-        value={formData?.link_id}
+        value={formData?.LinkId}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.link_id}
+        error={formErrors?.LinkId}
         isLoading={isLoading}
       />
       <Input
-        name="model"
-        label="Model"
-        value={formData?.model}
+        name="Name"
+        label={t`Name`}
+        value={formData?.Name}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.model}
+        error={formErrors?.Name}
         isLoading={isLoading}
       />
       <Input
-        name="device_id"
-        label="Device ID"
-        type="number"
-        value={formData?.device_id}
+        name="Model"
+        label={t`Model`}
+        value={formData?.Model}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.device_id}
+        error={formErrors?.Model}
         isLoading={isLoading}
       />
       <Input
-        name="lock_stat"
-        label="Lock Stat"
-        type="number"
-        value={formData?.lock_stat}
+        name="DeviceId"
+        label={t`Device ID`}
+        value={formData?.DeviceId}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.lock_stat}
-        isLoading={isLoading}
-      />
-      <Input
-        name="contact_stat"
-        label="Contact Start"
-        type="number"
-        value={formData?.contact_stat}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.contact_stat}
+        error={formErrors?.DeviceId}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

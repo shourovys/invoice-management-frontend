@@ -1,8 +1,11 @@
 import classNames from 'classnames'
 import Datepicker from 'react-tailwindcss-datepicker'
 import { DateValueType } from 'react-tailwindcss-datepicker/dist/types'
-import { ERROR_CLASS } from 'utils/config'
+import { THandleInputSelect } from '../../types/components/common'
+import { ERROR_CLASS, LOCAL_STORAGE_KEY } from '../../utils/config'
+import { dateFormat } from '../../utils/formetTime'
 import InputLoading from '../loading/atomic/InputLoading'
+import Checkbox from './Checkbox'
 
 interface IProps {
   name: string
@@ -18,7 +21,12 @@ interface IProps {
   error?: string | null
   onChange?: (name: string, value: DateValueType) => void
   disabled?: boolean
+  // props for checkbox in label
+  isSelected?: boolean
+  handleSelect?: THandleInputSelect
+  format?: string
 }
+
 function DateInput({
   name,
   label = '',
@@ -30,19 +38,37 @@ function DateInput({
   error,
   onChange,
   disabled = false,
+  isSelected,
+  handleSelect,
+  format,
 }: IProps) {
   return (
     <div className="w-full space-y-0.5">
       {label && (
-        <label className="inline-block w-full text-sm text-gray-700 form-label" htmlFor={name}>
-          {label}
-        </label>
+        <>
+          {handleSelect ? (
+            <div className="py-0.5">
+              <Checkbox
+                label={label}
+                value={name}
+                checked={isSelected}
+                onChange={(checked) => {
+                  handleSelect(name, checked)
+                }}
+              />
+            </div>
+          ) : (
+            <label className="inline-block w-full text-sm text-gray-700 form-label" htmlFor={name}>
+              {label}
+            </label>
+          )}
+        </>
       )}
       {isLoading ? (
         <InputLoading />
       ) : (
         <Datepicker
-          primaryColor="#006AFE"
+          primaryColor="green"
           asSingle={singleDate}
           useRange={!singleDate}
           value={value}
@@ -51,13 +77,15 @@ function DateInput({
           inputClassName={classNames(
             'form-control w-full h-[33.6px] px-3 text-sm font-normal text-black bg-white bg-clip-padding border border-solid border-gray-300 focus:border-gray-300 dark:border-gray-300 rounded-md transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-primary focus:outline-none focus:ring-0',
             !disabled && label && 'shadow-all-side',
-            disabled && 'bg-[#F0F1F3] disabled:text-gray-600 disabled:opacity-100',
+            disabled &&
+              'important_disable_color important_disable_bg custom_opacity_100 custom_cursor_default',
             error && ERROR_CLASS
           )}
           containerClassName={classNames(
-            disabled && 'bg-[#F0F1F3] text-gray-600 rounded-md cursor-default'
+            disabled && 'important_disable_color important_disable_bg rounded-md '
           )}
           disabled={disabled}
+          displayFormat={format ? format : dateFormat}
         />
       )}
 

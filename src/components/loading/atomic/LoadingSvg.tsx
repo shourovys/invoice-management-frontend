@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { TColor, TSize } from 'types/components/common'
+import { TColor, TSize } from '../../../types/components/common'
 
 interface IProps {
   size?: TSize
@@ -14,9 +14,12 @@ function LoadingSvg({ size = 'base', color }: IProps) {
         size === 'base' && 'w-4 h-4',
         size === 'large' && 'w-4 h-4',
         size === 'extraLarge' && 'w-10 h-10',
-        color === 'primary' && 'text-primary',
-        color === 'gray' && 'text-gray-500',
-        'animate-spin'
+        color === 'primary' && 'text-btnPrimaryText',
+        color === 'danger' && 'text-btnDangerText',
+        color === 'info' && 'text-btnInfoText',
+        color === 'apply' && 'text-applyButtonText',
+        color === 'cancel' && 'text-cancelButtonText',
+        'animate-spin-fast'
       )}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"

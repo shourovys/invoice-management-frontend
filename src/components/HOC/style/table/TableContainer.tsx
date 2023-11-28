@@ -1,9 +1,17 @@
+import classNames from 'classnames'
+import { ReactNode } from 'react'
+
 interface IProps {
-  children: JSX.Element | JSX.Element[]
+  padding?: boolean
+  children: ReactNode
 }
 
-function TableContainer({ children }: IProps) {
-  return <div className="p-4 bg-white rounded-md md:p-3">{children}</div>
+function TableContainer({ padding = true, children }: IProps) {
+  return (
+    <div className={classNames('bg-white rounded-md shadow', padding && 'p-4 md:p-3')}>
+      {children}
+    </div>
+  )
 }
 
 export default TableContainer

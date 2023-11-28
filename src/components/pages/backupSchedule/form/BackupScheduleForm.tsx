@@ -1,19 +1,33 @@
-import { scheduleApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import RadioButtons from 'components/atomic/RadioButtons'
-import Selector from 'components/atomic/Selector'
+import { ftpApi, networkApi, scheduleApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import RadioButtons from '../../../../components/atomic/RadioButtons'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IBackupScheduleFormData, backupScheduleMediaOptions } from 'types/pages/backupSchedule'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { maintenanceBackupOptions } from 'types/pages/maintenance'
-import { IScheduleResult } from 'types/pages/schedule'
-import { SERVER_QUERY } from 'utils/config'
-import { backupScheduleIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import {
+  backupScheduleMediaOptions,
+  IBackupScheduleFormData,
+  IBackupScheduleInfoFormData,
+  maintenanceBackupScheduleOptions,
+} from '../../../../types/pages/backupSchedule'
+import {
+  IFormErrors,
+  IListServerResponse,
+  ISingleServerResponse,
+} from '../../../../types/pages/common'
+import { IScheduleResult } from '../../../../types/pages/schedule'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { backupScheduleIcon } from '../../../../utils/icons'
+import { formatDateTimeTzView, formatDateTimeView } from '../../../../utils/formetTime'
+import t from '../../../../utils/translator'
+import { IFtpResult } from '../../../../types/pages/ftp'
+import { INetworkResult } from '../../../../types/pages/network'
+import { useEffect, useState } from 'react'
+import { maintenanceBackupMediaOptions } from '../../../../types/pages/maintenance'
 
 interface IProps {
-  formData?: IBackupScheduleFormData
+  formData?: IBackupScheduleFormData | IBackupScheduleInfoFormData
   handleInputChange?: THandleInputChange
   formErrors?: IFormErrors
   disabled?: boolean
@@ -35,71 +49,99 @@ function BackupScheduleForm({
       : scheduleApi.list(SERVER_QUERY.selectorDataQuery)
   )
 
+  const [mediaOptions, setMediaOptions] = useState([])
+  const { data: ftpDetails, isLoading: ftpDetailsLoading } = useSWR<
+    ISingleServerResponse<IFtpResult>
+  >(ftpApi.details)
+  const { data: networkDetails, isLoading: networkDetailsLoading } = useSWR<
+    ISingleServerResponse<INetworkResult>
+  >(networkApi.details)
+
+  useEffect(() => {
+    if (ftpDetails && networkDetails) {
+      setMediaOptions(
+        backupScheduleMediaOptions.filter((option) => {
+          if (option.value === '2') {
+            return !!ftpDetails.data.Enable
+          } else if (option.value === '3') {
+            return !!networkDetails.data.Cloud
+          }
+          return true
+        }) as []
+      )
+    }
+  }, [ftpDetailsLoading, networkDetailsLoading])
+
   return (
-    <FormCardWithHeader icon={backupScheduleIcon} header="Backup Schedule">
+    <FormCardWithHeader icon={backupScheduleIcon} header={t`Backup Schedule`}>
       <Input
-        name="name"
-        label="Backup Schedule Name"
-        value={formData?.name}
+        name="BackupName"
+        label={t`Backup Name`}
+        value={formData?.BackupName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.BackupName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="BackupDesc"
+        label={t`Description`}
+        value={formData?.BackupDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
-        isLoading={isLoading}
-      />
-      <Selector
-        name="media"
-        label="Media"
-        value={formData?.media}
-        options={backupScheduleMediaOptions}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.media}
+        error={formErrors?.BackupDesc}
         isLoading={isLoading}
       />
 
       <Selector
-        name="schedule"
-        label="Schedule"
-        value={formData?.schedule}
-        options={scheduleData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Media"
+        label={t`Media`}
+        value={formData?.Media}
+        options={mediaOptions}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.Media}
+        isLoading={isLoading || ftpDetailsLoading || networkDetailsLoading}
+      />
+
+      <RadioButtons
+        name="BackupData"
+        inputLabel="Backup Data"
+        checked={formData?.BackupData}
+        radios={maintenanceBackupScheduleOptions}
+        onChange={handleInputChange}
+        isLoading={isLoading}
+        error={formErrors?.BackupData}
+      />
+
+      <Selector
+        name="Schedule"
+        label={t`Schedule`}
+        value={formData?.Schedule}
+        options={scheduleData?.data.map((result) => ({
+          value: result.ScheduleNo.toString(),
+          label: result.ScheduleName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.schedule}
+        error={formErrors?.Schedule}
         isLoading={isLoading || scheduleIsLoading}
       />
-      <RadioButtons
-        name="backup_type"
-        inputLabel="Backup Data"
-        checked={formData?.backup_type}
-        radios={maintenanceBackupOptions}
-        onChange={handleInputChange}
-        isLoading={isLoading}
-        error={formErrors?.backup_type}
-      />
+
       <div>
-        {(disabled || typeof handleInputChange === 'undefined') && (
-          <Input
-            name="backup_time"
-            label="Backup Time"
-            value={formData?.backup_time}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.backup_time}
-            isLoading={isLoading}
-          />
-        )}
+        {(disabled || typeof handleInputChange === 'undefined') &&
+          formData &&
+          'BackupTime' in formData && (
+            <Input
+              name="BackupTime"
+              label={t`Backup Time`}
+              value={formData?.BackupTime == 0 ? '' : formatDateTimeTzView(formData?.BackupTime)}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              error={formErrors?.BackupTime}
+              isLoading={isLoading}
+            />
+          )}
       </div>
     </FormCardWithHeader>
   )

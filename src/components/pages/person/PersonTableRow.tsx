@@ -1,9 +1,9 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { IDefinedFieldResult } from 'types/pages/definedField'
-import { IPersonResult } from 'types/pages/person'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { IDefinedFieldResult } from '../../../types/pages/definedField'
+import { IPersonResult } from '../../../types/pages/person'
 import Checkbox from '../../atomic/Checkbox'
 import DefinedFieldsRows from './DefinedFieldsRows'
 
@@ -13,27 +13,28 @@ type IProps = {
   handleSelectRow: (_selectedId: string) => void
   definedFields?: IDefinedFieldResult[]
 }
+
 function PersonTableRow({ row, selected, handleSelectRow, definedFields }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.personInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.PersonNo}
+      link={routeProperty.personInfo.path(row.PersonNo)}
+      selected={selected.indexOf(row.PersonNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.partition.name}</TableData>
-      <TableData>{row.last_name}</TableData>
-      <TableData>{row.first_name}</TableData>
-      <TableData>{row.email}</TableData>
+      <TableData>{row.PersonNo}</TableData>
+      <TableData>{row.Partition.PartitionName}</TableData>
+      <TableData>{row.LastName}</TableData>
+      <TableData>{row.FirstName}</TableData>
+      <TableData>{row.Email}</TableData>
       {definedFields?.map((item) => (
-        <DefinedFieldsRows definedField={item} row={row} key={item.id} />
+        <DefinedFieldsRows definedField={item} row={row} key={item.FieldNo} />
       ))}
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableDataAction selected={selected.indexOf(row.PersonNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.PersonNo}`}
+          checked={selected.indexOf(row.PersonNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.PersonNo.toString())
           }}
         />
       </TableDataAction>

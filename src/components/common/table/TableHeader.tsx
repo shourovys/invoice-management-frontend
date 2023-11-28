@@ -1,7 +1,8 @@
 import classNames from 'classnames'
-import Checkbox from 'components/atomic/Checkbox'
-import { ITableHead } from 'types/components/table'
-import Icon, { downArrowIcon, upArrowIcon } from 'utils/icons'
+import Checkbox from '../../../components/atomic/Checkbox'
+import { ITableHead } from '../../../types/components/table'
+import Icon, { downArrowIcon, upArrowIcon } from '../../../utils/icons'
+import useAuth from '../../../hooks/useAuth'
 
 interface IProps {
   order: 'asc' | 'desc'
@@ -12,7 +13,9 @@ interface IProps {
   handleOrder: (order: 'asc' | 'desc') => void
   selectAllRow?: (selected: boolean) => void
   headerData: ITableHead[]
+  allRowsNos?: unknown
 }
+
 function TableHeader({
   order,
   orderBy,
@@ -22,16 +25,17 @@ function TableHeader({
   handleOrder,
   selectAllRow,
   headerData,
+  allRowsNos,
 }: IProps) {
   return (
-    <thead className="bg-[#F0F1F3]">
+    <thead className="bg-bwTableHeaderBg">
       <tr className="">
         {headerData.map((item) => (
           <th
             key={item.id}
             scope="col"
             className={classNames(
-              'px-6 py-2 text-sm font-medium text-center text-gray-400 whitespace-nowrap',
+              'px-4 py-2 text-sm font-medium text-center text-bwTableHeaderBgText whitespace-nowrap',
               item.filter ? 'cursor-pointer' : 'cursor-default'
             )}
             onClick={() => {
@@ -46,29 +50,30 @@ function TableHeader({
                 <Icon
                   icon={upArrowIcon}
                   className={classNames(
-                    'w-2 h-full',
+                    'w-2',
                     orderBy === item.id && order === 'asc' && 'text-primary'
                   )}
                 />
                 <Icon
                   icon={downArrowIcon}
                   className={classNames(
-                    'w-2 h-full mr-2',
+                    'w-2 mr-2',
                     orderBy === item.id && order === 'desc' && 'text-primary'
                   )}
                 />
               </>
             )}
 
-            {!item.checkbox && item.label}
+            {!item.checkboxAction && item.label}
 
-            {item.checkbox && (
+            {item.checkboxAction && (
               <div className="flex gap-2">
                 {item.label}
                 <Checkbox
                   value="select-all-row"
+                  checked={item.checkboxValue}
                   onChange={(checked) => {
-                    item.handleTableHeaderCheckboxAction(item.id, checked)
+                    item.checkboxAction(item.id, checked, allRowsNos)
                   }}
                 />
               </div>
@@ -78,7 +83,7 @@ function TableHeader({
         {selectAllRow && (
           <th
             scope="col"
-            className="sticky px-4 py-3 text-sm font-medium text-center text-gray-400 bg-[#F0F1F3] right-0"
+            className="sticky right-0 px-4 py-3 text-sm font-medium text-center bg-bwTableHeaderBg"
           >
             <div className="flex items-center justify-end md:mr-0.5 lg:mr-2.5">
               <Checkbox

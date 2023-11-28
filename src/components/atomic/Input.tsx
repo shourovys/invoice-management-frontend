@@ -1,6 +1,8 @@
 import classNames from 'classnames'
-import { ERROR_CLASS } from 'utils/config'
+import { THandleInputSelect } from '../../types/components/common'
+import { ERROR_CLASS } from '../../utils/config'
 import InputLoading from '../loading/atomic/InputLoading'
+import Checkbox from './Checkbox'
 
 interface IProps {
   type?: string
@@ -13,7 +15,13 @@ interface IProps {
   error?: string | null
   onChange?: (name: string, value: string) => void
   disabled?: boolean
+  // props for checkbox in label
+  isSelected?: boolean
+  handleSelect?: THandleInputSelect
+
+  [rest: string]: unknown
 }
+
 function Input({
   type = 'text',
   name,
@@ -25,13 +33,38 @@ function Input({
   error,
   onChange,
   disabled = false,
+  isSelected,
+  handleSelect,
+  ...rest
 }: IProps) {
+  // useEffect(() => {
+  //   if (type === 'number' && !value) {
+  //     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  //     onChange ? onChange(name, '0') : null
+  //   }
+  // }, [])
+
   return (
     <div className="w-full space-y-0.5">
       {label && (
-        <label className="inline-block w-full text-sm text-gray-700 form-label" htmlFor={name}>
-          {label}
-        </label>
+        <>
+          {handleSelect ? (
+            <div className="py-0.5">
+              <Checkbox
+                label={label}
+                value={name}
+                checked={isSelected}
+                onChange={(checked) => {
+                  handleSelect(name, checked)
+                }}
+              />
+            </div>
+          ) : (
+            <label className="inline-block w-full text-sm text-gray-700 form-label" htmlFor={name}>
+              {label}
+            </label>
+          )}
+        </>
       )}
       {isLoading ? (
         <InputLoading />
@@ -52,6 +85,7 @@ function Input({
               `before:content-['${placeholder}'] before:mr-4 before:text-gray-400`
           )}
           disabled={disabled}
+          {...rest}
         />
       )}
 

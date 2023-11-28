@@ -1,11 +1,16 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IDoorFormData, doorRexAndContactType } from 'types/pages/door'
-import { listIcon } from 'utils/icons'
+import { inputApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
+import useSWR from 'swr'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IDoorFormData, doorRexAndContactTypeOption } from '../../../../types/pages/door'
+import { IInputResult } from '../../../../types/pages/input'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { listIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IDoorFormData
@@ -16,47 +21,77 @@ interface IProps {
 }
 
 function DoorContactForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
+  const { isLoading: inputIsLoading, data: inputData } = useSWR<
+    IListServerResponse<IInputResult[]>
+  >(
+    disabled || typeof handleInputChange === 'undefined'
+      ? null
+      : inputApi.list(`${SERVER_QUERY.selectorDataQuery}&NodeNo=${formData?.NodeNo}`)
+  )
+
   return (
-    <FormCardWithHeader icon={listIcon} header="Door Contact">
-      <SwitchButton
-        name="contact_enable"
-        checked={formData?.contact_enable}
+    <FormCardWithHeader icon={listIcon} header={t`Door Contact`}>
+      <SwitchButtonSelect
+        name="ContactEnable"
+        value={formData?.ContactEnable}
         onChange={handleInputChange}
-        label="Door Contact Enable"
+        label={t`Door Contact Enable`}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      {formData?.contact_enable && (
+
+      {formData?.ContactEnable?.value === '1' &&
+        formData?.SubnodeNo &&
+        formData?.SubnodeNo !== '0' && (
+          <Selector
+            name="ContactInput"
+            label={t`Door Contact Input`}
+            value={formData?.ContactInput}
+            onChange={handleInputChange}
+            options={inputData?.data.map((result) => ({
+              value: result.InputNo.toString(),
+              label: result.InputName,
+            }))}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.ContactInput}
+            isLoading={isLoading || inputIsLoading}
+          />
+        )}
+
+      {formData?.ContactEnable?.value === '1' && (
         <Selector
-          name="contact_type"
-          label="Door Contact Type"
-          value={formData?.contact_type}
+          name="ContactType"
+          label={t`Door Contact Type`}
+          value={formData?.ContactType}
           onChange={handleInputChange}
-          options={doorRexAndContactType}
+          options={doorRexAndContactTypeOption}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.contact_type}
+          error={formErrors?.ContactType}
           isLoading={isLoading}
         />
       )}
-      {formData?.contact_enable && (
+
+      {formData?.ContactEnable?.value === '1' && (
         <Input
-          name="propped_time"
-          label="Propped Time (sec)"
-          value={formData?.propped_time}
+          name="ProppedTime"
+          label={t`Propped Time (sec)`}
+          type="number"
+          value={formData?.ProppedTime}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.propped_time}
+          error={formErrors?.ProppedTime}
           isLoading={isLoading}
         />
       )}
-      {formData?.contact_enable && (
+      {formData?.ContactEnable?.value === '1' && (
         <Input
-          name="ada_time"
-          label="ADA Time (sec)"
-          value={formData?.ada_time}
+          name="AdaTime"
+          label={t`ADA Time (sec)`}
+          type="number"
+          value={formData?.AdaTime}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.ada_time}
+          error={formErrors?.AdaTime}
           isLoading={isLoading}
         />
       )}

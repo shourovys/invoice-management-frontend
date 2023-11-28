@@ -1,10 +1,10 @@
-/* eslint-disable prettier/prettier */
 import { IconDefinition } from '@fortawesome/free-regular-svg-icons'
 import {
   deviceIcon,
-  homeIcon,
+  externalIcon,
+  favoriteIcon,
   maintenanceIcon,
-  monitoringIcon,
+  monitorIcon,
   personIcon,
   reportIcon,
   serviceIcon,
@@ -14,14 +14,15 @@ import {
 } from './icons'
 
 const menuIcons: { [key: string]: IconDefinition } = {
-  home: homeIcon,
+  favorite: favoriteIcon,
+  monitor: monitorIcon,
   report: reportIcon,
   user: userIcon,
   person: personIcon,
   device: deviceIcon,
+  external: externalIcon,
   work: workIcon,
   service: serviceIcon,
-  monitoring: monitoringIcon,
   maintenance: maintenanceIcon,
   system: systemIcon,
 }

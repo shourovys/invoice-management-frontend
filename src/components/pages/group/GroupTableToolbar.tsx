@@ -1,15 +1,17 @@
-import { partitionApi } from 'api/urls'
+import { partitionApi } from '../../../api/urls'
 import useSWR from 'swr'
-import { THandleFilterInputChange } from 'types/components/common'
-import { IListServerResponse } from 'types/pages/common'
-import { IGroupFilters, groupTypes } from 'types/pages/group'
-import { IPartitionResult } from 'types/pages/partition'
-import Icon, { applyIcon, resetIcon } from 'utils/icons'
+import { THandleFilterInputChange } from '../../../types/components/common'
+import { IListServerResponse } from '../../../types/pages/common'
+import { groupTypesOptions, IGroupFilters } from '../../../types/pages/group'
+import { IPartitionResult } from '../../../types/pages/partition'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import { SERVER_QUERY } from '../../../utils/config'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
-import Selector from '../../atomic/Selector'
+import Selector, { ISelectOption } from '../../atomic/Selector'
+import t from '../../../utils/translator'
+import useLicenseFilter from '../../../hooks/useLicenseFilter'
 
 interface IProps {
   filterState: IGroupFilters
@@ -27,48 +29,58 @@ function GroupTableToolbar({
   const { isLoading: partitionIsLoading, data: partitionData } = useSWR<
     IListServerResponse<IPartitionResult[]>
   >(partitionApi.list(SERVER_QUERY.selectorDataQuery))
+
+  const filteredGroupTypesOptions = useLicenseFilter<ISelectOption>(groupTypesOptions, {
+    '8': 'Camera',
+    '12': 'Lockset',
+    '13': 'Facegate',
+    '17': 'ContLock',
+    '18': 'Intercom',
+  })
+
   return (
     <TableToolbarContainer>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
         <Input
-          name="id"
-          placeholder="Group No"
-          value={filterState.id}
+          name="GroupNo"
+          placeholder={t`Group No`}
+          value={filterState.GroupNo}
           onChange={handleInputChange}
         />
         <Selector
-          name="partition"
-          placeholder="Partition"
-          value={filterState.partition}
-          options={partitionData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Partition"
+          placeholder={t`Partition`}
+          value={filterState.Partition}
+          options={partitionData?.data.map((result) => ({
+            value: result.PartitionNo.toString(),
+            label: result.PartitionName,
           }))}
           onChange={handleInputChange}
           isLoading={partitionIsLoading}
         />
         <Input
-          name="name"
-          placeholder="Group Name"
-          value={filterState.name}
+          name="GroupName"
+          placeholder={t`Group Name`}
+          value={filterState.GroupName}
           onChange={handleInputChange}
         />
+
         <Selector
-          name="type"
-          placeholder="Group Type"
-          value={filterState.type}
-          options={groupTypes}
+          name="GroupType"
+          placeholder={t`Group Type`}
+          value={filterState.GroupType}
+          options={filteredGroupTypesOptions}
           onChange={handleInputChange}
         />
       </div>
       <div className="flex gap-3.5 lg:gap-4">
         <Button onClick={handleFilterApply}>
           <Icon icon={applyIcon} />
-          <span>Apply</span>
+          <span>{t`Apply`}</span>
         </Button>
-        <Button color="gray" onClick={handleFilterStateReset}>
+        <Button color="danger" onClick={handleFilterStateReset}>
           <Icon icon={resetIcon} />
-          <span>Reset</span>
+          <span>{t`Reset`}</span>
         </Button>
       </div>
     </TableToolbarContainer>

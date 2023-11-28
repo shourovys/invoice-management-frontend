@@ -1,14 +1,15 @@
-import { inputApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
+import { inputApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IDoorFormData } from 'types/pages/door'
-import { IInputResult } from 'types/pages/input'
-import { SERVER_QUERY } from 'utils/config'
-import { listIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IDoorFormData } from '../../../../types/pages/door'
+import { IInputResult } from '../../../../types/pages/input'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { listIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IDoorFormData
@@ -30,31 +31,31 @@ function DoorOccupancySensorForm({
   >(
     disabled || typeof handleInputChange === 'undefined'
       ? null
-      : inputApi.list(SERVER_QUERY.selectorDataQuery)
+      : inputApi.list(`${SERVER_QUERY.selectorDataQuery}&NodeNo=${formData?.NodeNo}`)
   )
 
   return (
-    <FormCardWithHeader icon={listIcon} header="Occupancy Sensor">
-      <SwitchButton
-        name="occupancy_enable"
-        label="Occupancy Enable"
-        checked={formData?.occupancy_enable}
+    <FormCardWithHeader icon={listIcon} header={t`Occupancy Sensor`}>
+      <SwitchButtonSelect
+        name="OccupancyEnable"
+        label={t`Occupancy Enable`}
+        value={formData?.OccupancyEnable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      {formData?.occupancy_enable && (
+      {formData?.OccupancyEnable?.value === '1' && (
         <Selector
-          name="occupancy_input"
-          label="Occupancy Input"
-          value={formData?.occupancy_input}
-          options={inputData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="OccupancyInput"
+          label={t`Occupancy Input`}
+          value={formData?.OccupancyInput}
+          options={inputData?.data.map((result) => ({
+            value: result.InputNo.toString(),
+            label: result.InputName,
           }))}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.occupancy_input}
+          error={formErrors?.OccupancyInput}
           isLoading={isLoading || inputIsLoading}
         />
       )}

@@ -1,5 +1,4 @@
-/* eslint-disable prettier/prettier */
-import CredentialDeviceFrom from './CredentialDeviceFrom'
+import CredentialDeviceFrom from './CredentialAccessForm'
 import CredentialFrom from './CredentialFrom'
 
 export { CredentialDeviceFrom, CredentialFrom }

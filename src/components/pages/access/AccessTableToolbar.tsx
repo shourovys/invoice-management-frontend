@@ -1,15 +1,17 @@
-import { partitionApi } from 'api/urls'
+import { partitionApi } from '../../../api/urls'
 import useSWR from 'swr'
-import { THandleFilterInputChange } from 'types/components/common'
-import { IAccessFilters, accessDeviceTypes } from 'types/pages/access'
-import { IListServerResponse } from 'types/pages/common'
-import { IPartitionResult } from 'types/pages/partition'
-import Icon, { applyIcon, resetIcon, scanIcon } from 'utils/icons'
+import { THandleFilterInputChange } from '../../../types/components/common'
+import { accessDeviceTypes, IAccessFilters } from '../../../types/pages/access'
+import { IListServerResponse } from '../../../types/pages/common'
+import { IPartitionResult } from '../../../types/pages/partition'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import { SERVER_QUERY } from '../../../utils/config'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
 import Selector from '../../atomic/Selector'
+import t from '../../../utils/translator'
+import useLicenseFilter from '../../../hooks/useLicenseFilter'
 
 interface IProps {
   filterState: IAccessFilters
@@ -32,47 +34,51 @@ function AccessTableToolbar({
   //     IListServerResponse<ITypeResult[]>
   // >(typeApi.list(SERVER_QUERY.selectorDataQuery));
 
+  const filteredAccessDeviceTypes = useLicenseFilter(accessDeviceTypes, {
+    '12': 'Lockset',
+    '13': 'Facegate',
+    '17': 'ContLock',
+    '18': 'Intercom',
+  })
   return (
     <TableToolbarContainer>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
         <Input
-          name="id"
-          placeholder="Access No"
-          value={filterState.id}
+          name="AccessNo"
+          placeholder={t`Access No`}
+          value={filterState.AccessNo}
           onChange={handleInputChange}
         />
         <Selector
-          name="partition"
-          placeholder="Partition"
-          value={filterState.partition}
-          options={partitionData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Partition"
+          placeholder={t`Partition`}
+          value={filterState.Partition}
+          options={partitionData?.data.map((result) => ({
+            value: result.PartitionNo.toString(),
+            label: result.PartitionName,
           }))}
+          isClearable
           onChange={handleInputChange}
           isLoading={partitionIsLoading}
         />
-        <Input name="accessName" placeholder="Access Name" onChange={handleInputChange} />
+        <Input name="AccessName" placeholder={t`Access Name`} onChange={handleInputChange} />
         <Selector
-          name="device_type"
-          placeholder="Device Type"
-          value={filterState.device_type}
-          options={accessDeviceTypes}
+          name="DeviceType"
+          placeholder={t`Access Type`}
+          value={filterState.DeviceType}
+          options={filteredAccessDeviceTypes}
+          isClearable
           onChange={handleInputChange}
         />
       </div>
       <div className="flex gap-3.5 lg:gap-4">
         <Button onClick={handleFilterApply}>
           <Icon icon={applyIcon} />
-          <span>Apply</span>
+          <span>{t`Apply`}</span>
         </Button>
-        <Button color="gray" onClick={handleFilterStateReset}>
+        <Button color="danger" onClick={handleFilterStateReset}>
           <Icon icon={resetIcon} />
-          <span>Reset</span>
-        </Button>
-        <Button color="gray">
-          <Icon icon={scanIcon} />
-          <span>Scan</span>
+          <span>{t`Reset`}</span>
         </Button>
       </div>
     </TableToolbarContainer>

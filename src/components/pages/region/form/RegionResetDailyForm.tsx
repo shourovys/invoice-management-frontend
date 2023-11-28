@@ -1,9 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IRegionFormData } from 'types/pages/region'
-import { antiTailgateRuleIcon } from 'utils/icons'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors } from '../../../../types/pages/common'
+import { IRegionFormData } from '../../../../types/pages/region'
+import { antiTailgateRuleIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
+import TimeInput from '../../../atomic/TimeInput'
 
 interface IProps {
   formData?: IRegionFormData
@@ -21,39 +23,37 @@ function RegionResetDailyForm({
   isLoading,
 }: IProps) {
   return (
-    <FormCardWithHeader icon={antiTailgateRuleIcon} header="Reset Daily">
-      {/* <SwitchButton
-                name="reset_delay"
-                label="Reset Daily"
-                checked={formData?.reset_delay}
-                onChange={handleInputChange}
-                disabled={disabled || typeof handleInputChange === "undefined"}
-                isLoading={isLoading}
-            /> */}
-      <Input
-        name="reset_delay"
-        label="Reset Daily"
-        type="number"
-        value={formData?.reset_delay}
+    <FormCardWithHeader icon={antiTailgateRuleIcon} header={t`Reset Daily`}>
+      <SwitchButtonSelect
+        name="ResetDaily"
+        label={t`Reset Daily`}
+        value={formData?.ResetDaily}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
-        error={formErrors?.reset_delay}
       />
-      <div>
-        {formData?.reset_delay && (
-          <Input
-            name="reset_time"
-            label="Reset Time"
-            type="number"
-            value={formData?.reset_time}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            isLoading={isLoading}
-            error={formErrors?.reset_time}
-          />
-        )}
-      </div>
+      {/* <Input
+        name="ResetDaily"
+        label={t`Reset Daily`}
+        type="number"
+        value={formData?.ResetDaily}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        isLoading={isLoading}
+        error={formErrors?.ResetDaily}
+      /> */}
+      {formData?.ResetDaily?.value !== '0' && (
+        <TimeInput
+          name="ResetTime"
+          label={t`Reset Time`}
+          value={formData?.ResetTime}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          isLoading={isLoading}
+          error={formErrors?.ResetTime}
+          format="HH:mm"
+        />
+      )}
     </FormCardWithHeader>
   )
 }

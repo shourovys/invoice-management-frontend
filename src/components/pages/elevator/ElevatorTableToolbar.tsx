@@ -1,16 +1,17 @@
-import { nodeApi, partitionApi } from 'api/urls'
+import { nodeApi, partitionApi } from '../../../api/urls'
 import useSWR from 'swr'
-import { THandleFilterInputChange } from 'types/components/common'
-import { IListServerResponse } from 'types/pages/common'
-import { IElevatorFilters } from 'types/pages/elevator'
-import { INodeResult } from 'types/pages/node'
-import { IPartitionResult } from 'types/pages/partition'
-import Icon, { applyIcon, resetIcon } from 'utils/icons'
+import { THandleFilterInputChange } from '../../../types/components/common'
+import { IListServerResponse } from '../../../types/pages/common'
+import { IElevatorFilters } from '../../../types/pages/elevator'
+import { INodeResult } from '../../../types/pages/node'
+import { IPartitionResult } from '../../../types/pages/partition'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import { SERVER_QUERY } from '../../../utils/config'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
 import Selector from '../../atomic/Selector'
+import t from '../../../utils/translator'
 
 interface IProps {
   filterState: IElevatorFilters
@@ -37,36 +38,38 @@ function ElevatorTableToolbar({
     <TableToolbarContainer>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
         <Input
-          name="id"
-          placeholder="Elevator No"
-          value={filterState.id}
+          name="ElevatorNo"
+          placeholder={t`Elevator No`}
+          value={filterState.ElevatorNo}
           onChange={handleInputChange}
         />
         <Selector
-          name="partition"
-          placeholder="Partition"
-          value={filterState.partition}
-          options={partitionData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Partition"
+          placeholder={t`Partition`}
+          value={filterState.Partition}
+          options={partitionData?.data.map((result) => ({
+            value: result.PartitionNo.toString(),
+            label: result.PartitionName,
           }))}
+          isClearable
           onChange={handleInputChange}
           isLoading={partitionIsLoading}
         />
         <Input
-          name="name"
-          placeholder="Elevator Name"
-          value={filterState.name}
+          name="ElevatorName"
+          placeholder={t`Elevator Name`}
+          value={filterState.ElevatorName}
           onChange={handleInputChange}
         />
         <Selector
-          name="node"
-          placeholder="Node"
-          value={filterState.node}
-          options={nodeData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Node"
+          placeholder={t`Node`}
+          value={filterState.Node}
+          options={nodeData?.data.map((result) => ({
+            value: result.NodeNo.toString(),
+            label: result.NodeName,
           }))}
+          isClearable
           onChange={handleInputChange}
           isLoading={nodeIsLoading}
         />
@@ -74,11 +77,11 @@ function ElevatorTableToolbar({
       <div className="flex gap-3.5 lg:gap-4">
         <Button onClick={handleFilterApply}>
           <Icon icon={applyIcon} />
-          <span>Apply</span>
+          <span>{t`Apply`}</span>
         </Button>
-        <Button color="gray" onClick={handleFilterStateReset}>
+        <Button color="danger" onClick={handleFilterStateReset}>
           <Icon icon={resetIcon} />
-          <span>Reset</span>
+          <span>{t`Reset`}</span>
         </Button>
       </div>
     </TableToolbarContainer>

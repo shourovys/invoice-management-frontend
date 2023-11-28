@@ -1,20 +1,21 @@
-import { partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import ImageInput from 'components/atomic/ImageInput'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import ImageInput from '../../../../components/atomic/ImageInput'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IPartitionResult } from 'types/pages/partition'
-import { IPersonFormData } from 'types/pages/person'
-import { SERVER_QUERY } from 'utils/config'
-import { personIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IListServerResponse, INewFormErrors } from '../../../../types/pages/common'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IPersonFormData } from '../../../../types/pages/person'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { personIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData: IPersonFormData
   handleInputChange?: THandleInputChange
-  formErrors?: IFormErrors
+  formErrors?: INewFormErrors<IPersonFormData>
   disabled?: boolean
   isLoading?: boolean
 }
@@ -35,64 +36,65 @@ function PersonPersonalForm({
   )
 
   return (
-    <FormCardWithHeader icon={personIcon} header="Person">
+    <FormCardWithHeader icon={personIcon} header={t`Person`} masonry>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
+        isClearable={false}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="last_name"
-        label="Last Name"
-        value={formData.last_name}
+        name="LastName"
+        label={t`Last Name`}
+        value={formData.LastName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.last_name}
+        error={formErrors?.LastName}
         isLoading={isLoading}
       />
       <Input
-        name="middle_name"
-        label="Middle Name"
-        value={formData.middle_name}
+        name="MiddleName"
+        label={t`Middle Name`}
+        value={formData.MiddleName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.middle_name}
+        error={formErrors?.MiddleName}
         isLoading={isLoading}
       />
       <Input
-        name="first_name"
-        label="First Name"
-        value={formData.first_name}
+        name="FirstName"
+        label={t`First Name`}
+        value={formData.FirstName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.first_name}
+        error={formErrors?.FirstName}
         isLoading={isLoading}
       />
       <ImageInput
-        name="image"
-        label="User profile"
-        placeholder="Upload a image"
-        value={formData.image}
+        name="ImageFile"
+        label={t`User profile`}
+        placeholder={t`Upload an image`}
+        value={formData.ImageFile}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.image}
+        error={formErrors?.ImageFile}
         isLoading={isLoading}
       />
       <Input
-        name="email"
-        label="Email"
-        value={formData.email}
+        name="Email"
+        label={t`Email`}
+        value={formData.Email}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.email}
+        error={formErrors?.Email}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

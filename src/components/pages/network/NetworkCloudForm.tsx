@@ -1,10 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { INetworkFormData } from 'types/pages/network'
-import { cloudIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../components/HOC/FormCardWithHeader'
+import Input from '../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../components/atomic/SelectSwitch'
+import { THandleInputChange } from '../../../types/components/common'
+import { IFormErrors } from '../../../types/pages/common'
+import { INetworkFormData } from '../../../types/pages/network'
+import { cloudIcon } from '../../../utils/icons'
+import t from '../../../utils/translator'
 
 interface IProps {
   formData?: INetworkFormData
@@ -22,70 +23,62 @@ function NetworkCloudForm({
   isLoading,
 }: IProps) {
   return (
-    <FormCardWithHeader icon={cloudIcon} header="Cloud">
-      <SwitchButton
-        name="cloud"
-        label="Cloud"
-        checked={formData?.cloud}
+    <FormCardWithHeader icon={cloudIcon} header={t`Cloud`}>
+      <SwitchButtonSelect
+        name="Cloud"
+        label={t`Cloud`}
+        value={formData?.Cloud}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      <div>
-        {!formData?.cloud && (
-          <Input
-            name="cloud_addr"
-            label="Cloud Address"
-            value={formData?.cloud_addr}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.cloud_addr}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {!formData?.cloud && (
-          <Input
-            name="cloud_port"
-            type="number"
-            label="Cloud Port"
-            value={formData?.cloud_port}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.cloud_port}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {!formData?.cloud && (
-          <Input
-            name="site_no"
-            type="number"
-            label="Site No"
-            value={formData?.site_no}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.site_no}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {!formData?.cloud && (
-          <Input
-            name="site_key"
-            type="number"
-            label="Site Key"
-            value={formData?.site_key}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.site_key}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
+      {formData?.Cloud?.value === '1' && (
+        <Input
+          name="CloudAddr"
+          label={t`Cloud Address`}
+          value={formData?.CloudAddr}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.CloudAddr}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Cloud?.value === '1' && (
+        <Input
+          name="CloudPort"
+          type="number"
+          label={t`Cloud Port`}
+          value={formData?.CloudPort}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.CloudPort}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Cloud?.value === '1' && (
+        <Input
+          name="SiteNo"
+          type="number"
+          label={t`Site No`}
+          value={formData?.SiteNo}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.SiteNo}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Cloud?.value === '1' && (
+        <Input
+          name="SiteKey"
+          type="text"
+          label={t`Site Key`}
+          value={formData?.SiteKey}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.SiteKey}
+          isLoading={isLoading}
+        />
+      )}
     </FormCardWithHeader>
   )
 }

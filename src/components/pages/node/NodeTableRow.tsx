@@ -1,39 +1,51 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { INodeResult } from 'types/pages/node'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { INodeResult, nodeProductTypeObject, nodeTypeObject } from '../../../types/pages/node'
 import Checkbox from '../../atomic/Checkbox'
+import t from '../../../utils/translator'
 
 type IProps = {
   row: INodeResult
   selected: string[]
-  handleSelectRow: (_selectedId: string) => void
+  handleSelectRow: (selectedId: string) => void
 }
+
 function NodeTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.nodeInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.NodeNo}
+      link={routeProperty.nodeInfo.path(row.NodeNo.toString())}
+      selected={selected.indexOf(row.NodeNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.name}</TableData>
-      <TableData>{row.description}</TableData>
-      <TableData>{row.mac}</TableData>
-      <TableData>{row.product}</TableData>
-      {/* <TableData>{row.node}</TableData> */}
-      <TableData>{row.model ? 'Yse' : 'No'}</TableData>
-      <TableData>{row.version}</TableData>
-      <TableData>{row.address}</TableData>
-      <TableData>{row.timezone}</TableData>
-      <TableData>{row.online ? 'Yse' : 'No'}</TableData>
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableData>{row.NodeNo}</TableData>
+      <TableData>{row.NodeName}</TableData>
+      <TableData>{row.NodeDesc}</TableData>
+      <TableData>{nodeTypeObject[row.NodeType]}</TableData>
+      <TableData>{row.Elevator ? t`Yes` : t`No`}</TableData>
+      <TableData>{row.Mac}</TableData>
+      <TableData>{nodeProductTypeObject[row.Product]}</TableData>
+      <TableData>{row.Version}</TableData>
+      <TableData>
+        <a
+          href={'//' + row.Address}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary w-full min-w-full block hover:underline"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {row.Address}
+        </a>
+      </TableData>
+      <TableData>{row.Timezone}</TableData>
+      <TableData>{row.Online ? t`Yes` : t`No`}</TableData>
+      <TableDataAction selected={selected.indexOf(row.NodeNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.NodeNo}`}
+          checked={selected.indexOf(row.NodeNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.NodeNo.toString())
           }}
         />
       </TableDataAction>

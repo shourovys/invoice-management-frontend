@@ -1,8 +1,8 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { IElevatorResult } from 'types/pages/elevator'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { IElevatorResult, elevatorStatTypesObject } from '../../../types/pages/elevator'
 import Checkbox from '../../atomic/Checkbox'
 
 type IProps = {
@@ -10,25 +10,29 @@ type IProps = {
   selected: string[]
   handleSelectRow: (_selectedId: string) => void
 }
+
 function ElevatorTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.elevatorInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.ElevatorNo}
+      link={routeProperty.elevatorInfo.path(row.ElevatorNo.toString())}
+      selected={selected.indexOf(row.ElevatorNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.partition.name}</TableData>
-      <TableData>{row.name}</TableData>
-      <TableData>{row.description}</TableData>
-      <TableData>{row.node.name}</TableData>
-      <TableData>{row.elevator_stat}</TableData>
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableData>{row.ElevatorNo}</TableData>
+      <TableData>{row.Partition.PartitionName}</TableData>
+      <TableData>{row.ElevatorName}</TableData>
+      <TableData>{row.ElevatorDesc}</TableData>
+      <TableData>
+        {row?.Node?.NodeName}
+        {row.Subnode && ` - ${row.Subnode.SubnodeName}`}
+      </TableData>
+      <TableData>{elevatorStatTypesObject[row.ElevatorStat]}</TableData>
+      <TableDataAction selected={selected.indexOf(row.ElevatorNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.ElevatorNo}`}
+          checked={selected.indexOf(row.ElevatorNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.ElevatorNo.toString())
           }}
         />
       </TableDataAction>

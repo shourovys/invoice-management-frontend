@@ -1,10 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { INvrFormData, NVR_TYPE_OPTIONS } from 'types/pages/nvr'
-import { nvrIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors } from '../../../../types/pages/common'
+import { INvrFormData, nvrTypeOptions } from '../../../../types/pages/nvr'
+import { nvrIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: INvrFormData
@@ -16,79 +17,81 @@ interface IProps {
 
 function NvrForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={nvrIcon} header="NVR">
+    <FormCardWithHeader icon={nvrIcon} header={t`NVR`}>
       <Input
-        name="name"
-        label="NVR Name"
-        value={formData?.name}
+        name="NvrName"
+        label={t`NVR Name`}
+        value={formData?.NvrName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.NvrName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="NvrDesc"
+        label={t`Description`}
+        value={formData?.NvrDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.NvrDesc}
         isLoading={isLoading}
       />
       <Selector
-        name="type"
-        label="NVR Type"
-        value={formData?.type}
-        options={NVR_TYPE_OPTIONS}
+        name="NvrType"
+        label={t`NVR Type`}
+        value={formData?.NvrType}
+        options={nvrTypeOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.type}
+        error={formErrors?.NvrType}
         isLoading={isLoading}
       />
       <Input
-        name="ip_address"
-        label="IP Address"
-        value={formData?.ip_address}
+        name="IpAddress"
+        label={t`IP Address`}
+        value={formData?.IpAddress}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.ip_address}
+        error={formErrors?.IpAddress}
         isLoading={isLoading}
       />
       <Input
-        name="rtsp_port"
+        name="RtspPort"
         type="number"
-        label="RTSP Port"
-        value={formData?.rtsp_port}
+        label={t`RTSP Port`}
+        value={formData?.RtspPort}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.rtsp_port}
+        error={formErrors?.RtspPort}
         isLoading={isLoading}
       />
+      {formData?.NvrType?.value === '0' && (
+        <Input
+          name="DataPort"
+          type="number"
+          label={t`Data Port`}
+          value={formData?.DataPort}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.DataPort}
+          isLoading={isLoading}
+        />
+      )}
       <Input
-        name="data_port"
-        type="number"
-        label="Data Port"
-        value={formData?.data_port}
+        name="UserId"
+        label={t`User ID`}
+        value={formData?.UserId}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.data_port}
-        isLoading={isLoading}
+        error={formErrors?.UserId}
       />
       <Input
-        name="user_id"
-        label="User ID"
-        value={formData?.user_id}
+        name="Password"
+        label={t`Password`}
+        value={formData?.Password}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.user_id}
-      />
-      <Input
-        name="password"
-        label="Password"
-        value={formData?.password}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.password}
+        error={formErrors?.Password}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

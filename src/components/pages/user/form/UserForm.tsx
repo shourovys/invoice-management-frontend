@@ -1,16 +1,18 @@
-import { partitionApi, personApi, userRoleApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { partitionApi, personApi, userRoleApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
+import { useParams } from 'react-router-dom'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IPartitionResult } from 'types/pages/partition'
-import { IPersonResult } from 'types/pages/person'
-import { IUserFormData } from 'types/pages/user'
-import { IUserRoleResult } from 'types/pages/userRole'
-import { SERVER_QUERY } from 'utils/config'
-import { userIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IPersonResult } from '../../../../types/pages/person'
+import { IUserFormData } from '../../../../types/pages/user'
+import { IUserRoleResult } from '../../../../types/pages/userRole'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { userIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IUserFormData
@@ -21,6 +23,10 @@ interface IProps {
 }
 
 function UserForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
+  // Get the user ID from the router query
+  const params = useParams()
+  const queryId = params.id as string
+
   const { isLoading: partitionIsLoading, data: partitionData } = useSWR<
     IListServerResponse<IPartitionResult[]>
   >(
@@ -34,7 +40,9 @@ function UserForm({ formData, handleInputChange, formErrors, disabled, isLoading
   >(
     disabled || typeof handleInputChange === 'undefined'
       ? null
-      : userRoleApi.list(SERVER_QUERY.selectorDataQuery)
+      : userRoleApi.list(
+          `${SERVER_QUERY.selectorDataQuery}&PartitionNo=${formData?.Partition?.value}`
+        )
   )
 
   const { isLoading: personIsLoading, data: personData } = useSWR<
@@ -42,88 +50,103 @@ function UserForm({ formData, handleInputChange, formErrors, disabled, isLoading
   >(
     disabled || typeof handleInputChange === 'undefined'
       ? null
-      : personApi.list(SERVER_QUERY.selectorDataQuery)
+      : personApi.list(
+          `${SERVER_QUERY.selectorDataQuery}&PartitionNo=${formData?.Partition?.value}`
+        )
   )
 
   return (
-    <FormCardWithHeader icon={userIcon} header="User">
-      <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
-        }))}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
-        isLoading={isLoading || partitionIsLoading}
-      />
+    <FormCardWithHeader icon={userIcon} header={t`User`}>
+      {queryId !== '0' && (
+        <Selector
+          name="Partition"
+          label={t`Partition`}
+          value={formData?.Partition}
+          options={partitionData?.data.map((result) => ({
+            value: result.PartitionNo.toString(),
+            label: result.PartitionName,
+          }))}
+          isClearable={false}
+          onChange={handleInputChange}
+          disabled={
+            disabled || typeof handleInputChange === 'undefined' || formData?.UserNo === '0'
+          }
+          error={formErrors?.Partition}
+          isLoading={isLoading || partitionIsLoading}
+        />
+      )}
+
       <Input
-        name="username"
-        label="User ID"
-        value={formData?.username}
+        name="UserId"
+        label={t`User ID`}
+        value={formData?.UserId}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.username}
+        error={formErrors?.UserId}
         isLoading={isLoading}
       />
       {!(disabled || typeof handleInputChange === 'undefined') && (
         <Input
-          name="password"
-          label="Password"
+          name="Password"
+          label={t`Password`}
           type="password"
-          value={formData?.password}
+          value={formData?.Password}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.password}
+          error={formErrors?.Password}
           isLoading={isLoading}
         />
       )}
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="UserDesc"
+        label={t`Description`}
+        value={formData?.UserDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.UserDesc}
         isLoading={isLoading}
       />
       <Input
-        name="email"
-        label="Email"
-        value={formData?.email}
+        name="Email"
+        label={t`Email`}
+        value={formData?.Email}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.email}
+        error={formErrors?.Email}
         isLoading={isLoading}
       />
+      {queryId !== '0' && (
+        <Selector
+          name="Role"
+          label={t`User Role`}
+          value={formData?.Role}
+          options={roleData?.data.map((result) => ({
+            value: result.RoleNo.toString(),
+            label: result.RoleName,
+          }))}
+          isClearable={false}
+          onChange={handleInputChange}
+          disabled={
+            disabled || typeof handleInputChange === 'undefined' || formData?.UserNo === '0'
+          }
+          error={formErrors?.Role}
+          isLoading={isLoading || roleIsLoading}
+        />
+      )}
+
       <Selector
-        name="person"
-        label="Person"
-        value={formData?.person}
-        options={personData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.last_name,
+        name="Person"
+        label={t`Person`}
+        value={formData?.Person}
+        options={personData?.data.map((result) => ({
+          value: result.PersonNo.toString(),
+          label: result.LastName,
         }))}
+        isClearable={true}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.person}
+        error={formErrors?.Person}
         isLoading={isLoading || personIsLoading}
-      />
-      <Selector
-        name="role"
-        label="User Role"
-        value={formData?.role}
-        options={roleData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
-        }))}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.role}
-        isLoading={isLoading || roleIsLoading}
       />
     </FormCardWithHeader>
   )

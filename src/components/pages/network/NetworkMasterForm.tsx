@@ -1,9 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { INetworkFormData } from 'types/pages/network'
-import { masterIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../components/HOC/FormCardWithHeader'
+import Input from '../../../components/atomic/Input'
+import { THandleInputChange } from '../../../types/components/common'
+import { IFormErrors } from '../../../types/pages/common'
+import { INetworkFormData } from '../../../types/pages/network'
+import { masterIcon } from '../../../utils/icons'
+import useAuth from '../../../hooks/useAuth'
+import t from '../../../utils/translator'
 
 interface IProps {
   formData?: INetworkFormData
@@ -20,27 +22,32 @@ function NetworkMasterForm({
   disabled,
   isLoading,
 }: IProps) {
+  const { license } = useAuth()
   return (
-    <FormCardWithHeader icon={masterIcon} header="Master">
-      <Input
-        name="master_addr"
-        label="Master Address"
-        value={formData?.master_addr}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.master_addr}
-        isLoading={isLoading}
-      />
-      <Input
-        name="master_port"
-        type="number"
-        label="Master Port"
-        value={formData?.master_port}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.master_port}
-        isLoading={isLoading}
-      />
+    <FormCardWithHeader icon={masterIcon} header={t`Master`}>
+      {formData?.Cloud?.value !== '1' && license?.NodeType !== 1 && (
+        <Input
+          name="MasterAddr"
+          label={t`Master Address`}
+          value={formData?.MasterAddr}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.MasterAddr}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Cloud?.value !== '1' && license?.NodeType !== 1 && (
+        <Input
+          name="MasterPort"
+          type="number"
+          label={t`Master Port`}
+          value={formData?.MasterPort}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.MasterPort}
+          isLoading={isLoading}
+        />
+      )}
     </FormCardWithHeader>
   )
 }

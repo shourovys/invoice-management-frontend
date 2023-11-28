@@ -1,45 +1,47 @@
-import { ICameraFormData } from 'types/pages/camera'
-import { IFormErrors } from 'types/pages/common'
+import { ICameraFormData } from '../../types/pages/camera'
+import { INewFormErrors } from '../../types/pages/common'
+import t from '../translator'
 
-const validateCameraFormData = (formData: ICameraFormData): IFormErrors => {
-  const errors: IFormErrors = {}
-  if (!formData.partition?.value) {
-    errors.partition = 'Partition is required'
+const validateCameraFormData = (formData: ICameraFormData): INewFormErrors<ICameraFormData> => {
+  const errors: INewFormErrors<ICameraFormData> = {}
+  if (!formData.Partition?.value) {
+    errors.Partition = t`Partition is required`
   }
-  if (!formData.node?.value) {
-    errors.node = 'Node is required'
+  if (!formData.Node?.value) {
+    errors.Node = t`Node is required`
   }
-  if (!formData.user?.value) {
-    errors.user = 'User is required'
+  if (!formData.UserId) {
+    errors.UserId = t`User is required`
   }
-  if (!formData.name) {
-    errors.name = 'Name is required'
+  if (!formData.CameraName) {
+    errors.CameraName = t`Name is required`
   }
-  if (formData.port === '') {
-    errors.port = 'Port is required'
+  if (formData.CameraPort === '') {
+    errors.CameraPort = t`Port is required`
   }
-  if (formData.main_stream === '') {
-    errors.main_stream = 'Main stream is required'
+  if (formData.MainUrl === '') {
+    errors.MainUrl = t`Main url is required`
   }
-  if (formData.sub_stream === '') {
-    errors.sub_stream = 'Sub stream is required'
+  if (formData.SubUrl === '') {
+    errors.SubUrl = t`Sub url is required`
   }
-  if (!formData.password) {
-    errors.password = 'Password is required'
+  if (!formData.Password) {
+    errors.Password = t`Password is required`
   }
-  if (formData.pre_time === '') {
-    errors.pre_time = 'Pre time is required'
+  if (formData.PreTime === '') {
+    errors.PreTime = t`Pre time is required`
   }
-  if (formData.post_time === '') {
-    errors.post_time = 'Post time is required'
+  if (formData.PostTime === '') {
+    errors.PostTime = t`Post time is required`
   }
-  if (formData.min_time === '') {
-    errors.min_time = 'Min time is required'
+  if (formData.MinTime === '') {
+    errors.MinTime = t`Min time is required`
   }
-  if (formData.max_time === '') {
-    errors.max_time = 'Max time is required'
+  if (formData.MaxTime === '') {
+    errors.MaxTime = t`Max time is required`
   }
 
   return errors
 }
+
 export default validateCameraFormData

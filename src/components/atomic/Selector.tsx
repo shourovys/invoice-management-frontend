@@ -1,7 +1,12 @@
 import classNames from 'classnames'
+// import { useEffect } from 'react'
+import useSWRGlobalState from '../../hooks/useSWRGlobalState'
 import Select from 'react-tailwindcss-select'
-import { ERROR_CLASS } from 'utils/config'
+import { THandleInputSelect } from '../../types/components/common'
+import { ERROR_CLASS } from '../../utils/config'
 import InputLoading from '../loading/atomic/InputLoading'
+import Checkbox from './Checkbox'
+import t from '../../utils/translator'
 
 export interface ISelectOption {
   value: string
@@ -12,7 +17,7 @@ export type TSelectValue = ISelectOption | ISelectOption[] | null | undefined
 interface IProps {
   name: string
   label?: string
-  value?: ISelectOption | null
+  value?: TSelectValue
   options?: ISelectOption[]
   placeholder?: string
   isLoading?: boolean
@@ -20,7 +25,12 @@ interface IProps {
   helpText?: string
   error?: string | null
   onChange?: (name: string, selectedValue: TSelectValue) => void
+  isSearchable?: boolean
+  isClearable?: boolean
   disabled?: boolean
+  // props for checkbox in label
+  isSelected?: boolean
+  handleSelect?: THandleInputSelect
 }
 
 function Selector({
@@ -28,13 +38,17 @@ function Selector({
   label = '',
   value = null,
   options = [],
-  placeholder = 'Select your option',
+  placeholder = t('Select your option'),
   isLoading,
-  multiple = false,
+  multiple,
   helpText,
   error,
   onChange,
-  disabled = false,
+  isSearchable,
+  isClearable,
+  disabled,
+  isSelected,
+  handleSelect,
 }: IProps) {
   const handleChange = (selected: TSelectValue) => {
     if (onChange) {
@@ -42,12 +56,43 @@ function Selector({
     }
   }
 
+  // useEffect(() => {
+  //   // this code not work in edit pages
+  //   if (!value && !isClearable && options.length) {
+  //     handleChange(options[0])
+  //   }
+  // }, [value, options, isClearable])
+
+  const [isMenuOpen, setIsMenuOpen] = useSWRGlobalState<boolean>('menuOpenState', false)
+
+  const valueIsObject = value && typeof value === 'object' && 'label' in value
+  const isValuePresent = valueIsObject ? value?.label : value?.length
   return (
-    <div className="w-full space-y-0.5">
+    <div
+      className={classNames('w-full space-y-0.5', isMenuOpen && 'selector_relative_position')}
+      onClick={() => {
+        setIsMenuOpen(false)
+      }}
+    >
       {label && (
-        <label htmlFor={name} className="inline-block w-full text-sm text-gray-700 form-label">
-          {label}
-        </label>
+        <>
+          {handleSelect ? (
+            <div className="py-0.5">
+              <Checkbox
+                label={label}
+                value={name}
+                checked={isSelected}
+                onChange={(checked) => {
+                  handleSelect(name, checked)
+                }}
+              />
+            </div>
+          ) : (
+            <label className="inline-block w-full text-sm text-gray-700 form-label" htmlFor={name}>
+              {label}
+            </label>
+          )}
+        </>
       )}
       {isLoading ? (
         <InputLoading />
@@ -60,16 +105,18 @@ function Selector({
           onChange={handleChange}
           isMultiple={multiple}
           isDisabled={disabled}
+          isSearchable={isSearchable}
           classNames={{
             menuButton: (arg) =>
               classNames(
-                'flex pl-3 h-[34px] items-center justify-between text-sm font-normal bg-white border border-solid border-gray-300 rounded-md focus:text-gray-700',
+                'flex overflow-hidden pl-0.5 h-[34px] items-center justify-between text-sm font-normal bg-white border border-solid border-gray-300 rounded-md focus:text-gray-700',
                 !arg?.isDisabled && label && 'shadow-all-side text-gray-600',
 
-                !arg?.isDisabled
-                  ? 'focus:bg-white focus:border-primary focus:outline-none '
-                  : 'bg-[#F0F1F3]',
-                value?.label ? 'text-black' : 'text-gray-400',
+                isValuePresent ? 'text-black' : 'custom_text_gray',
+                !arg?.isDisabled && 'focus:bg-white focus:border-primary focus:outline-none ',
+                arg?.isDisabled && 'important_disable_bg',
+                arg?.isDisabled && isValuePresent && 'important_disable_color',
+
                 error && ERROR_CLASS
               ),
             // menu: "absolute z-10 w-full bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
@@ -82,7 +129,7 @@ function Selector({
           }}
           options={options}
           placeholder={placeholder}
-          isClearable
+          isClearable={isClearable}
         />
       )}
       {error && <p className="mt-1 text-xs text-red-500 md:text-sm">{error}</p>}

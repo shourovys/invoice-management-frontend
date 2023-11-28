@@ -1,10 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { INodeFormData, nodeFaultTypeOptions } from 'types/pages/node'
-import { nodeIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors } from '../../../../types/pages/common'
+import { INodeFormData, nodeFaultTypeOptions } from '../../../../types/pages/node'
+import { nodeIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: INodeFormData
@@ -16,52 +17,52 @@ interface IProps {
 
 function NodeForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={nodeIcon} header="Node">
+    <FormCardWithHeader icon={nodeIcon} header={t`Node`}>
       <Input
-        name="name"
-        label="Node Name"
-        value={formData?.name}
+        name="NodeName"
+        label={t`Node Name`}
+        value={formData?.NodeName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.NodeName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="NodeDesc"
+        label={t`Description`}
+        value={formData?.NodeDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.NodeDesc}
         isLoading={isLoading}
       />
       <Input
-        name="mac"
-        label="MAC Address"
-        value={formData?.mac}
+        name="Mac"
+        label={t`MAC Address`}
+        value={formData?.Mac}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.mac}
+        error={formErrors?.Mac}
         isLoading={isLoading}
       />
       <Selector
-        name="power_fault_type"
-        label="Power Fault Type"
-        value={formData?.power_fault_type}
+        name="PowerFaultType"
+        label={t`Power Fault Type`}
+        value={formData?.PowerFaultType}
         options={nodeFaultTypeOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.power_fault_type}
+        error={formErrors?.PowerFaultType}
         isLoading={isLoading}
       />
       <Selector
-        name="tamper_type"
-        label="Tamper Type"
-        value={formData?.tamper_type}
+        name="TamperType"
+        label={t`Tamper Type`}
+        value={formData?.TamperType}
         options={nodeFaultTypeOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.tamper_type}
+        error={formErrors?.TamperType}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

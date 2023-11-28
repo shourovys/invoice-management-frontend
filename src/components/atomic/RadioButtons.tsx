@@ -1,6 +1,8 @@
 import classNames from 'classnames'
-import { ERROR_CLASS, INPUT_FIELD_HEIGHT } from 'utils/config'
+import { THandleInputSelect } from '../../types/components/common'
+import { ERROR_CLASS, INPUT_FIELD_HEIGHT } from '../../utils/config'
 import InputLoading from '../loading/atomic/InputLoading'
+import Checkbox from './Checkbox'
 
 interface IProps {
   name: string
@@ -12,6 +14,9 @@ interface IProps {
   error?: string | null
   onChange?: (name: string, value: string | number) => void
   disabled?: boolean
+  // props for checkbox in label
+  isSelected?: boolean
+  handleSelect?: THandleInputSelect
 }
 
 function RadioButtons({
@@ -24,11 +29,30 @@ function RadioButtons({
   error,
   onChange,
   disabled = false,
+  isSelected,
+  handleSelect,
 }: IProps) {
   return (
     <div className="w-full space-y-0.5">
       {inputLabel && (
-        <div className="inline-block w-full text-sm text-gray-700 form-label">{inputLabel}</div>
+        <>
+          {handleSelect ? (
+            <div className="py-0.5">
+              <Checkbox
+                label={inputLabel}
+                value={name}
+                checked={isSelected}
+                onChange={(_checked) => {
+                  handleSelect(name, _checked)
+                }}
+              />
+            </div>
+          ) : (
+            <label className="inline-block w-full text-sm text-gray-700 form-label" htmlFor={name}>
+              {inputLabel}
+            </label>
+          )}
+        </>
       )}
       {isLoading ? (
         <InputLoading />
@@ -82,7 +106,7 @@ export default RadioButtons
 // use example
 // <RadioButtons
 //     name="radio"
-//     inputLabel="Input Label"
+//     inputlabel={t`Input Label`}
 //     checked={formData.radio}
 //     radios={[
 //         {

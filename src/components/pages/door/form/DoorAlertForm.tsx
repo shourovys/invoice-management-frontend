@@ -1,14 +1,15 @@
-import { outputApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
+import { outputApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IDoorFormData } from 'types/pages/door'
-import { IOutputResult } from 'types/pages/output'
-import { SERVER_QUERY } from 'utils/config'
-import { listIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IDoorFormData } from '../../../../types/pages/door'
+import { IOutputResult } from '../../../../types/pages/output'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { listIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IDoorFormData
@@ -24,38 +25,38 @@ function DoorAlertForm({ formData, handleInputChange, formErrors, disabled, isLo
   >(
     disabled || typeof handleInputChange === 'undefined'
       ? null
-      : outputApi.list(SERVER_QUERY.selectorDataQuery)
+      : outputApi.list(`${SERVER_QUERY.selectorDataQuery}&NodeNo=${formData?.NodeNo}`)
   )
   return (
-    <FormCardWithHeader icon={listIcon} header="Alert">
-      <SwitchButton
-        name="forced_enable"
-        label="Forced Alert Enable"
-        checked={formData?.forced_enable}
+    <FormCardWithHeader icon={listIcon} header={t`Alert`}>
+      <SwitchButtonSelect
+        name="ForcedEnable"
+        label={t`Forced Alert Enable`}
+        value={formData?.ForcedEnable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      <SwitchButton
-        name="propped_enable"
-        label="Propped Alert Enable"
-        checked={formData?.propped_enable}
+      <SwitchButtonSelect
+        name="ProppedEnable"
+        label={t`Propped Alert Enable`}
+        value={formData?.ProppedEnable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      {formData?.forced_enable && formData?.propped_enable && (
+      {(formData?.ForcedEnable?.value === '1' || formData?.ProppedEnable?.value === '1') && (
         <Selector
-          name="alert_output"
-          label="Alert Output"
-          value={formData?.alert_output}
-          options={outputData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="AlertOutput"
+          label={t`Alert Output`}
+          value={formData?.AlertOutput}
+          options={outputData?.data.map((result) => ({
+            value: result.OutputNo.toString(),
+            label: result.OutputName,
           }))}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.alert_output}
+          error={formErrors?.AlertOutput}
           isLoading={isLoading || outputIsLoading}
         />
       )}

@@ -1,15 +1,16 @@
-import { nodeApi, partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { nodeApi, partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IDoorAddFormData } from 'types/pages/door'
-import { INodeResult } from 'types/pages/node'
-import { IPartitionResult } from 'types/pages/partition'
-import { SERVER_QUERY } from 'utils/config'
-import { doorIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IDoorAddFormData } from '../../../../types/pages/door'
+import { INodeResult } from '../../../../types/pages/node'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { doorIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData: IDoorAddFormData
@@ -29,57 +30,57 @@ function DoorAddForm({ formData, handleInputChange, formErrors, disabled, isLoad
   )
 
   return (
-    <FormCardWithHeader icon={doorIcon} header="Door Add">
+    <FormCardWithHeader icon={doorIcon} header={t`Door Add`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         isLoading={isLoading || partitionIsLoading}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors.partition}
+        error={formErrors.Partition}
       />
       <Input
-        name="name"
-        label="Door Name"
-        value={formData.name}
+        name="DoorName"
+        label={t`Door Name`}
+        value={formData.DoorName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors.name}
+        error={formErrors.DoorName}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData.description}
+        name="DoorDesc"
+        label={t`Description`}
+        value={formData.DoorDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors.description}
+        error={formErrors.DoorDesc}
       />
       <Selector
-        name="node"
-        label="Node"
-        value={formData.node}
-        options={nodeData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Node"
+        label={t`Node`}
+        value={formData.Node}
+        options={nodeData?.data.map((result) => ({
+          value: result.NodeNo.toString(),
+          label: result.NodeName,
         }))}
         onChange={handleInputChange}
         isLoading={isLoading || nodeIsLoading}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors.node}
+        error={formErrors.Node}
       />
       <Input
-        name="port"
-        label="Door Port"
+        name="DoorPort"
+        label={t`Door Port`}
         type="number"
-        value={formData.port}
+        value={formData.DoorPort}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors.port}
+        error={formErrors.DoorPort}
       />
     </FormCardWithHeader>
   )

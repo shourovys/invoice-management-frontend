@@ -1,10 +1,12 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IFormatFormData } from 'types/pages/format'
-import { formatIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors } from '../../../../types/pages/common'
+import { IFormatFormData, formatTypeOptions } from '../../../../types/pages/format'
+import { formatIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData: IFormatFormData
@@ -16,64 +18,82 @@ interface IProps {
 
 function FormatForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={formatIcon} header="Format">
+    <FormCardWithHeader icon={formatIcon} header={t`Format`}>
       <Input
-        name="name"
-        label="Format Name"
-        value={formData.name}
+        name="FormatName"
+        label={t`Format Name`}
+        value={formData.FormatName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.FormatName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData.description}
+        name="FormatDesc"
+        label={t`Description`}
+        value={formData.FormatDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.FormatDesc}
         isLoading={isLoading}
       />
+      <SwitchButtonSelect
+        name="DefaultFormat"
+        label={t`Default Format`}
+        value={formData.DefaultFormat}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        isLoading={isLoading}
+      />
+      <Selector
+        name="FormatType"
+        label={t`Format Type`}
+        value={formData.FormatType}
+        options={formatTypeOptions}
+        onChange={handleInputChange}
+        error={formErrors?.FormatType}
+        isLoading={isLoading}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+      />
       <Input
-        name="total_length"
-        label="Total Length"
+        name="TotalLength"
+        label={t`Total Length`}
         type="number"
-        value={formData.total_length}
+        value={formData.TotalLength}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.total_length}
+        error={formErrors?.TotalLength}
         isLoading={isLoading}
       />
       <Input
-        name="facility_code"
-        label="Facility Code"
+        name="FacilityCode"
+        label={t`Facility Code`}
         type="number"
-        value={formData.facility_code}
+        value={formData.FacilityCode}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.facility_code}
+        error={formErrors?.FacilityCode}
         isLoading={isLoading}
       />
 
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <SwitchButton
-          name="key_format"
-          label="Key Format"
-          checked={formData.key_format}
+          name="KeyFormat"
+          label={t`Key Format`}
+          checked={formData.KeyFormat}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
           isLoading={isLoading}
         />
         <SwitchButton
-          name="default_format"
-          label="Default Format"
-          checked={formData.default_format}
+          name="DefaultFormat"
+          label={t`Default Format`}
+          checked={formData.DefaultFormat}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
           isLoading={isLoading}
         />
-      </div>
+      </div> */}
     </FormCardWithHeader>
   )
 }

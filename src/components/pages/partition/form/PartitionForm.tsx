@@ -1,10 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import ImageInput from 'components/atomic/ImageInput'
-import Input from 'components/atomic/Input'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IPartitionFormData } from 'types/pages/partition'
-import { doorIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import ImageInput from '../../../../components/atomic/ImageInput'
+import Input from '../../../../components/atomic/Input'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors } from '../../../../types/pages/common'
+import { IPartitionFormData } from '../../../../types/pages/partition'
+import { doorIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IPartitionFormData
@@ -16,32 +17,32 @@ interface IProps {
 
 function PartitionForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={doorIcon} header="Partition">
+    <FormCardWithHeader icon={doorIcon} header={t`Partition`}>
       <Input
-        name="name"
-        label="Partition Name"
-        value={formData?.name}
+        name="PartitionName"
+        label={t`Partition Name`}
+        value={formData?.PartitionName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.PartitionName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="PartitionDesc"
+        label={t`Description`}
+        value={formData?.PartitionDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.PartitionDesc}
         isLoading={isLoading}
       />
       <ImageInput
-        name="image"
-        label="Image File"
-        value={formData?.image}
+        name="ImageFile"
+        label={t`Image File`}
+        value={formData?.ImageFile}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.image}
+        error={formErrors?.ImageFile}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

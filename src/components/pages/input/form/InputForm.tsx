@@ -1,26 +1,34 @@
-import { nodeApi, partitionApi, subnodeApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { nodeApi, partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IInputFormData, inputTypeOptions } from 'types/pages/input'
-import { INodeResult } from 'types/pages/node'
-import { IPartitionResult } from 'types/pages/partition'
-import { ISubnodeResult } from 'types/pages/subnode'
-import { SERVER_QUERY } from 'utils/config'
-import { doorIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IListServerResponse, INewFormErrors } from '../../../../types/pages/common'
+import { IInputFormData, inputTypeOptions } from '../../../../types/pages/input'
+import { INodeResult } from '../../../../types/pages/node'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { doorIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IInputFormData
   handleInputChange?: THandleInputChange
-  formErrors?: IFormErrors
+  formErrors?: INewFormErrors<IInputFormData>
   disabled?: boolean
   isLoading?: boolean
+  showNodeSelector?: boolean
 }
 
-function InputForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
+function InputForm({
+  formData,
+  handleInputChange,
+  formErrors,
+  disabled,
+  isLoading,
+  showNodeSelector,
+}: IProps) {
   const { isLoading: partitionIsLoading, data: partitionData } = useSWR<
     IListServerResponse<IPartitionResult[]>
   >(
@@ -29,108 +37,97 @@ function InputForm({ formData, handleInputChange, formErrors, disabled, isLoadin
       : partitionApi.list(SERVER_QUERY.selectorDataQuery)
   )
 
-  const { isLoading: subnodeIsLoading, data: subnodeData } = useSWR<
-    IListServerResponse<ISubnodeResult[]>
-  >(
-    disabled || typeof handleInputChange === 'undefined'
-      ? null
-      : subnodeApi.list(SERVER_QUERY.selectorDataQuery)
-  )
-
   const { isLoading: nodeIsLoading, data: nodeData } = useSWR<IListServerResponse<INodeResult[]>>(
-    disabled || typeof handleInputChange === 'undefined'
+    disabled || typeof handleInputChange === 'undefined' || !showNodeSelector
       ? null
       : nodeApi.list(SERVER_QUERY.selectorDataQuery)
   )
 
   return (
-    <FormCardWithHeader icon={doorIcon} header="Input">
+    <FormCardWithHeader icon={doorIcon} header={t`Input`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Input Name"
-        value={formData?.name}
+        name="InputName"
+        label={t`Input Name`}
+        value={formData?.InputName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.InputName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="InputDesc"
+        label={t`Description`}
+        value={formData?.InputDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.InputDesc}
         isLoading={isLoading}
       />
-      <Selector
-        name="node"
-        label="Node"
-        value={formData?.node}
-        options={nodeData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
-        }))}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.node}
-        isLoading={isLoading || nodeIsLoading}
-      />
-      <Selector
-        name="sub_node"
-        label="Subnode"
-        value={formData?.sub_node}
-        options={subnodeData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
-        }))}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.sub_node}
-        isLoading={isLoading || subnodeIsLoading}
-      />
-
+      {showNodeSelector ? (
+        <Selector
+          name="Node"
+          label={t`Node`}
+          value={formData?.Node}
+          options={nodeData?.data.map((result) => ({
+            value: result.NodeNo.toString(),
+            label: result.NodeName,
+          }))}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Node}
+          isLoading={isLoading || nodeIsLoading}
+        />
+      ) : (
+        <Input
+          name="NodeName"
+          label={t`Node`}
+          value={`${formData?.NodeName} ${formData?.SubnodeName && '-' + formData?.SubnodeName}`}
+          onChange={handleInputChange}
+          isLoading={isLoading}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.NodeName}
+        />
+      )}
       <Input
-        name="port"
+        name="InputPort"
         type="number"
-        label="Port"
-        value={formData?.port}
+        label={t`Input Port`}
+        value={formData?.InputPort}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.port}
+        error={formErrors?.InputPort}
         isLoading={isLoading}
       />
       <Selector
-        name="type"
-        label="Type"
-        value={formData?.type}
+        name="InputType"
+        label={t`Input Type`}
+        value={formData?.InputType}
         options={inputTypeOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.type}
+        error={formErrors?.InputType}
         isLoading={isLoading}
       />
-      <Input
-        name="stat"
-        type="number"
-        label="Stat"
-        value={formData?.stat}
+      <Selector
+        name="InputStat"
+        label={t`Input Stat`}
+        value={formData?.InputStat}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.stat}
+        error={formErrors?.InputStat}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

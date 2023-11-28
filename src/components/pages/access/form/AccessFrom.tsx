@@ -1,15 +1,17 @@
-import { partitionApi, scheduleApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector, { TSelectValue } from 'components/atomic/Selector'
+import { partitionApi, scheduleApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector, { TSelectValue } from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IAccessFormData, accessDeviceTypes } from 'types/pages/access'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IPartitionResult } from 'types/pages/partition'
-import { IScheduleResult } from 'types/pages/schedule'
-import { SERVER_QUERY } from 'utils/config'
-import { accessIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { accessDeviceTypes, IAccessFormData } from '../../../../types/pages/access'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IScheduleResult } from '../../../../types/pages/schedule'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { accessIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
+import useLicenseFilter from '../../../../hooks/useLicenseFilter'
 
 interface IProps {
   formData: IAccessFormData
@@ -45,64 +47,75 @@ function AccessAccessFrom({
   const handleTypeChange = (name: string, selectedValue: TSelectValue) => {
     if (handleInputChange) {
       handleInputChange(name, selectedValue)
-      handleInputChange('devices', [])
-      handleInputChange('groups', [])
+      handleInputChange('DeviceIds', [])
+      handleInputChange('GroupIds', [])
     }
   }
+
+  const filteredAccessDeviceTypes = useLicenseFilter(accessDeviceTypes, {
+    '12': 'Lockset',
+    '13': 'Facegate',
+    '17': 'ContLock',
+    '18': 'Intercom',
+  })
+
   return (
-    <FormCardWithHeader icon={accessIcon} header="Access">
+    <FormCardWithHeader icon={accessIcon} header={t`Access`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
+        isClearable={false}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading || partitionIsLoading}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
       />
       <Input
-        name="name"
-        label="Access Name"
-        value={formData.name}
+        name="AccessName"
+        label={t`Access Name`}
+        value={formData.AccessName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.AccessName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData.description}
+        name="AccessDesc"
+        label={t`Description`}
+        value={formData.AccessDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.AccessDesc}
         isLoading={isLoading}
       />
       <Selector
-        name="schedule"
-        label="Schedule"
-        value={formData.schedule}
-        options={scheduleData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Schedule"
+        label={t`Schedule`}
+        value={formData.Schedule}
+        options={scheduleData?.data.map((result) => ({
+          value: result.ScheduleNo.toString(),
+          label: result.ScheduleName,
         }))}
+        isClearable={false}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading || scheduleIsLoading}
-        error={formErrors?.schedule}
+        error={formErrors?.Schedule}
       />
       <Selector
-        name="device_type"
-        label="Device Type"
-        value={formData.device_type}
-        options={accessDeviceTypes}
+        name="DeviceType"
+        label={t`Access Type`}
+        value={formData.DeviceType}
+        options={filteredAccessDeviceTypes}
+        isClearable={false}
         onChange={handleTypeChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.device_type}
+        error={formErrors?.DeviceType}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

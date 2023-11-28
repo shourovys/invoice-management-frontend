@@ -1,5 +1,6 @@
 import { TABLE_ROW_HEIGHT, TABLE_ROW_PER_PAGE } from '../../../utils/config'
 import EmptyContent from '../EmptyContent'
+import t from '../../../utils/translator'
 
 interface IProps {
   isNotFound: boolean
@@ -15,7 +16,7 @@ export default function TableNoData({
   if (isNotFound) {
     return (
       <div className="flex" style={{ height: tableRowPerPage * tableRowHeight }}>
-        <EmptyContent title="No Data" />
+        <EmptyContent title={t`No Data Found!`} />
       </div>
     )
   }

@@ -1,10 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IRegionFormData } from 'types/pages/region'
-import { antiPassbackRuleIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors } from '../../../../types/pages/common'
+import { IRegionFormData, regionRoleOptions } from '../../../../types/pages/region'
+import { antiPassbackRuleIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IRegionFormData
@@ -22,26 +23,27 @@ function RegionAntiPassBackForm({
   isLoading,
 }: IProps) {
   return (
-    <FormCardWithHeader icon={antiPassbackRuleIcon} header="Anti Passback  Rule">
-      <SwitchButton
-        name="anti_passback_rule"
-        label="Anti Passback Rule"
-        checked={formData?.anti_passback_rule}
+    <FormCardWithHeader icon={antiPassbackRuleIcon} header={t`Anti Passback  Rule`}>
+      <Selector
+        name="AntiPassbackRule"
+        label={t`Anti Passback Rule`}
+        value={formData?.AntiPassbackRule}
+        options={regionRoleOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
       <div>
-        {formData?.anti_passback_rule && (
+        {!(formData?.AntiPassbackRule?.value === '0') && (
           <Input
-            name="anti_passback_time"
-            label="Anti Passback Time"
+            name="AntiPassbackTime"
+            label={t`Anti Passback Time (min)`}
             type="number"
-            value={formData.anti_passback_time}
+            value={formData?.AntiPassbackTime}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
             isLoading={isLoading}
-            error={formErrors?.anti_passback_time}
+            error={formErrors?.AntiPassbackTime}
           />
         )}
       </div>

@@ -1,16 +1,17 @@
-import { IFormErrors } from 'types/pages/common'
-import { IUserRoleFormData } from 'types/pages/userRole'
+import { IFormErrors, INewFormErrors } from '../../types/pages/common'
+import { IUserRoleFormData } from '../../types/pages/userRole'
+import t from '../translator'
 
 const validateUserRoleFormData = (formData: IUserRoleFormData): IFormErrors => {
-  const errors: IFormErrors = {}
-  if (!formData.name) {
-    errors.name = 'User Role Name is required'
+  const errors: INewFormErrors<IUserRoleFormData> = {}
+  if (!formData.RoleName) {
+    errors.RoleName = t`User Role Name is required`
   }
-  if (!formData.partition?.value) {
-    errors.partition = 'Partition is required'
+  if (!formData.Partition?.value) {
+    errors.Partition = t`Partition is required`
   }
-  if (!formData.permissions_codenames.length) {
-    errors.permissions_codenames = 'Permissions are required'
+  if (!formData.PageIds.length) {
+    errors.PageIds = t`Role Pages are required`
   }
 
   return errors

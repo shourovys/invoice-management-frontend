@@ -1,20 +1,10 @@
 import classNames from 'classnames'
-import Icon, { TIcon } from 'utils/icons'
+import Icon from '../../utils/icons'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { TIconButtonColor } from 'types/components/buttons'
+import { IIconButton } from '../../types/components/iocnButton'
 
-interface IProps {
-  color?: TIconButtonColor
-  icon: TIcon
-  tooltip: string
-  iconClass?: string
-  disabled?: boolean
-  disabledText?: string
-  link?: string
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
-}
 function IconButton({
   color = 'black',
   icon,
@@ -24,7 +14,7 @@ function IconButton({
   disabledText,
   link,
   onClick,
-}: IProps) {
+}: IIconButton) {
   const [isHover, setIsHover] = useState(false)
 
   const styleClass = classNames(
@@ -38,7 +28,15 @@ function IconButton({
   )
   return (
     <div className="relative flex max-w-min">
-      {link ? (
+      {disabled ? ( // if disable then show button without action
+        <button
+          className="p-1"
+          onMouseEnter={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
+        >
+          <Icon icon={icon} className={styleClass} />
+        </button>
+      ) : link ? ( // if not disable and link is present
         <Link to={link}>
           <button
             className="p-1"
@@ -49,6 +47,7 @@ function IconButton({
           </button>
         </Link>
       ) : (
+        // if not disable and onClick is present
         <button
           className="p-1"
           onMouseEnter={() => setIsHover(true)}
@@ -59,14 +58,16 @@ function IconButton({
         </button>
       )}
 
-      <span
-        className={classNames(
-          'whitespace-nowrap absolute hidden md:block px-1.5 pt-0.5 pb-1 m-2 mx-auto text-xs text-gray-100 transition-opacity -translate-x-1/2 translate-y-full bg-gray-800 rounded-md left-1/2 z-50',
-          isHover ? 'opacity-100' : 'opacity-0'
-        )}
-      >
-        {disabled && disabledText ? disabledText : tooltip}
-      </span>
+      {(disabledText || tooltip) && (
+        <span
+          className={classNames(
+            'whitespace-nowrap absolute hidden md:block px-1.5 pt-0.5 pb-1 m-2 mx-auto text-xs text-gray-100 transition-opacity -translate-x-1/2 translate-y-full bg-gray-800 rounded-md left-1/2 z-40',
+            isHover ? 'opacity-100' : 'opacity-0'
+          )}
+        >
+          {disabled && disabledText ? disabledText : tooltip}
+        </span>
+      )}
     </div>
   )
 }

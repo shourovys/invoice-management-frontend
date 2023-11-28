@@ -30,7 +30,7 @@ export default function generateBreadcrumbs(path: string): iProps {
 
   // Add in a default list crumb if crumbList has only 1 link
   const updateCrumbList =
-    crumbList.length === 1 ? [...crumbList, { href: '', text: 'List' }] : crumbList
+    crumbList.length === 1 ? [...crumbList, { href: '', text: `List` }] : crumbList
 
   // update info to information and href
   if (crumbList[1]?.text === 'info') {
@@ -66,7 +66,7 @@ export default function generateBreadcrumbs(path: string): iProps {
   }
 
   return {
-    title: crumbList[0].text,
+    title: crumbList[0]?.text,
     pageRoutes: updateCrumbList,
   }
 }

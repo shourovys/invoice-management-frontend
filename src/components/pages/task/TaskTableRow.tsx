@@ -1,8 +1,8 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { ITaskResult } from 'types/pages/task'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { ITaskResult, taskActionTypesObject } from '../../../types/pages/task'
 import Checkbox from '../../atomic/Checkbox'
 
 type IProps = {
@@ -10,24 +10,25 @@ type IProps = {
   selected: string[]
   handleSelectRow: (_selectedId: string) => void
 }
+
 function TaskTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.taskInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.TaskNo}
+      link={routeProperty.taskInfo.path(row.TaskNo.toString())}
+      selected={selected.indexOf(row.TaskNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.partition.name}</TableData>
-      <TableData>{row.name}</TableData>
-      <TableData>{row.description}</TableData>
-      <TableData>{row.action_type}</TableData>
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableData>{row.TaskNo}</TableData>
+      <TableData>{row.Partition.PartitionName}</TableData>
+      <TableData>{row.TaskName}</TableData>
+      <TableData>{row.TaskDesc}</TableData>
+      <TableData>{taskActionTypesObject[row.ActionType]}</TableData>
+      <TableDataAction selected={selected.indexOf(row.TaskNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.TaskNo}`}
+          checked={selected.indexOf(row.TaskNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.TaskNo.toString())
           }}
         />
       </TableDataAction>

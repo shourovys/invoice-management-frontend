@@ -1,19 +1,24 @@
-import { elevatorApi, nodeApi, partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { elevatorApi, partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IElevatorResult } from 'types/pages/elevator'
-import { INodeResult } from 'types/pages/node'
-import { IPartitionResult } from 'types/pages/partition'
-import { IRelayFormData, relayTypeOptions } from 'types/pages/relay'
-import { SERVER_QUERY } from 'utils/config'
-import { relayIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IElevatorResult } from '../../../../types/pages/elevator'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import {
+  IRelayFormData,
+  IRelayInfoFormData,
+  relayStatOptions,
+  relayTypeOptions,
+} from '../../../../types/pages/relay'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { relayIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
-  formData?: IRelayFormData
+  formData?: IRelayFormData | IRelayInfoFormData
   handleInputChange?: THandleInputChange
   formErrors?: IFormErrors
   disabled?: boolean
@@ -29,139 +34,157 @@ function RelayForm({ formData, handleInputChange, formErrors, disabled, isLoadin
       : partitionApi.list(SERVER_QUERY.selectorDataQuery)
   )
 
-  const { isLoading: nodeIsLoading, data: nodeData } = useSWR<IListServerResponse<INodeResult[]>>(
-    disabled || typeof handleInputChange === 'undefined'
-      ? null
-      : nodeApi.list(SERVER_QUERY.selectorDataQuery)
-  )
+  // const { isLoading: nodeIsLoading, data: nodeData } = useSWR<IListServerResponse<INodeResult[]>>(
+  //   disabled || typeof handleInputChange === 'undefined'
+  //     ? null
+  //     : nodeApi.list(SERVER_QUERY.selectorDataQuery)
+  // )
 
   const { isLoading: elevatorIsLoading, data: elevatorData } = useSWR<
     IListServerResponse<IElevatorResult[]>
   >(
     disabled || typeof handleInputChange === 'undefined'
       ? null
-      : elevatorApi.list(SERVER_QUERY.selectorDataQuery)
+      : elevatorApi.list(`${SERVER_QUERY.selectorDataQuery}&NodeNo=${formData?.NodeNo}`)
   )
 
   return (
-    <FormCardWithHeader icon={relayIcon} header="Relay">
+    <FormCardWithHeader icon={relayIcon} header={t`Relay`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Relay Name"
-        value={formData?.name}
+        name="RelayName"
+        label={t`Relay Name`}
+        value={formData?.RelayName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.RelayName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="RelayDesc"
+        label={t`Description`}
+        value={formData?.RelayDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.RelayDesc}
         isLoading={isLoading}
       />
-      <Selector
-        name="node"
-        label="Node"
-        value={formData?.node}
-        options={nodeData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+      {(disabled || typeof handleInputChange === 'undefined') &&
+        formData &&
+        'NodeName' in formData &&
+        'SubnodeName' in formData && (
+          <Input
+            name="NodeName"
+            label={t`Node Name`}
+            value={`${formData?.NodeName} ${formData?.SubnodeName && '-' + formData?.SubnodeName}`}
+            onChange={handleInputChange}
+            isLoading={isLoading}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.NodeName}
+          />
+        )}
+      {/* <Selector
+        name="Node"
+        label={t`Node`}
+        value={formData?.Node}
+        options={nodeData?.data.map((result) => ({
+          value: result.NodeNo.toString(),
+          label: result.NodeName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.node}
+        error={formErrors?.Node}
         isLoading={isLoading || nodeIsLoading}
-      />
-      <Input
-        name="port"
-        label="Port"
+      /> */}
+      {/* <Input
+        name="RelayPort"
+        label={t`Port`}
         type="number"
-        value={formData?.port}
+        value={formData?.RelayPort}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.port}
+        error={formErrors?.RelayPort}
         isLoading={isLoading}
-      />
+      /> */}
       <Selector
-        name="elevator"
-        label="Elevator"
-        value={formData?.elevator}
-        options={elevatorData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Elevator"
+        label={t`Elevator`}
+        value={formData?.Elevator}
+        options={elevatorData?.data.map((result) => ({
+          value: result.ElevatorNo.toString(),
+          label: result.ElevatorName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.elevator}
+        error={formErrors?.Elevator}
         isLoading={isLoading || elevatorIsLoading}
       />
       <Selector
-        name="type"
-        label="Type"
-        value={formData?.type}
+        name="RelayType"
+        label={t`Relay Type`}
+        value={formData?.RelayType}
         options={relayTypeOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.type}
+        error={formErrors?.RelayType}
         isLoading={isLoading}
       />
       <Input
-        name="on_time"
-        label="On Time (100ms)"
+        name="OnTime"
+        label={t`On Time (100ms)`}
         type="number"
-        value={formData?.on_time}
+        value={formData?.OnTime}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.on_time}
+        error={formErrors?.OnTime}
         isLoading={isLoading}
       />
       <Input
-        name="off_time"
-        label="Off Time (100ms)"
+        name="OffTime"
+        label={t`Off Time (100ms)`}
         type="number"
-        value={formData?.off_time}
+        value={formData?.OffTime}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.off_time}
+        error={formErrors?.OffTime}
         isLoading={isLoading}
       />
       <Input
-        name="repeat"
-        label="Repeat"
+        name="Repeat"
+        label={t`Repeat`}
         type="number"
-        value={formData?.repeat}
+        value={formData?.Repeat}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.repeat}
+        error={formErrors?.Repeat}
         isLoading={isLoading}
       />
-      <Input
-        name="relay_stat"
-        label="Relay Stat"
-        type="number"
-        value={formData?.relay_stat}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.relay_stat}
-        isLoading={isLoading}
-      />
+      {formData &&
+        'RelayStat' in formData &&
+        (disabled || typeof handleInputChange === 'undefined') && (
+          <Selector
+            name="RelayStat"
+            label={t`Relay Stat`}
+            value={formData?.RelayStat}
+            options={relayStatOptions}
+            onChange={handleInputChange}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.RelayStat}
+            isLoading={isLoading}
+          />
+        )}
     </FormCardWithHeader>
   )
 }

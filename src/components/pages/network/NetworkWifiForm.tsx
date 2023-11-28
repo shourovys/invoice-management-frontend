@@ -1,10 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { INetworkFormData } from 'types/pages/network'
-import { wifiIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../components/HOC/FormCardWithHeader'
+import Input from '../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../components/atomic/SelectSwitch'
+import { THandleInputChange } from '../../../types/components/common'
+import { IFormErrors } from '../../../types/pages/common'
+import { INetworkFormData } from '../../../types/pages/network'
+import { wifiIcon } from '../../../utils/icons'
+import t from '../../../utils/translator'
 
 interface IProps {
   formData?: INetworkFormData
@@ -16,43 +17,39 @@ interface IProps {
 
 function NetworkWifiForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={wifiIcon} header="Network">
-      <SwitchButton
-        name="wifi"
-        label="WIFI"
-        checked={formData?.wifi}
+    <FormCardWithHeader icon={wifiIcon} header={t`Wifi`}>
+      <SwitchButtonSelect
+        name="Wifi"
+        label={t`WIFI`}
+        value={formData?.Wifi}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      <div>
-        {formData?.wifi && (
-          <Input
-            name="ssid"
-            type="number"
-            label="SSID"
-            value={formData?.ssid}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.ssid}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {formData?.wifi && (
-          <Input
-            name="secu_key"
-            type="number"
-            label="Password"
-            value={formData?.secu_key}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.secu_key}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
+      {formData?.Wifi?.value === '1' && (
+        <Input
+          name="Ssid"
+          type="text"
+          label={t`SSID`}
+          value={formData?.Ssid}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Ssid}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Wifi?.value === '1' && (
+        <Input
+          name="SecuKey"
+          type="password"
+          label={t`Password`}
+          value={formData?.SecuKey}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.SecuKey}
+          isLoading={isLoading}
+        />
+      )}
     </FormCardWithHeader>
   )
 }

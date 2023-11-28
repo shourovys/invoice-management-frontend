@@ -1,121 +1,109 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IEmailFormData } from 'types/pages/email'
-import { emailIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../components/HOC/FormCardWithHeader'
+import Input from '../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../components/atomic/SelectSwitch'
+import { THandleInputChange } from '../../../types/components/common'
+import { INewFormErrors } from '../../../types/pages/common'
+import { IEmailFormData } from '../../../types/pages/email'
+import { emailIcon } from '../../../utils/icons'
+import t from '../../../utils/translator'
 
 interface IProps {
   formData?: IEmailFormData
   handleInputChange?: THandleInputChange
-  formErrors?: IFormErrors
+  formErrors?: INewFormErrors<IEmailFormData>
   disabled?: boolean
   isLoading?: boolean
 }
 
 function EmailForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={emailIcon} header="Email Configuration">
-      <SwitchButton
-        name="is_active"
-        label="Enable"
-        checked={formData?.is_active}
+    <FormCardWithHeader icon={emailIcon} header={t`Email Configuration`}>
+      <SwitchButtonSelect
+        name="Enable"
+        label={t`Enable`}
+        value={formData?.Enable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      <div>
-        {formData?.is_active && (
-          <Input
-            name="host"
-            label="Server Address"
-            value={formData?.host}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.host}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {formData?.is_active && (
-          <Input
-            name="port"
-            label="Server Port"
-            value={formData?.port}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.port}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {formData?.is_active && (
-          <Input
-            name="username"
-            label="User ID"
-            value={formData?.username}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.username}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {formData?.is_active && (
-          <Input
-            name="password"
-            type="password"
-            label="Password"
-            value={formData?.password}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.password}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {formData?.is_active && (
-          <SwitchButton
-            name="tls"
-            label="TLS"
-            checked={formData?.tls}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {formData?.is_active && (
-          <Input
-            name="from_email"
-            label="Sender"
-            value={formData?.from_email}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.from_email}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {formData?.is_active && (
-          <Input
-            name="to_email"
-            label="Receiver"
-            value={formData?.to_email}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.to_email}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
+      {formData?.Enable?.value === '1' && (
+        <Input
+          name="ServerAddr"
+          label={t`Server Address`}
+          value={formData?.ServerAddr}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.ServerAddr}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Enable?.value === '1' && (
+        <Input
+          name="ServerPort"
+          label={t`Server Port`}
+          type="number"
+          value={formData?.ServerPort}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.ServerPort}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Enable?.value === '1' && (
+        <Input
+          name="UserId"
+          label={t`User ID`}
+          value={formData?.UserId}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.UserId}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Enable?.value === '1' && (
+        <Input
+          name="Password"
+          type="password"
+          label={t`Password`}
+          value={formData?.Password}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Password}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Enable?.value === '1' && (
+        <SwitchButtonSelect
+          name="Tls"
+          label={t`TLS`}
+          value={formData?.Tls}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Enable?.value === '1' && (
+        <Input
+          name="Sender"
+          label={t`Sender`}
+          value={formData?.Sender}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Sender}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Enable?.value === '1' && (
+        <Input
+          name="Receiver"
+          label={t`Receiver`}
+          value={formData?.Receiver}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Receiver}
+          isLoading={isLoading}
+        />
+      )}
     </FormCardWithHeader>
   )
 }

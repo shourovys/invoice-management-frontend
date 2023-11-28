@@ -1,40 +1,40 @@
-import { IAccessFormData } from 'types/pages/access'
-import { IFormErrors } from 'types/pages/common'
+import { IAccessFormData } from '../../types/pages/access'
+import { INewFormErrors } from '../../types/pages/common'
+import t from '../translator'
 
-const validateAccessFormData = (formData: IAccessFormData): IFormErrors => {
-  const errors: IFormErrors = {}
-  if (!formData.partition?.value) {
-    errors.partition = 'Partition is required'
+const validateAccessFormData = (formData: IAccessFormData): INewFormErrors<IAccessFormData> => {
+  const errors: INewFormErrors<IAccessFormData> = {}
+  if (!formData.Partition?.value) {
+    errors.Partition = t`Partition is required`
   }
-  if (!formData.name) {
-    errors.name = 'Access Name is required'
+  if (!formData.AccessName) {
+    errors.AccessName = t`Access Name is required`
   }
-  if (!formData.description) {
-    errors.description = 'Description is required'
+  // if (!formData.AccessDesc) {
+  //   errors.AccessDesc = t`Description is required`
+  // }
+  if (!formData.Schedule?.value) {
+    errors.Schedule = t`Schedule is required`
   }
-  if (!formData.schedule?.value) {
-    errors.schedule = 'Schedule is required'
+  if (!formData.DeviceType?.value) {
+    errors.DeviceType = t`Device Type is required`
   }
-  if (!formData.device_type?.value) {
-    errors.device_type = 'Device Type is required'
-  }
-  if (!formData.select_type?.value) {
-    errors.select_type = 'Select Type is required'
+  if (!formData.DeviceSelect?.value) {
+    errors.DeviceSelect = t`Select Type is required`
   }
   // if (
-  //     formData.select_type?.value === accessSelectType[0].value &&
-  //     !formData.groups.length
+  //   formData.DeviceSelect?.value === 1 && // Group type
+  //   !formData.Groups.length
   // ) {
-  //     // if Group type
-  //     errors.groups = "Groups are required";
+  //   errors.Groups = t`Groups are required`
   // }
   // if (
-  //     formData.select_type?.value === accessSelectType[1].value &&
-  //     !formData.devices.length
+  //   formData.DeviceSelect?.value === 0 && // Individual type
+  //   !formData.Devices.length
   // ) {
-  //     // if Individual type
-  //     errors.devices = "Devices are required";
+  //   errors.Devices = t`Devices are required`
   // }
   return errors
 }
+
 export default validateAccessFormData

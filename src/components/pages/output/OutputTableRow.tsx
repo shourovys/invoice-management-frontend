@@ -1,36 +1,40 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { IOutputResult } from 'types/pages/output'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { IOutputResult, outputStatObject, outputTypeObject } from '../../../types/pages/output'
 import Checkbox from '../../atomic/Checkbox'
 
 type IProps = {
   row: IOutputResult
   selected: string[]
-  handleSelectRow: (_selectedId: string) => void
+  handleSelectRow: (selectedId: string) => void
 }
+
 function OutputTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.outputInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.OutputNo}
+      link={routeProperty.outputInfo.path(row.OutputNo.toString())}
+      selected={selected.indexOf(row.OutputNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.partition.name}</TableData>
-      <TableData>{row.name}</TableData>
-      <TableData>{row.description}</TableData>
-      {/* <TableData>{row.node.name}</TableData> */}
-      <TableData>{row.port}</TableData>
-      <TableData>{row.type}</TableData>
-      <TableData>{row.stat}</TableData>
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableData>{row.OutputNo}</TableData>
+      <TableData>{row.Partition.PartitionName}</TableData>
+      <TableData>{row.OutputName}</TableData>
+      <TableData>{row.OutputDesc}</TableData>
+      <TableData>
+        {row.Node?.NodeName}
+        {row.Subnode && ` - ${row.Subnode.SubnodeName}`}
+      </TableData>
+      <TableData>{row.OutputPort}</TableData>
+      <TableData>{outputTypeObject[row.OutputType]}</TableData>
+      <TableData>{outputStatObject[row.OutputStat]}</TableData>
+      <TableDataAction selected={selected.indexOf(row.OutputNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.OutputNo}`}
+          checked={selected.indexOf(row.OutputNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.OutputNo.toString())
           }}
         />
       </TableDataAction>

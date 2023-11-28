@@ -1,19 +1,27 @@
-import { nodeApi, partitionApi, userApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { nodeApi, partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { ICameraFormData } from 'types/pages/camera'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { INodeResult } from 'types/pages/node'
-import { IPartitionResult } from 'types/pages/partition'
-import { IUserResult } from 'types/pages/user'
-import { SERVER_QUERY } from 'utils/config'
-import { cameraIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import {
+  ICameraFormData,
+  ICameraInfoFormData,
+  recordStatOptions,
+} from '../../../../types/pages/camera'
+import {
+  IFormErrors,
+  IListServerResponse,
+  booleanSelectOption,
+} from '../../../../types/pages/common'
+import { INodeResult } from '../../../../types/pages/node'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { cameraIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
-  formData?: ICameraFormData
+  formData?: ICameraFormData | ICameraInfoFormData
   handleInputChange?: THandleInputChange
   formErrors?: IFormErrors
   disabled?: boolean
@@ -35,151 +43,190 @@ function CameraForm({ formData, handleInputChange, formErrors, disabled, isLoadi
       : nodeApi.list(SERVER_QUERY.selectorDataQuery)
   )
 
-  const { isLoading: userIsLoading, data: userData } = useSWR<IListServerResponse<IUserResult[]>>(
-    disabled || typeof handleInputChange === 'undefined'
-      ? null
-      : userApi.list(SERVER_QUERY.selectorDataQuery)
-  )
+  // const { isLoading: userIsLoading, data: userData } = useSWR<
+  //   IListServerResponse<IUserResult[]>
+  // >(
+  //   disabled || typeof handleInputChange === 'undefined'
+  //     ? null
+  //     : userApi.list(SERVER_QUERY.selectorDataQuery)
+  // )
 
   return (
-    <FormCardWithHeader icon={cameraIcon} header="Camera">
+    <FormCardWithHeader icon={cameraIcon} header={t`Camera`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Camera Name"
-        value={formData?.name}
+        name="CameraName"
+        label={t`Camera Name`}
+        value={formData?.CameraName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.CameraName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Camera Description"
-        value={formData?.description}
+        name="CameraDesc"
+        label={t`Description`}
+        value={formData?.CameraDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.CameraDesc}
         isLoading={isLoading}
       />
       <Selector
-        name="node"
-        label="Node"
-        value={formData?.node}
-        options={nodeData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Node"
+        label={t`Node`}
+        value={formData?.Node}
+        options={nodeData?.data.map((result) => ({
+          value: result.NodeNo.toString(),
+          label: result.NodeName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.node}
+        error={formErrors?.Node}
         isLoading={isLoading || nodeIsLoading}
       />
       <Input
-        name="port"
-        label="Camera Port"
-        value={formData?.port}
+        name="CameraPort"
+        label={t`Camera Port`}
+        value={formData?.CameraPort}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         type="number"
-        error={formErrors?.port}
+        error={formErrors?.CameraPort}
         isLoading={isLoading}
       />
       <Input
-        name="main_stream"
-        label="Main URL"
-        value={formData?.main_stream}
+        name="MainUrl"
+        label={t`Main URL`}
+        value={formData?.MainUrl}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        type="number"
-        error={formErrors?.main_stream}
+        type="text"
+        error={formErrors?.MainUrl}
         isLoading={isLoading}
       />
       <Input
-        name="sub_stream"
-        label="Sub URL"
-        value={formData?.sub_stream}
+        name="SubUrl"
+        label={t`Sub URL`}
+        value={formData?.SubUrl}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        type="number"
-        error={formErrors?.sub_stream}
+        type="text"
+        error={formErrors?.SubUrl}
         isLoading={isLoading}
       />
-      <Selector
+      {/* <Selector
         name="user"
-        label="User ID"
-        value={formData?.user}
-        options={userData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.username,
+        label={t`User ID`}
+        value={formData?.User}
+        options={userData?.data.map((result) => ({
+          value: result.UserId.toString(),
+          label: result.UserName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.user}
+        error={formErrors?.User}
         isLoading={isLoading || userIsLoading}
+      /> */}
+      <Input
+        name="UserId"
+        label={t`User ID`}
+        value={formData?.UserId}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.UserId}
+        isLoading={isLoading}
       />
       <Input
-        name="password"
-        label="Password"
-        value={formData?.password}
+        name="Password"
+        label={t`Password`}
+        value={formData?.Password}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         type="password"
-        error={formErrors?.password}
+        error={formErrors?.Password}
         isLoading={isLoading}
       />
       <Input
-        name="pre_time"
-        label="Pre-Event Record Time (sec)"
-        value={formData?.pre_time}
+        name="PreTime"
+        label={t`Pre-Event Record Time (sec)`}
+        value={formData?.PreTime}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         type="number"
-        error={formErrors?.pre_time}
+        error={formErrors?.PreTime}
         isLoading={isLoading}
       />
       <Input
-        name="post_time"
-        label="Post-Event Record Time (sec)"
-        value={formData?.post_time}
+        name="PostTime"
+        label={t`Post-Event Record Time (sec)`}
+        value={formData?.PostTime}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         type="number"
-        error={formErrors?.post_time}
+        error={formErrors?.PostTime}
         isLoading={isLoading}
       />
       <Input
-        name="min_time"
-        label="Minimum Time (day)"
-        value={formData?.min_time}
+        name="MinTime"
+        label={t`Minimum Record Time (min)`}
+        value={formData?.MinTime}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         type="number"
-        error={formErrors?.min_time}
+        error={formErrors?.MinTime}
         isLoading={isLoading}
       />
       <Input
-        name="max_time"
-        label="Maximum Time (day)"
-        value={formData?.max_time}
+        name="MaxTime"
+        label={t`Maximum Record Time (day)`}
+        value={formData?.MaxTime}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         type="number"
-        error={formErrors?.max_time}
+        error={formErrors?.MaxTime}
         isLoading={isLoading}
       />
+      {formData &&
+        'RecordStat' in formData &&
+        (disabled || typeof handleInputChange === 'undefined') && (
+          <Selector
+            name="RecordStat"
+            label={t`Record Stat`}
+            value={formData?.RecordStat}
+            options={recordStatOptions}
+            onChange={handleInputChange}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.RecordStat}
+            isLoading={isLoading}
+          />
+        )}
+      {formData &&
+        'Online' in formData &&
+        (disabled || typeof handleInputChange === 'undefined') && (
+          <Selector
+            name="Online"
+            label={t`Online`}
+            value={formData?.Online}
+            options={booleanSelectOption}
+            onChange={handleInputChange}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.Online}
+            isLoading={isLoading}
+          />
+        )}
     </FormCardWithHeader>
   )
 }

@@ -1,35 +1,46 @@
-import { IFormErrors } from 'types/pages/common'
-import { IOutputFormData } from 'types/pages/output'
+import { INewFormErrors } from '../../types/pages/common'
+import { IOutputEditFormData, IOutputFormData } from '../../types/pages/output'
+import t from '../translator'
 
-const validateOutputFormData = (formData: IOutputFormData): IFormErrors => {
-  const errors: IFormErrors = {}
-  if (!formData.name) {
-    errors.name = 'Name is required'
+const validateOutputFormData = (
+  formData: IOutputFormData | IOutputEditFormData
+): INewFormErrors<IOutputFormData | IOutputEditFormData> => {
+  const errors: INewFormErrors<IOutputFormData | IOutputEditFormData> = {}
+  if (!formData.OutputName) {
+    errors.OutputName = t`Name is required`
   }
-  if (!formData.port) {
-    errors.port = 'Port is required'
+  // if (!formData.OutputPort) {
+  //   errors.OutputPort = t`Port is required`;
+  // }
+  if (!formData.OutputType) {
+    errors.OutputType = t`Type is required`
   }
-  if (!formData.type) {
-    errors.type = 'Type is required'
+  if (!formData.OnTime) {
+    errors.OnTime = t`On Time is required`
   }
-  if (!formData.on_time) {
-    errors.on_time = 'On Time is required'
+  if (!formData.OffTime) {
+    errors.OffTime = t`Off Time is required`
   }
-  if (!formData.off_time) {
-    errors.off_time = 'Off Time is required'
+  if (!formData.Repeat) {
+    errors.Repeat = t`Repeat is required`
   }
-  if (!formData.repeat) {
-    errors.repeat = 'Repeat is required'
+  // if (!formData.OutputStat?.value) {
+  //   errors.OutputStat = t`Output Stat is required`;
+  // }
+  if (!formData.Partition?.value) {
+    errors.Partition = t`Partition is required`
   }
-  if (!formData.output_stat) {
-    errors.output_stat = 'Output Stat is required'
+  if (!formData.FollowInput?.value) {
+    errors.FollowInput = t`FollowInput is required`
   }
-  if (!formData.partition?.value) {
-    errors.partition = 'Partition is required'
+  if (formData.FollowInput?.value === '1' && !formData.Input?.value) {
+    errors.Input = t`Input is required`
   }
-  // if (!formData.node?.value) {
-  //     errors.node = "Node is required";
+
+  // if (!formData.Node?.value) {
+  //     errors.Node = "Node is required";
   // }
   return errors
 }
+
 export default validateOutputFormData

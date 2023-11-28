@@ -1,72 +1,80 @@
-import { IFormErrors } from 'types/pages/common'
-import { IFacegateFormData } from 'types/pages/facegate'
+import { IFormErrors, INewFormErrors } from '../../types/pages/common'
+import { IFacegateFormData } from '../../types/pages/facegate'
+import t from '../../utils/translator'
 
-const validateFacegateFormData = (formData: IFacegateFormData): IFormErrors => {
+const validateFacegateFormData = (
+  formData: IFacegateFormData
+): INewFormErrors<IFacegateFormData> => {
   const errors: IFormErrors = {}
 
-  if (!formData.name) {
-    errors.name = 'Device Name is required'
+  if (!formData.FacegateName) {
+    errors.FacegateName = t`Facegate Name is required`
   }
 
-  if (!formData.partition?.value) {
-    errors.partition = 'Partition is required'
+  if (!formData.Partition?.value) {
+    errors.Partition = t`Partition is required`
   }
 
-  if (!formData.node?.value) {
-    errors.node = 'Node is required'
+  if (!formData.Node?.value) {
+    errors.Node = t`Node is required`
   }
 
-  if (!formData.user?.value) {
-    errors.user = 'User is required'
+  if (!formData.UserId) {
+    errors.UserId = t`User ID is required`
   }
 
-  if (!formData.ip_address) {
-    errors.ip_address = 'IP Address is required'
+  if (!formData.IpAddress) {
+    errors.IpAddress = t`IP Address is required`
   }
 
-  if (!formData.api_port) {
-    errors.api_port = 'API Port is required'
+  if (!formData.ApiPort) {
+    errors.ApiPort = t`API Port is required`
   }
 
-  if (!formData.password) {
-    errors.password = 'Password is required'
+  if (!formData.Password) {
+    errors.Password = t`Password is required`
   }
 
-  if (!formData.device_id) {
-    errors.device_id = 'Device ID is required'
+  if (!formData.DeviceId) {
+    errors.DeviceId = t`Device ID is required`
   }
 
-  if (!formData.open_door_way) {
-    errors.open_door_way = 'Open Door Way is required'
+  if (!formData.OpenDoorWay) {
+    errors.OpenDoorWay = t`Open Door Way is required`
   }
 
-  if (!formData.verify_mode) {
-    errors.verify_mode = 'Verify Mode is required'
+  if (formData.GateType?.value !== '0' && formData.GateType?.value !== '1') {
+    if (!formData.FaceThreshold) {
+      errors.FaceThreshold = t`Face Threshold is required`
+    }
   }
 
-  if (!formData.face_threshold) {
-    errors.face_threshold = 'Face Threshold is required'
+  if (!formData.VerifyMode) {
+    errors.VerifyMode = t`Verify Mode is required`
   }
 
-  // if (!formData.sip_gate_id) {
-  //     errors.sip_gate_id = "SIP Gate ID is required";
-  // }
+  if (formData.GateType?.value !== '0' && formData.GateType?.value !== '2') {
+    // Check SIP fields if GateType is 2 (Basic+Face) or 3 (Basic+Facegate and Face)
+    if (!formData.SipGateId) {
+      errors.SipGateId = t`SIP Gate ID is required`
+    }
 
-  // if (!formData.sip_password) {
-  //     errors.sip_password = "SIP Password is required";
-  // }
+    if (!formData.SipPassword) {
+      errors.SipPassword = t`SIP Password is required`
+    }
 
-  // if (!formData.sip_operator_id) {
-  //     errors.sip_operator_id = "SIP Operator ID is required";
-  // }
+    if (!formData.SipOperatorId) {
+      errors.SipOperatorId = t`SIP Operator ID is required`
+    }
 
-  // if (!formData.lock_stat) {
-  //     errors.lock_stat = "Lock Stat is required";
-  // }
+    if (!formData.SipDtmfLock) {
+      errors.SipDtmfLock = t`SIP DTMF Lock is required`
+    }
 
-  // if (!formData.contact_stat) {
-  //     errors.contact_stat = "Contact Stat is required";
-  // }
+    // if (!formData.SipIncomingCall) {
+    //   errors.SipIncomingCall = t`SIP Incoming Call is required`
+    // }
+  }
 
   return errors
 }

@@ -1,14 +1,16 @@
-import { regionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
+import { readerApi, regionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IDoorFormData, doorReaderType } from 'types/pages/door'
-import { IRegionResult } from 'types/pages/region'
-import { SERVER_QUERY } from 'utils/config'
-import { listIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IDoorFormData, doorReaderTypeOption } from '../../../../types/pages/door'
+import { IReaderResult } from '../../../../types/pages/reader'
+import { IRegionResult } from '../../../../types/pages/region'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { listIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IDoorFormData
@@ -27,75 +29,125 @@ function DoorReaderForm({ formData, handleInputChange, formErrors, disabled, isL
       : regionApi.list(SERVER_QUERY.selectorDataQuery)
   )
 
+  const { isLoading: readerIsLoading, data: readerData } = useSWR<
+    IListServerResponse<IReaderResult[]>
+  >(
+    (disabled || typeof handleInputChange === 'undefined') &&
+      formData?.SubnodeNo &&
+      formData?.SubnodeNo !== '0'
+      ? null
+      : readerApi.list(`${SERVER_QUERY.selectorDataQuery}&NodeNo=${formData?.NodeNo}`)
+  )
+
   return (
-    <FormCardWithHeader icon={listIcon} header="Reader">
-      <SwitchButton
-        name="in_enable"
-        label="Reader In Enable"
-        checked={formData?.in_enable}
+    <FormCardWithHeader icon={listIcon} header={t`Reader`}>
+      <SwitchButtonSelect
+        name="InEnable"
+        label={t`Reader In Enable`}
+        value={formData?.InEnable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      {formData?.in_enable && (
+
+      {formData?.SubnodeNo === '0' &&
+      readerData?.data?.length &&
+      formData?.InEnable?.value === '1' ? (
         <Selector
-          name="in_type"
-          label="Reader In Type"
-          value={formData?.in_type}
+          name="InReader" //InReaderNo
+          label={t`OSDP In Reader`}
+          value={formData?.InReader}
           onChange={handleInputChange}
-          options={doorReaderType}
+          options={readerData?.data.map((result) => ({
+            value: result.ReaderNo.toString(),
+            label: result.ReaderName,
+          }))}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.in_type}
+          error={formErrors?.InReader}
+          isLoading={isLoading || readerIsLoading}
+        />
+      ) : null}
+
+      {formData?.InEnable?.value === '1' && (
+        <Selector
+          name="InType"
+          label={t`Reader In Type`}
+          value={formData?.InType}
+          onChange={handleInputChange}
+          options={doorReaderTypeOption}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.InType}
           isLoading={isLoading}
         />
       )}
-      {formData?.in_enable && (
+
+      {formData?.InEnable?.value === '1' && (
         <Selector
-          name="in_region"
-          label="Reader In Region"
-          value={formData?.in_region}
+          name="InRegion"
+          label={t`Reader In Region`}
+          value={formData?.InRegion}
           onChange={handleInputChange}
-          options={regionData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          options={regionData?.data.map((result) => ({
+            value: result.RegionNo.toString(),
+            label: result.RegionName,
           }))}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.in_region}
+          error={formErrors?.InRegion}
           isLoading={isLoading || regionIsLoading}
         />
       )}
-      <SwitchButton
-        name="out_enable"
-        label="Reader Out Enable"
-        checked={formData?.out_enable}
+
+      <SwitchButtonSelect
+        name="OutEnable"
+        label={t`Reader Out Enable`}
+        value={formData?.OutEnable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      {formData?.out_enable && (
+
+      {formData?.OutEnable?.value === '1' &&
+      formData?.SubnodeNo === '0' &&
+      readerData?.data?.length ? (
         <Selector
-          name="out_type"
-          label="Reader Out Type"
-          value={formData?.out_type}
+          name="OutReader"
+          label={t`OSDP Out Reader`}
+          value={formData?.OutReader}
           onChange={handleInputChange}
-          options={doorReaderType}
+          options={readerData?.data.map((result) => ({
+            value: result.ReaderNo.toString(),
+            label: result.ReaderName,
+          }))}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.out_type}
+          error={formErrors?.OutReader}
+          isLoading={isLoading || readerIsLoading}
+        />
+      ) : null}
+
+      {formData?.OutEnable?.value === '1' && (
+        <Selector
+          name="OutType"
+          label={t`Reader Out Type`}
+          value={formData?.OutType}
+          onChange={handleInputChange}
+          options={doorReaderTypeOption}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.OutType}
           isLoading={isLoading}
         />
       )}
-      {formData?.out_enable && (
+      {formData?.OutEnable?.value === '1' && (
         <Selector
-          name="out_region"
-          label="Reader Out Region"
-          value={formData?.out_region}
+          name="OutRegion"
+          label={t`Reader Out Region`}
+          value={formData?.OutRegion}
           onChange={handleInputChange}
-          options={regionData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          options={regionData?.data.map((result) => ({
+            value: result.RegionNo.toString(),
+            label: result.RegionName,
           }))}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.out_region}
+          error={formErrors?.OutRegion}
           isLoading={isLoading || regionIsLoading}
         />
       )}

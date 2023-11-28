@@ -1,7 +1,7 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import { IListData } from 'data/_listData'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import { IListData } from '../../../data/_listData'
 import Checkbox from '../../atomic/Checkbox'
 
 type IProps = {

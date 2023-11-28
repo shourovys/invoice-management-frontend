@@ -2,9 +2,10 @@ import QueryString from 'qs'
 import { useNavigate } from 'react-router-dom'
 
 interface IProps {
-  query: object
+  query: { [key: string]: string | number | null | undefined } | object
   pathName: string
 }
+
 const useUpdateRouteQueryWithReplace = () => {
   const navigate = useNavigate()
 
@@ -17,12 +18,25 @@ const useUpdateRouteQueryWithReplace = () => {
     }, {})
 
   return ({ query, pathName }: IProps): void => {
-    const queryStringValue = QueryString.stringify({
+    const queryStringValue = {
       ...prevQuery,
       ...query,
+    }
+
+    // filter out null values
+    Object.keys(queryStringValue).forEach((key) => {
+      if (
+        queryStringValue[key] === null ||
+        queryStringValue[key] === '' ||
+        queryStringValue[key] === undefined
+      ) {
+        delete queryStringValue[key]
+      }
     })
 
-    navigate(`${pathName}?${queryStringValue}`, { replace: true })
+    const qs = QueryString.stringify(queryStringValue, { encode: true })
+
+    navigate(`${pathName}?${qs}`, { replace: true })
 
     // navigate(
     //     {

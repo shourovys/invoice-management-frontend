@@ -1,10 +1,16 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IRegionFormData } from 'types/pages/region'
-import { deadmanRuleIcon } from 'utils/icons'
+import { outputApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
+import useSWR from 'swr'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IOutputResult } from '../../../../types/pages/output'
+import { IRegionFormData } from '../../../../types/pages/region'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { deadmanRuleIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IRegionFormData
@@ -21,44 +27,51 @@ function RegionDeadmanRuleForm({
   disabled,
   isLoading,
 }: IProps) {
+  const { isLoading: outputIsLoading, data: outputData } = useSWR<
+    IListServerResponse<IOutputResult[]>
+  >(
+    disabled || typeof handleInputChange === 'undefined'
+      ? null
+      : outputApi.list(SERVER_QUERY.selectorDataQuery)
+  )
+
   return (
-    <FormCardWithHeader icon={deadmanRuleIcon} header="Deadman Rule">
-      <SwitchButton
-        name="deadman_rule"
-        label="Deadman Rule"
-        checked={formData?.deadman_rule}
+    <FormCardWithHeader icon={deadmanRuleIcon} header={t`Deadman Rule`}>
+      <SwitchButtonSelect
+        name="DeadmanRule"
+        label={t`Deadman Rule`}
+        value={formData?.DeadmanRule}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      <div>
-        {formData?.deadman_rule && (
-          <Input
-            name="deadman_interval"
-            label="Deadman Interval (min)"
-            type="number"
-            value={formData.deadman_interval}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            isLoading={isLoading}
-            error={formErrors?.deadman_interval}
-          />
-        )}
-      </div>
-      <div>
-        {formData?.deadman_rule && (
-          <Input
-            name="deadman_output_no"
-            label="Deadman Output No"
-            type="number"
-            value={formData.deadman_output_no}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            isLoading={isLoading}
-            error={formErrors?.deadman_output_no}
-          />
-        )}
-      </div>
+      {formData?.DeadmanRule?.value === '1' && (
+        <Input
+          name="DeadmanInterval"
+          label={t`Deadman Interval (min)`}
+          type="number"
+          value={formData.DeadmanInterval}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          isLoading={isLoading}
+          error={formErrors?.DeadmanInterval}
+        />
+      )}
+      {formData?.DeadmanRule?.value === '1' && (
+        <Selector
+          name="DeadmanOutputNo"
+          label={t`Deadman Output No`}
+          value={formData.DeadmanOutputNo}
+          options={outputData?.data.map((data) => ({
+            label: data.OutputName,
+            value: data.OutputNo.toString(),
+          }))}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          isLoading={isLoading || outputIsLoading}
+          error={formErrors?.DeadmanOutputNo}
+        />
+      )}
     </FormCardWithHeader>
   )
 }

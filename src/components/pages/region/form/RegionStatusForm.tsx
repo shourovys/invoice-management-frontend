@@ -1,8 +1,8 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IRegionFormData } from 'types/pages/region'
-import { regionStatusIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IRegionFormData } from '../../../../types/pages/region'
+import { regionStatusIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IRegionFormData
@@ -12,33 +12,26 @@ interface IProps {
   isLoading?: boolean
 }
 
-function RegionStatusForm({
-  formData,
-  handleInputChange,
-  // formErrors,
-  disabled,
-  isLoading,
-}: IProps) {
+function RegionStatusForm({ formData, handleInputChange, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={regionStatusIcon} header="Status">
-      <SwitchButton
-        name="deadman_stat"
-        label="Deadman Stat"
-        checked={formData?.deadman_stat}
+    <FormCardWithHeader icon={regionStatusIcon} header={t`Status`}>
+      {/* <SwitchButtonSelect
+        name="DeadmanStat"
+        label={t`Deadman Stat`}
+        value={formData?.DeadmanStat}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      <SwitchButton
-        name="hazmat_stat"
-        label="Hazmat Stat"
-        checked={formData?.hazmat_stat}
+      <SwitchButtonSelect
+        name="HazmatStat"
+        label={t`Hazmat Stat`}
+        value={formData?.HazmatStat}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
-      />
+      /> */}
     </FormCardWithHeader>
   )
 }
-
 export default RegionStatusForm

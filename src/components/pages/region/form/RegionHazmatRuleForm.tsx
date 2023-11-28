@@ -1,10 +1,16 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IRegionFormData } from 'types/pages/region'
-import { hazmatRuleIcon } from 'utils/icons'
+import { inputApi, outputApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
+import useSWR from 'swr'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IInputResult } from '../../../../types/pages/input'
+import { IOutputResult } from '../../../../types/pages/output'
+import { IRegionFormData } from '../../../../types/pages/region'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { hazmatRuleIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IRegionFormData
@@ -21,44 +27,62 @@ function RegionHazmatRuleForm({
   disabled,
   isLoading,
 }: IProps) {
+  const { isLoading: inputIsLoading, data: inputData } = useSWR<
+    IListServerResponse<IInputResult[]>
+  >(
+    disabled || typeof handleInputChange === 'undefined'
+      ? null
+      : inputApi.list(SERVER_QUERY.selectorDataQuery)
+  )
+
+  const { isLoading: outputIsLoading, data: outputData } = useSWR<
+    IListServerResponse<IOutputResult[]>
+  >(
+    disabled || typeof handleInputChange === 'undefined'
+      ? null
+      : outputApi.list(SERVER_QUERY.selectorDataQuery)
+  )
+
   return (
-    <FormCardWithHeader icon={hazmatRuleIcon} header="Hazmat Rule">
-      <SwitchButton
-        name="hazmat_rule"
-        label="Hazmat Rule"
-        checked={formData?.hazmat_rule}
+    <FormCardWithHeader icon={hazmatRuleIcon} header={t`Hazmat Rule`}>
+      <SwitchButtonSelect
+        name="HazmatRule"
+        label={t`Hazmat Rule`}
+        value={formData?.HazmatRule}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      <div>
-        {formData?.hazmat_rule && (
-          <Input
-            name="hazmat_input_no"
-            label="Hazmat Input No"
-            type="number"
-            value={formData.hazmat_input_no}
+      {formData?.HazmatRule?.value === '1' && (
+        <>
+          <Selector
+            name="HazmatInputNo"
+            label={t`Hazmat Input No`}
+            value={formData?.HazmatInputNo}
+            options={inputData?.data.map((data) => ({
+              label: data.InputName,
+              value: data.InputNo.toString(),
+            }))}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            isLoading={isLoading}
-            error={formErrors?.hazmat_input_no}
+            isLoading={isLoading || inputIsLoading}
+            error={formErrors?.HazmatInputNo}
           />
-        )}
-      </div>
-      <div>
-        {formData?.hazmat_rule && (
-          <Input
-            name="hazmat_output_no"
-            label="Hazmat Output No"
-            type="number"
-            value={formData.hazmat_output_no}
+          <Selector
+            name="HazmatOutputNo"
+            label={t`Hazmat Output No`}
+            value={formData?.HazmatOutputNo}
+            options={outputData?.data.map((data) => ({
+              label: data.OutputName,
+              value: data.OutputNo.toString(),
+            }))}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            isLoading={isLoading}
-            error={formErrors?.hazmat_output_no}
+            isLoading={isLoading || outputIsLoading}
+            error={formErrors?.HazmatOutputNo}
           />
-        )}
-      </div>
+        </>
+      )}
     </FormCardWithHeader>
   )
 }

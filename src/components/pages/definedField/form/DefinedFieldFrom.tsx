@@ -1,10 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IDefinedFieldFormData } from 'types/pages/definedField'
-import { definedFieldIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors } from '../../../../types/pages/common'
+import { IDefinedFieldFormData } from '../../../../types/pages/definedField'
+import { definedFieldIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IDefinedFieldFormData
@@ -12,6 +13,7 @@ interface IProps {
   formErrors?: IFormErrors
   disabled?: boolean
   isLoading?: boolean
+  isFieldNoEditAble?: boolean
 }
 
 function DefinedFieldForm({
@@ -20,38 +22,49 @@ function DefinedFieldForm({
   formErrors,
   disabled,
   isLoading,
+  isFieldNoEditAble,
 }: IProps) {
   return (
-    <FormCardWithHeader icon={definedFieldIcon} header="Defined Field">
+    <FormCardWithHeader icon={definedFieldIcon} header={t`Defined Field`}>
       <Input
-        name="name"
-        label="Field Name"
-        value={formData?.name}
+        name="FieldNo"
+        label={t`Field No`}
+        type="number"
+        value={formData?.FieldNo}
         onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        disabled={!isFieldNoEditAble}
+        error={formErrors?.FieldNo}
         isLoading={isLoading}
       />
-      <SwitchButton
-        name="enable"
-        label="Field Enable"
-        checked={formData?.enable}
+      <Input
+        name="FieldName"
+        label={t`Field Name`}
+        value={formData?.FieldName}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.FieldName}
+        isLoading={isLoading}
+      />
+      <SwitchButtonSelect
+        name="FieldEnable"
+        label={t`Field Enable`}
+        value={formData?.FieldEnable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      <SwitchButton
-        name="listable"
-        label="List Enable"
-        checked={formData?.listable}
+      <SwitchButtonSelect
+        name="ListEnable"
+        label={t`List Enable`}
+        value={formData?.ListEnable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      <SwitchButton
-        name="filterable"
-        label="Filter Enable"
-        checked={formData?.filterable}
+      <SwitchButtonSelect
+        name="FilterEnable"
+        label={t`Filter Enable`}
+        value={formData?.FilterEnable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}

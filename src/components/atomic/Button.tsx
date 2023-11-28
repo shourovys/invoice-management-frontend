@@ -1,7 +1,7 @@
 import classNames from 'classnames'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { TButtonColor, TButtonSize, TButtonType } from 'types/components/buttons'
+import { TButtonColor, TButtonSize, TButtonType } from '../../types/components/buttons'
 import LoadingTextWithSvg from '../loading/atomic/LoadingTextWithSvg'
 
 interface IProps {
@@ -9,10 +9,16 @@ interface IProps {
   size?: TButtonSize
   color?: TButtonColor
   isLoading?: boolean
+  disabled?: boolean
   link?: string
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
   className?: string
-  children: JSX.Element | JSX.Element[] | string
+  children: ReactNode
+  style?: React.CSSProperties
+  onMouseDown?: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onMouseUp?: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onTouchStart?: (event: React.TouchEvent<HTMLButtonElement>) => void
+  onTouchEnd?: (event: React.TouchEvent<HTMLButtonElement>) => void
 }
 
 function Button({
@@ -20,32 +26,83 @@ function Button({
   size = 'base',
   color = 'primary',
   isLoading,
+  disabled,
   link,
   onClick,
   className,
   children,
+  style,
+  onMouseDown,
+  onMouseUp,
+  onTouchStart,
+  onTouchEnd,
 }: IProps) {
   const buttonClassNames = classNames(
-    'custom_transition inline-flex items-center justify-center text-sm font-normal rounded-md hover:shadow-all-side gap-1.5 px-3',
+    ' inline-flex items-center justify-center text-sm font-normal rounded-md  gap-1.5 px-3',
     size === 'small' && 'py-1 small min-w-[74px]',
-    size === 'base' && 'py-2 base min-w-[100px]',
-    size === 'large' && 'py-3 large min-w-[120px]',
-    color === 'primary'
-      ? 'bg-primary text-white hover:bg-white hover:text-primary'
-      : 'bg-[#e9e9e989] text-primary hover:bg-white',
-    isLoading ? 'cursor-wait' : 'cursor-pointer',
+    size === 'base' && 'py-1.5 md:py-2 base min-w-[80px] md:min-w-[100px]',
+    size === 'large' && 'py-2 md:py-2.5 large min-w-[100px] md:min-w-[120px]',
+    color === 'primary' &&
+      `bg-btnPrimaryBg text-btnPrimaryText ${
+        !disabled && 'hover:bg-btnPrimaryText hover:text-btnPrimaryBg'
+      }`,
+    color === 'info' &&
+      `bg-btnInfoHoverBg text-btnInfoText ${
+        !disabled && 'hover:bg-btnInfoText hover:text-btnInfoHoverBg'
+      }`,
+    color === 'danger' &&
+      `bg-btnDangerBg text-btnDangerText ${
+        !disabled && 'hover:bg-btnDangerText hover:text-btnDangerBg'
+      }`,
+    color === 'apply' &&
+      `bg-applyButtonBg text-applyButtonText ${
+        !disabled && 'hover:bg-applyButtonText hover:text-applyButtonBg'
+      }`,
+    color === 'cancel' &&
+      `bg-cancelButtonBg text-cancelButtonText ${
+        !disabled && 'hover:bg-cancelButtonText hover:text-cancelButtonBg'
+      }`,
+    color === 'csv' &&
+      `bg-csvBtnBg text-csvBtnText ${!disabled && 'hover:bg-csvBtnText hover:text-csvBtnBg'}`,
+    isLoading ? 'cursor-wait' : disabled ? 'cursor-auto' : 'cursor-pointer',
+    disabled ? 'opacity-50 cursor-auto' : 'hover:shadow-all-side',
     className
   )
 
+  if (disabled) {
+    return (
+      <button
+        className={buttonClassNames}
+        type={type}
+        style={style}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {isLoading ? <LoadingTextWithSvg size={size} /> : children}
+      </button>
+    )
+  }
+
   if (link) {
     return (
-      <Link to={link} className={buttonClassNames}>
+      <Link to={link} className={buttonClassNames} style={style}>
         {isLoading ? <LoadingTextWithSvg size={size} /> : children}
       </Link>
     )
   }
   return (
-    <button className={buttonClassNames} type={type} onClick={onClick}>
+    <button
+      className={buttonClassNames}
+      type={type}
+      onClick={onClick}
+      style={style}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
       {isLoading ? <LoadingTextWithSvg size={size} /> : children}
     </button>
   )

@@ -1,4 +1,5 @@
-import { INPUT_FIELD_HEIGHT } from 'utils/config'
+import { THandleInputSelect } from '../../types/components/common'
+import { INPUT_FIELD_HEIGHT } from '../../utils/config'
 import InputLoading from '../loading/atomic/InputLoading'
 import Checkbox from './Checkbox'
 
@@ -17,6 +18,9 @@ interface IProps {
   error?: string | null
   onChange?: (name: string, value: string[]) => void
   disabled?: boolean
+  // props for checkbox in label
+  isSelected?: boolean
+  handleSelect?: THandleInputSelect
 }
 
 function MultipleCheckbox({
@@ -29,6 +33,8 @@ function MultipleCheckbox({
   error,
   onChange,
   disabled = false,
+  isSelected,
+  handleSelect,
 }: IProps) {
   const handleCheckboxChange = (value: string, isChecked: boolean) => {
     if (onChange) {
@@ -50,7 +56,24 @@ function MultipleCheckbox({
   return (
     <div className="space-y-0.5">
       {inputLabel && (
-        <p className="inline-block w-full text-sm text-gray-700 form-inputLabel">{inputLabel}</p>
+        <>
+          {handleSelect ? (
+            <div className="py-0.5">
+              <Checkbox
+                label={inputLabel}
+                value={name}
+                checked={isSelected}
+                onChange={(_checked) => {
+                  handleSelect(name, _checked)
+                }}
+              />
+            </div>
+          ) : (
+            <label className="inline-block w-full text-sm text-gray-700 form-label" htmlFor={name}>
+              {inputLabel}
+            </label>
+          )}
+        </>
       )}
 
       {isLoading ? (

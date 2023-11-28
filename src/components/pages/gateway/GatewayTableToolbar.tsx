@@ -1,15 +1,16 @@
-import { nodeApi } from 'api/urls'
+import { nodeApi } from '../../../api/urls'
 import useSWR from 'swr'
-import { THandleFilterInputChange } from 'types/components/common'
-import { IListServerResponse } from 'types/pages/common'
-import { IGatewayFilters } from 'types/pages/gateway'
-import { INodeResult } from 'types/pages/node'
-import Icon, { applyIcon, resetIcon } from 'utils/icons'
+import { THandleFilterInputChange } from '../../../types/components/common'
+import { IListServerResponse } from '../../../types/pages/common'
+import { IGatewayFilters } from '../../../types/pages/gateway'
+import { INodeResult } from '../../../types/pages/node'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import { SERVER_QUERY } from '../../../utils/config'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
 import Selector from '../../atomic/Selector'
+import t from '../../../utils/translator'
 
 interface IProps {
   filterState: IGatewayFilters
@@ -32,43 +33,45 @@ function GatewayTableToolbar({
     <TableToolbarContainer>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
         <Input
-          name="id"
-          placeholder="Gateway No"
-          value={filterState.id}
+          name="GatewayNo"
+          placeholder={t`Gateway No`}
+          value={filterState.GatewayNo}
           onChange={handleInputChange}
+          type="number"
         />
         <Input
-          name="name"
-          placeholder="Gateway Name"
-          value={filterState.name}
+          name="GatewayName"
+          placeholder={t`Gateway Name`}
+          value={filterState.GatewayName}
           onChange={handleInputChange}
         />
         <Selector
-          name="node"
-          placeholder="Node"
-          value={filterState.node}
-          options={nodeData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Node"
+          placeholder={t`Node`}
+          value={filterState.Node}
+          options={nodeData?.data.map((result) => ({
+            value: result.NodeNo.toString(),
+            label: result.NodeName,
           }))}
           onChange={handleInputChange}
           isLoading={nodeIsLoading}
         />
         <Input
-          name="ip_address"
-          placeholder="IP Addess"
-          value={filterState.ip_address}
+          name="IpAddress"
+          placeholder={t`IP Address`}
+          value={filterState.IpAddress}
           onChange={handleInputChange}
+          type="number"
         />
       </div>
       <div className="flex gap-3.5 lg:gap-4">
         <Button onClick={handleFilterApply}>
           <Icon icon={applyIcon} />
-          <span>Apply</span>
+          <span>{t`Apply`}</span>
         </Button>
-        <Button color="gray" onClick={handleFilterStateReset}>
+        <Button color="danger" onClick={handleFilterStateReset}>
           <Icon icon={resetIcon} />
-          <span>Reset</span>
+          <span>{t`Reset`}</span>
         </Button>
       </div>
     </TableToolbarContainer>

@@ -3,17 +3,16 @@ import { Fragment } from 'react'
 
 interface IProps {
   children: JSX.Element | JSX.Element[] | string
-  flyout: JSX.Element | JSX.Element[]
+  flyout: ({ close }: { close: () => void }) => JSX.Element
   className?: string
 }
-export default function Flyout({ children, flyout, className }: IProps) {
+
+export default function Flyout({ children, flyout: FlyoutComponent, className }: IProps) {
   return (
     <Popover as="div" className={className}>
-      <div>
-        <Popover.Button className="flex items-center justify-center max-w-xs gap-2 p-1 text-sm bg-white rounded-full md:rounded-md">
-          {children}
-        </Popover.Button>
-      </div>
+      <Popover.Button className="flex items-center justify-center max-w-xs gap-2 text-sm md:h-full">
+        {children}
+      </Popover.Button>
       <Transition
         as={Fragment}
         enter="transition ease-out duration-100"
@@ -24,7 +23,11 @@ export default function Flyout({ children, flyout, className }: IProps) {
         leaveTo="transform opacity-0 scale-95"
       >
         <Popover.Panel className="absolute left-0 right-0">
-          <div className="w-full max-w-full min-w-max">{flyout}</div>
+          {({ close }) => (
+            <div className="w-full max-w-full min-w-max">
+              {<FlyoutComponent close={() => close()} />}
+            </div>
+          )}
         </Popover.Panel>
       </Transition>
     </Popover>

@@ -1,9 +1,11 @@
-// table
+import Cookies from 'js-cookie'
+
 export const TABLE_ROW_HEIGHT = 37.75
 export const TABLE_ROW_PER_PAGE = 10
 
 // input
 export const INPUT_FIELD_HEIGHT = '33.6px'
+export const TEXTAREA_FIELD_HEIGHT = '132.6px'
 
 // error
 export const ERROR_CLASS = 'input_error'
@@ -11,18 +13,29 @@ export const ERROR_CLASS = 'input_error'
 // Local Storage
 export const LOCAL_STORAGE_KEY = {
   accessToken: 'accessToken',
-}
-
-// colors
-export const COLORS = {
-  primary: '#006AFE',
+  timeFormat: 'time_format',
+  dateFormat: 'date_format',
+  timezone: 'timezone',
 }
 
 // query
 export const SERVER_QUERY = {
-  selectorDataQuery: 'limit=100&sort_by=id&order=asc',
+  selectorDataQuery: 'limit=100',
 }
 
+// image urls (proxy)
+const get_image_path = (() => {
+  const is_proxy = Cookies.get('is_proxy_site') === 'True'
+  if (is_proxy) {
+    const site_no = Cookies.get('site_no') || '1'
+    return `/proxy/${site_no}/image/`
+  }
+  return import.meta.env.VITE_IMAGE_URL
+})()
+
 // server urls
-export const serverImageUrlBase =
-  process.env.NEXT_PUBLIC_IMAGE_URL || 'https://jupiter-backend.texonltd.com/media'
+const API_URL = import.meta.env.VITE_API_URL
+const IMAGE_URL = get_image_path
+const STREAM_URL = import.meta.env.VITE_STREAM_URL
+
+export { API_URL, IMAGE_URL, STREAM_URL }

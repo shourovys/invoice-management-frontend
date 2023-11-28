@@ -1,18 +1,32 @@
-import { scheduleApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
+import { ftpApi, networkApi, scheduleApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IArchiveScheduleFormData, archiveScheduleMediaOptions } from 'types/pages/archiveSchedule'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IScheduleResult } from 'types/pages/schedule'
-import { SERVER_QUERY } from 'utils/config'
-import { archiveScheduleIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import {
+  IArchiveScheduleFormData,
+  IArchiveScheduleInfoFormData,
+  archiveScheduleMediaOptions,
+} from '../../../../types/pages/archiveSchedule'
+import {
+  IFormErrors,
+  IListServerResponse,
+  ISingleServerResponse,
+} from '../../../../types/pages/common'
+import { IScheduleResult } from '../../../../types/pages/schedule'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { archiveScheduleIcon } from '../../../../utils/icons'
+import { formatDateTimeTzView, formatDateTimeView } from '../../../../utils/formetTime'
+import t from '../../../../utils/translator'
+import { useEffect, useState } from 'react'
+import { IFtpResult } from '../../../../types/pages/ftp'
+import { INetworkResult } from '../../../../types/pages/network'
+import { maintenanceBackupMediaOptions } from '../../../../types/pages/maintenance'
 
 interface IProps {
-  formData?: IArchiveScheduleFormData
+  formData?: IArchiveScheduleFormData | IArchiveScheduleInfoFormData
   handleInputChange?: THandleInputChange
   formErrors?: IFormErrors
   disabled?: boolean
@@ -34,112 +48,122 @@ function ArchiveScheduleForm({
       : scheduleApi.list(SERVER_QUERY.selectorDataQuery)
   )
 
+  const [mediaOptions, setMediaOptions] = useState([])
+  const { data: ftpDetails, isLoading: ftpDetailsLoading } = useSWR<
+    ISingleServerResponse<IFtpResult>
+  >(ftpApi.details)
+  const { data: networkDetails, isLoading: networkDetailsLoading } = useSWR<
+    ISingleServerResponse<INetworkResult>
+  >(networkApi.details)
+
+  useEffect(() => {
+    if (ftpDetails && networkDetails) {
+      setMediaOptions(
+        archiveScheduleMediaOptions.filter((option) => {
+          if (option.value === '2') {
+            return !!ftpDetails.data.Enable
+          } else if (option.value === '3') {
+            return !!networkDetails.data.Cloud
+          }
+          return true
+        }) as []
+      )
+    }
+  }, [ftpDetailsLoading, networkDetailsLoading])
+
   return (
-    <FormCardWithHeader icon={archiveScheduleIcon} header="Archive Schedule">
+    <FormCardWithHeader icon={archiveScheduleIcon} header={t`Archive Schedule`}>
       <Input
-        name="name"
-        label="Archive Schedule Name"
-        value={formData?.name}
+        name="ArchiveName"
+        label={t`Archive Schedule Name`}
+        value={formData?.ArchiveName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.ArchiveName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="ArchiveDesc"
+        label={t`Description`}
+        value={formData?.ArchiveDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
-        isLoading={isLoading}
-      />
-      <Selector
-        name="media"
-        label="Media"
-        value={formData?.media}
-        options={archiveScheduleMediaOptions}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.media}
+        error={formErrors?.ArchiveDesc}
         isLoading={isLoading}
       />
 
-      <SwitchButton
-        name="usage_based"
-        label="Usage Based"
-        checked={formData?.usage_based}
+      <Selector
+        name="Media"
+        label={t`Media`}
+        value={formData?.Media}
+        options={mediaOptions}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.Media}
+        isLoading={isLoading}
+      />
+
+      <SwitchButtonSelect
+        name="UsageBased"
+        label={t`Usage Based`}
+        value={formData?.UsageBased}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      {formData?.usage_based ? (
+      {formData?.UsageBased?.value === '0' ? (
         <Selector
-          name="schedule"
-          label="Schedule"
-          value={formData?.schedule}
-          options={scheduleData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Schedule"
+          label={t`Schedule`}
+          value={formData?.Schedule}
+          options={scheduleData?.data.map((result) => ({
+            value: result.ScheduleNo.toString(),
+            label: result.ScheduleName,
           }))}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.schedule}
+          error={formErrors?.Schedule}
           isLoading={isLoading || scheduleIsLoading}
         />
       ) : (
         <Input
-          name="usage_percent"
-          label="Usage Percent"
+          name="UsagePercent"
+          label={t`Usage Percent`}
           type="number"
-          value={formData?.usage_percent}
+          value={formData?.UsagePercent}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.usage_percent}
+          error={formErrors?.UsagePercent}
           isLoading={isLoading}
         />
       )}
 
-      <div>
-        {disabled ||
-          (typeof handleInputChange === 'undefined' && (
-            <Input
-              name="archive_time"
-              label="Archive Time"
-              value={formData?.archive_time}
-              onChange={handleInputChange}
-              disabled={disabled || typeof handleInputChange === 'undefined'}
-              error={formErrors?.archive_time}
-              isLoading={isLoading}
-            />
-          ))}
-      </div>
-      <div>
-        {(disabled || typeof handleInputChange === 'undefined') && (
+      {(disabled || typeof handleInputChange === 'undefined') &&
+        formData &&
+        'ArchiveTime' in formData && (
           <Input
-            name="archive_time"
-            label="Archive Time"
-            value={formData?.archive_time}
+            name="ArchiveTime"
+            label={t`Archive Time`}
+            value={formData?.ArchiveTime == 0 ? '' : formatDateTimeTzView(formData?.ArchiveTime)}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.archive_time}
+            error={formErrors?.ArchiveTime}
             isLoading={isLoading}
           />
         )}
-      </div>
 
-      <div>
-        {(disabled || typeof handleInputChange === 'undefined') && (
+      {(disabled || typeof handleInputChange === 'undefined') &&
+        formData &&
+        'ArchiveLogNo' in formData && (
           <Input
-            name="archive_logo_no"
-            label="Archive Logo No"
-            value={formData?.archive_logo_no}
+            name="ArchiveLogNo"
+            label={t`Archive Logo No`}
+            value={formData?.ArchiveLogNo}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
             isLoading={isLoading}
           />
         )}
-      </div>
     </FormCardWithHeader>
   )
 }

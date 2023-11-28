@@ -1,10 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { INetworkFormData } from 'types/pages/network'
-import { networkIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../components/HOC/FormCardWithHeader'
+import Input from '../../../components/atomic/Input'
+import Selector from '../../../components/atomic/Selector'
+import { THandleInputChange } from '../../../types/components/common'
+import { IFormErrors, booleanSelectOption } from '../../../types/pages/common'
+import { INetworkFormData } from '../../../types/pages/network'
+import { networkIcon } from '../../../utils/icons'
+import t from '../../../utils/translator'
 
 interface IProps {
   formData?: INetworkFormData
@@ -16,63 +17,67 @@ interface IProps {
 
 function NetworkForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={networkIcon} header="Network">
+    <FormCardWithHeader icon={networkIcon} header={t`Network`}>
       <Selector
-        name="dhcp"
-        label="DHCP"
-        value={formData?.dhcp}
-        options={[
-          { label: 'Enabled', value: 'true' },
-          { label: 'Disabled', value: 'false' },
-        ]}
+        name="Dhcp"
+        label={t`DHCP`}
+        value={formData?.Dhcp}
+        options={booleanSelectOption}
+        isClearable={false}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.dhcp}
+        error={formErrors?.Dhcp}
         isLoading={isLoading}
       />
       <Input
-        name="address"
-        label="Address"
-        value={formData?.address}
+        name="Address"
+        label={t`Address`}
+        value={formData?.Address}
+        onChange={handleInputChange}
+        disabled={
+          disabled || typeof handleInputChange === 'undefined' || formData?.Dhcp?.value === '1'
+        }
+        error={formErrors?.Address}
+        isLoading={isLoading}
+      />
+      {formData?.Dhcp?.value === '0' && (
+        <Input
+          name="Netmask"
+          label={t`Netmask`}
+          value={formData?.Netmask}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Netmask}
+          isLoading={isLoading}
+        />
+      )}
+      {formData?.Dhcp?.value === '0' && (
+        <Input
+          name="Gateway"
+          label={t`Gateway`}
+          value={formData?.Gateway}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Gateway}
+          isLoading={isLoading}
+        />
+      )}
+      <Input
+        name="Dns1"
+        label={t`DNS1`}
+        value={formData?.Dns1}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.address}
+        error={formErrors?.Dns1}
         isLoading={isLoading}
       />
       <Input
-        name="netmask"
-        label="Netmask"
-        value={formData?.netmask}
+        name="Dns2"
+        label={t`DNS2`}
+        value={formData?.Dns2}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.netmask}
-        isLoading={isLoading}
-      />
-      <Input
-        name="gateway"
-        label="Gateway"
-        value={formData?.gateway}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.gateway}
-        isLoading={isLoading}
-      />
-      <Input
-        name="dns1"
-        label="DNS1"
-        value={formData?.dns1}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.dns1}
-        isLoading={isLoading}
-      />
-      <Input
-        name="dns2"
-        label="DNS2"
-        value={formData?.dns2}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.dns2}
+        error={formErrors?.Dns2}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

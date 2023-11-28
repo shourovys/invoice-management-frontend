@@ -1,21 +1,22 @@
+import useAuth from '../hooks/useAuth'
 import { useMemo } from 'react'
-import useAuth from 'hooks/useAuth'
-import checkPermission from 'utils/checkPermission'
+import { IPermission } from '../types/context/auth'
+import checkPermission from '../utils/checkPermission'
 
 interface IProps {
   children: JSX.Element | JSX.Element[]
-  actionPermission: string[]
+  actionPermission: IPermission
 }
 
 function WithPermission({ children, actionPermission }: IProps) {
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, permissions } = useAuth()
 
   const userPermissions = useMemo(() => {
-    if (isAuthenticated && user?.permissions) {
-      return user.permissions.map((permission) => permission.split('.')[1])
+    if (isAuthenticated && permissions) {
+      return permissions.map((permission) => permission)
     }
     return []
-  }, [isAuthenticated, user?.permissions])
+  }, [isAuthenticated, permissions])
 
   const isPermitted = useMemo(() => {
     return checkPermission(actionPermission, userPermissions)

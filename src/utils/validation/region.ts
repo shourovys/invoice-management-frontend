@@ -1,57 +1,57 @@
-import { IFormErrors } from 'types/pages/common'
-import { IRegionFormData } from 'types/pages/region'
+import { IFormErrors } from '../../types/pages/common'
+import { IRegionFormData } from '../../types/pages/region'
+import t from '../translator'
 
 const validateRegionFormData = (formData: IRegionFormData): IFormErrors => {
   const errors: IFormErrors = {}
 
-  if (!formData.name) {
-    errors.name = 'Name is required'
+  if (!formData.RegionName) {
+    errors.RegionName = t`Name is required`
   }
 
-  if (
-    !formData.only_muster &&
-    !formData.anti_passback_rule &&
-    !formData.anti_tailgate_rule &&
-    !formData.occupancy_rule &&
-    !formData.deadman_rule &&
-    !formData.hazmat_rule
-  ) {
-    errors.rule = 'At least one rule must be selected'
+  // if (
+  //   !formData.OnlyMuster?.value &&
+  //   !formData.AntiPassbackRule?.value &&
+  //   !formData.AntiTailgateRule?.value &&
+  //   !formData.OccupancyRule?.value &&
+  //   !formData.DeadmanRule?.value &&
+  //   !formData.HazmatRule?.value
+  // ) {
+  //   errors.rule = t`At least one rule must be selected`
+  // }
+
+  if (formData.AntiPassbackRule?.value !== '0' && !formData.AntiPassbackTime) {
+    errors.AntiPassbackTime = t`Anti-passback time is required`
   }
 
-  if (formData.anti_passback_rule && !formData.anti_passback_time) {
-    errors.anti_passback_time = 'Anti-passback time is required'
+  if (formData.DeadmanRule?.value !== '0' && !formData.DeadmanInterval) {
+    errors.DeadmanInterval = t`Deadman interval is required`
+  }
+  if (formData.DeadmanRule?.value !== '0' && !formData.DeadmanOutputNo) {
+    errors.DeadmanOutputNo = t`Deadman output number is required`
   }
 
-  if (formData.deadman_rule && !formData.deadman_interval) {
-    errors.deadman_interval = 'Deadman interval is required'
+  if (formData.OccupancyRule?.value !== '0' && !formData.OccupancyLimit) {
+    errors.OccupancyLimit = t`Occupancy limit is required`
   }
 
-  if (formData.hazmat_rule && !formData.hazmat_input_no) {
-    errors.hazmat_input_no = 'Hazardous material input number is required'
+  if (formData.HazmatRule?.value !== '0' && !formData.HazmatInputNo) {
+    errors.HazmatInputNo = t`Hazardous material input number is required`
   }
 
-  if (formData.hazmat_rule && !formData.hazmat_output_no) {
-    errors.hazmat_output_no = 'Hazardous material output number is required'
+  if (formData.HazmatRule?.value !== '0' && !formData.HazmatOutputNo) {
+    errors.HazmatOutputNo = t`Hazardous material output number is required`
   }
 
-  if (formData.deadman_rule && !formData.deadman_output_no) {
-    errors.deadman_output_no = 'Deadman output number is required'
+  if (formData.ResetDaily?.value !== '0' && !formData.ResetTime) {
+    errors.ResetTime = t`Reset time is required`
   }
 
-  if (formData.occupancy_rule && !formData.occupancy_limit) {
-    errors.occupancy_limit = 'Occupancy limit is required'
-  }
-
-  if (formData.reset_delay && !formData.reset_time) {
-    errors.reset_time = 'Reset time is required'
-  }
-
-  // check for other required fields
-  if (!formData.partition) {
-    errors.partition = 'Partition is required'
+  if (!formData.Partition?.value) {
+    errors.Partition = t`Partition is required`
   }
 
   return errors
 }
+
 export default validateRegionFormData

@@ -1,8 +1,9 @@
 import classNames from 'classnames'
+import { ReactNode } from 'react'
 
 interface IProps {
   selected?: boolean
-  children: JSX.Element | JSX.Element[]
+  children: ReactNode
 }
 
 function TableDataAction({ selected, children }: IProps) {
@@ -25,4 +26,5 @@ function TableDataAction({ selected, children }: IProps) {
     </td>
   )
 }
+
 export default TableDataAction

@@ -1,18 +1,18 @@
-import { groupApi } from 'api/urls'
-import { ElementsApi } from 'api/urls/common'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Selector, { TSelectValue } from 'components/atomic/Selector'
-import MultiSelect from 'components/common/form/MultiSelect'
-import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IAccessFormData, accessSelectType } from 'types/pages/access'
-import { IElementsResult, IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IGroupResult } from 'types/pages/group'
-import { SERVER_QUERY } from 'utils/config'
-import { accessDeviceIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import FormCardInputTwoPart from '../../../../components/HOC/style/form/FormCardInputTwoPart'
+import Selector, { TSelectValue } from '../../../../components/atomic/Selector'
+import Textarea from '../../../../components/atomic/Textarea'
+import MultiSelect from '../../../../components/common/form/MultiSelect'
+import { useElementSelectData, useGroupSelectData } from '../../../../hooks/useSelectData'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IAccessFormData, IAccessInfoFormData } from '../../../../types/pages/access'
+import { IFormErrors, accessSelectOption } from '../../../../types/pages/common'
+import { IGroupTypes } from '../../../../types/pages/group'
+import { accessDeviceIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
-  formData: IAccessFormData
+  formData: IAccessFormData | IAccessInfoFormData
   formErrors?: IFormErrors
   handleInputChange?: THandleInputChange
   disabled?: boolean
@@ -26,87 +26,115 @@ function AccessDeviceFrom({
   disabled,
   isLoading,
 }: IProps) {
-  // Fetch elements by type from the server
-  const { isLoading: devicesIsLoading, data: devicesData } = useSWR<
-    IListServerResponse<IElementsResult[]>
-  >(
-    // disabled ||
-    //     typeof handleInputChange === "undefined" ||
-    formData.select_type?.value !== 'individual' || !formData.device_type?.value
-      ? null
-      : ElementsApi.list(`type=${formData?.device_type?.value}`)
+  const { isLoading: groupIsLoading, data: groupData } = useGroupSelectData(
+    disabled ||
+      typeof handleInputChange === 'undefined' ||
+      !formData.DeviceType?.label ||
+      formData.DeviceSelect?.label !== 'Group',
+    (formData.DeviceType?.label || '') as keyof IGroupTypes
   )
 
-  const { isLoading: groupIsLoading, data: groupData } = useSWR<
-    IListServerResponse<IGroupResult[]>
-  >(
-    // disabled ||
-    //     typeof handleInputChange === "undefined" ||
-    formData.select_type?.value !== 'group' || !formData.device_type?.value
-      ? null
-      : groupApi.list(`${SERVER_QUERY.selectorDataQuery}&type=${formData.device_type?.value}`)
+  const { isLoading: devicesIsLoading, data: devicesData } = useElementSelectData(
+    disabled ||
+      typeof handleInputChange === 'undefined' ||
+      !formData.DeviceType?.label ||
+      formData.DeviceSelect?.label !== 'Individual',
+    (formData.DeviceType?.label || '') as keyof IGroupTypes
   )
+
+  // // Fetch elements by type from the server
+  // const { isLoading: devicesIsLoading, data: devicesData } = useSWR<
+  //   IListServerResponse<IElementsResult[]>
+  // >(
+  //   formData.DeviceSelect?.value !== 'individual' || !formData.DeviceType?.value
+  //     ? null
+  //     : ElementsApi.list(`type=${formData?.DeviceType?.value}`)
+  // )
+
+  // const { isLoading: groupIsLoading, data: groupData } = useSWR<
+  //   IListServerResponse<IGroupResult[]>
+  // >(
+  //   formData.DeviceSelect?.value !== 'group' || !formData.DeviceType?.value
+  //     ? null
+  //     : groupApi.list(`${SERVER_QUERY.selectorDataQuery}&type=${formData.DeviceType?.value}`)
+  // )
 
   const handleTypeChange = (name: string, selectedValue: TSelectValue) => {
     if (handleInputChange) {
       handleInputChange(name, selectedValue)
-      handleInputChange('devices', [])
-      handleInputChange('groups', [])
+      handleInputChange('DeviceIds', [])
+      handleInputChange('GroupIds', [])
     }
   }
 
   return (
-    <FormCardWithHeader icon={accessDeviceIcon} header="Access Device" twoPart={false}>
-      <Selector
-        name="select_type"
-        label="Select Type"
-        value={formData.select_type}
-        options={accessSelectType}
-        onChange={handleTypeChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.select_type}
-        isLoading={isLoading}
-      />
-
-      <div>
-        {formData.select_type?.value !== 'individual' && (
-          <MultiSelect
-            name="groups"
-            label="Access Item"
-            value={formData?.groups}
-            options={groupData?.results.map((item) => ({
-              id: item.id.toString(),
-              label: item.name,
-            }))}
-            onChange={handleInputChange}
-            disabled={
-              disabled || typeof handleInputChange === 'undefined' || !formData.device_type?.value
+    <FormCardWithHeader icon={accessDeviceIcon} header={t`Access Device`} twoPart={false}>
+      <FormCardInputTwoPart>
+        <Selector
+          name="DeviceSelect"
+          label={t`Select Type`}
+          value={formData.DeviceSelect}
+          options={accessSelectOption}
+          isClearable={false}
+          onChange={handleTypeChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.DeviceSelect}
+          isLoading={isLoading}
+        />
+        {(disabled || typeof handleInputChange === 'undefined') && 'Groups' in formData && (
+          <Textarea
+            name="devicesAndGroups"
+            label={t`Access Item`}
+            value={
+              formData?.Groups?.length
+                ? formData?.Groups.map((group) => group.GroupName).join(', ')
+                : formData?.Devices?.map((device) => device.Name)?.join(', ')
             }
-            isLoading={groupIsLoading}
-            error={formErrors?.groups}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            isLoading={isLoading || groupIsLoading || devicesIsLoading}
           />
         )}
-      </div>
+      </FormCardInputTwoPart>
 
-      <div>
-        {formData.select_type?.value === 'individual' && (
-          <MultiSelect
-            name="devices"
-            label="Access Item"
-            value={formData?.devices}
-            options={devicesData?.results.map((item) => ({
-              id: item.id.toString(),
-              label: item.name,
-            }))}
-            onChange={handleInputChange}
-            disabled={
-              disabled || typeof handleInputChange === 'undefined' || !formData.device_type?.value
-            }
-            isLoading={isLoading || devicesIsLoading}
-            error={formErrors?.devices}
-          />
-        )}
-      </div>
+      {!(disabled || typeof handleInputChange === 'undefined') && (
+        <>
+          {formData.DeviceSelect?.label !== 'Individual' && (
+            <MultiSelect
+              name="GroupIds"
+              label={t`Access Item`}
+              value={formData?.GroupIds}
+              options={groupData?.data.map((item) => ({
+                id: item.GroupNo.toString(),
+                label: item.GroupName,
+              }))}
+              onChange={handleInputChange}
+              // disabled={
+              //   disabled || typeof handleInputChange === 'undefined' || !formData.DeviceType?.value
+              // }
+              isLoading={groupIsLoading}
+              error={formErrors?.GroupIds}
+            />
+          )}
+
+          {formData.DeviceSelect?.label === 'Individual' && (
+            <MultiSelect
+              name="DeviceIds"
+              label={t`Access Item...`}
+              value={formData?.DeviceIds}
+              options={devicesData?.data.map((item) => ({
+                id: item.No.toString(),
+                label: item.Name,
+              }))}
+              onChange={handleInputChange}
+              // disabled={
+              //   disabled || typeof handleInputChange === 'undefined' || !formData.DeviceType?.value
+              // }
+              isLoading={isLoading || devicesIsLoading}
+              error={formErrors?.DeviceIds}
+            />
+          )}
+        </>
+      )}
     </FormCardWithHeader>
   )
 }

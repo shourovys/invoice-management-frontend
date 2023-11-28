@@ -1,20 +1,24 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableRow from 'components/HOC/style/table/TableRow'
-import { IAccessReportResult } from 'types/pages/accessReport'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { ILogResult } from '../../../types/pages/log'
+import { formatDateTimeTzView, formatDateTimeView } from '../../../utils/formetTime'
 
 type IProps = {
-  row: IAccessReportResult
+  row: ILogResult
+  Reference: string
 }
-function AccessReportTableRow({ row }: IProps) {
+
+function AccessReportTableRow({ row, Reference }: IProps) {
   return (
-    <TableRow key={row.id}>
-      <TableData>{row.event_time}</TableData>
-      <TableData>{row.event_name}</TableData>
-      <TableData>{row.person.id}</TableData>
-      <TableData>{row.person_name}</TableData>
-      <TableData>{row.credential_numb}</TableData>
-      <TableData>{row.device_name}</TableData>
-      <TableData>{row.region.name}</TableData>
+    <TableRow key={row.LogNo} link={routeProperty.logInfo.path(row.LogNo.toString(), Reference)}>
+      <TableData>{row.EventTime && formatDateTimeTzView(row.EventTime)}</TableData>
+      <TableData>{row.EventName}</TableData>
+      <TableData>{row.Person?.PersonNo}</TableData>
+      <TableData>{row.PersonName}</TableData>
+      <TableData>{row.CredentialNumb}</TableData>
+      <TableData>{row.DeviceName}</TableData>
+      <TableData>{row.Region?.RegionName}</TableData>
     </TableRow>
   )
 }

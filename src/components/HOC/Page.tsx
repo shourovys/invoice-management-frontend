@@ -1,7 +1,8 @@
 import { PropsWithChildren } from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet-async'
 import { useLocation } from 'react-router-dom'
-import generateTitle from 'utils/routerTitle'
+import generateTitle from '../../utils/routerTitle'
+import t from '../../utils/translator'
 
 interface IPageProps {
   title?: string
@@ -14,7 +15,7 @@ function Page({ children, title = '', meta }: PropsWithChildren<IPageProps>) {
   return (
     <>
       <Helmet>
-        <title>{`${title || generatedTitle} | Jupiter`}</title>
+        <title>{`${title || t(generatedTitle)} | ` + t`Jupiter`}</title>
         {meta}
       </Helmet>
 

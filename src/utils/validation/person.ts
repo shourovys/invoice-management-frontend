@@ -1,31 +1,33 @@
-import { IFormErrors } from 'types/pages/common'
-import { IPersonFormData } from 'types/pages/person'
+import { IFormErrors, INewFormErrors } from '../../types/pages/common'
+import { IPersonFormData } from '../../types/pages/person'
+import t from '../translator'
 
 const validatePersonFormData = (formData: IPersonFormData): IFormErrors => {
-  const errors: IFormErrors = {}
+  const errors: INewFormErrors<IPersonFormData> = {}
 
-  if (!formData.first_name) {
-    errors.first_name = 'First Name is required'
+  // if (!formData.FirstName) {
+  //   errors.FirstName = t`First Name is required`
+  // }
+  if (!formData.LastName) {
+    errors.LastName = t`Last Name is required`
   }
-  if (!formData.last_name) {
-    errors.last_name = 'Last Name is required'
+  if (!formData.AccessSelect?.value) {
+    errors.AccessSelect = t`Access Type is required`
   }
-  if (!formData.access_type?.value) {
-    errors.access_type = 'Access Type is required'
+  if (!formData.Partition?.value) {
+    errors.Partition = t`Partition is required`
   }
-  if (!formData.partition?.value) {
-    errors.partition = 'Partition is required'
+  if (!formData.ThreatLevel?.value) {
+    errors.ThreatLevel = t`Threat Level is required`
   }
-  if (!formData.threat_level?.value) {
-    errors.threat_level = 'Threat Level is required'
-  }
-  if (formData.access_type?.value === 'group' && formData.groups_ids.length === 0) {
-    errors.groups_ids = 'At least one group is required'
-  }
-  if (formData.access_type?.value === 'individual' && formData.doors_ids.length === 0) {
-    errors.doors_ids = 'At least one door is required'
-  }
+  // if (formData.AccessSelect?.label === 'Group' && formData.GroupIds.length === 0) {
+  //   errors.GroupIds = t`At least one group is required`
+  // }
+  // if (formData.AccessSelect?.label === 'Individual' && formData.AccessIds.length === 0) {
+  //   errors.AccessIds = t`At least one door is required`
+  // }
 
   return errors
 }
+
 export default validatePersonFormData

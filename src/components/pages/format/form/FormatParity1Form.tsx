@@ -1,10 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IFormatFormData, parityOptions } from 'types/pages/format'
-import { listIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors } from '../../../../types/pages/common'
+import { IFormatFormData, parityOptions } from '../../../../types/pages/format'
+import { listIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData: IFormatFormData
@@ -13,7 +14,6 @@ interface IProps {
   disabled?: boolean
   isLoading?: boolean
 }
-
 function FormatParity1Form({
   formData,
   handleInputChange,
@@ -22,29 +22,29 @@ function FormatParity1Form({
   isLoading,
 }: IProps) {
   const showOtherParityFields =
-    formData.priority_type_1?.value && formData.priority_type_1?.value !== parityOptions[0].value
+    formData.Parity1Type?.value && formData.Parity1Type?.value !== parityOptions[0].value
   return (
-    <FormCardWithHeader icon={listIcon} header="Parity 1">
+    <FormCardWithHeader icon={listIcon} header={t`Parity 1`}>
       <Selector
-        name="priority_type_1"
-        label="Priority Type 1"
-        value={formData.priority_type_1}
+        name="Parity1Type"
+        label={t`Parity 1 Type`}
+        value={formData.Parity1Type}
         options={parityOptions}
         onChange={handleInputChange}
-        error={formErrors?.priority_type_1}
+        error={formErrors?.Parity1Type}
         isLoading={isLoading}
         disabled={disabled || typeof handleInputChange === 'undefined'}
       />
       <div>
         {showOtherParityFields && (
           <Input
-            name="priority_position_1"
-            label="Parity 1 Position"
+            name="Parity1Position"
+            label={t`Parity 1 Position`}
             type="number"
-            value={formData.priority_position_1}
+            value={formData.Parity1Position}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.priority_position_1}
+            error={formErrors?.Parity1Position}
             isLoading={isLoading}
           />
         )}
@@ -52,13 +52,13 @@ function FormatParity1Form({
       <div>
         {showOtherParityFields && (
           <Input
-            name="priority_start_1"
-            label="Parity 1 Start"
+            name="Parity1Start"
+            label={t`Parity 1 Start`}
             type="number"
-            value={formData.priority_start_1}
+            value={formData.Parity1Start}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.priority_start_1}
+            error={formErrors?.Parity1Start}
             isLoading={isLoading}
           />
         )}
@@ -66,13 +66,13 @@ function FormatParity1Form({
       <div>
         {showOtherParityFields && (
           <Input
-            name="priority_length_1"
-            label="Parity 1 Length"
+            name="Parity1Length"
+            label={t`Parity 1 Length`}
             type="number"
-            value={formData.priority_length_1}
+            value={formData.Parity1Length}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.priority_length_1}
+            error={formErrors?.Parity1Length}
             isLoading={isLoading}
           />
         )}

@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { ERROR_CLASS } from 'utils/config'
+import { ERROR_CLASS } from '../../utils/config'
 import InputLoading from '../loading/atomic/InputLoading'
 
 interface IProps {
@@ -45,7 +45,7 @@ function Checkbox({
         />
       )}
       {label && (
-        <label htmlFor={value} className="inline-block text-sm text-gray-700 form-label">
+        <label htmlFor={value} className="inline-block w-full text-sm text-gray-700 form-label">
           {label}
         </label>
       )}

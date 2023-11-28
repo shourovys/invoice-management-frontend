@@ -1,20 +1,26 @@
-import { nodeApi, partitionApi, threatApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
+import { partitionApi, readerApi, threatApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import MultipleCheckbox from '../../../../components/atomic/MultipleCheckbox'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IElevatorFormData, readerTypeOptions, threatLevelOptions } from 'types/pages/elevator'
-import { INodeResult } from 'types/pages/node'
-import { IPartitionResult } from 'types/pages/partition'
-import { IThreatResult } from 'types/pages/threat'
-import { SERVER_QUERY } from 'utils/config'
-import { elevatorIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import {
+  IElevatorFormData,
+  IElevatorInfoFormData,
+  elevatorThreatLevelOptions,
+  readerTypeOptions,
+} from '../../../../types/pages/elevator'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IReaderResult } from '../../../../types/pages/reader'
+import { IThreatResult } from '../../../../types/pages/threat'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { elevatorIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
-  formData?: IElevatorFormData
+  formData?: IElevatorFormData | IElevatorInfoFormData
   handleInputChange?: THandleInputChange
   formErrors?: IFormErrors
   disabled?: boolean
@@ -32,123 +38,145 @@ function ElevatorForm({ formData, handleInputChange, formErrors, disabled, isLoa
 
   const { isLoading: threatIsLoading, data: threatData } = useSWR<
     IListServerResponse<IThreatResult[]>
-  >(
-    disabled || typeof handleInputChange === 'undefined'
-      ? null
-      : threatApi.list(SERVER_QUERY.selectorDataQuery)
-  )
+  >(threatApi.list(SERVER_QUERY.selectorDataQuery))
 
-  const { isLoading: nodeIsLoading, data: nodeData } = useSWR<IListServerResponse<INodeResult[]>>(
-    disabled || typeof handleInputChange === 'undefined'
+  const { isLoading: readerIsLoading, data: readerData } = useSWR<
+    IListServerResponse<IReaderResult[]>
+  >(
+    (disabled || typeof handleInputChange === 'undefined') &&
+      formData?.SubnodeNo &&
+      formData?.SubnodeNo !== '0'
       ? null
-      : nodeApi.list(SERVER_QUERY.selectorDataQuery)
+      : readerApi.list(`${SERVER_QUERY.selectorDataQuery}&NodeNo=${formData?.NodeNo}`)
   )
 
   return (
-    <FormCardWithHeader icon={elevatorIcon} header="Elevator">
+    <FormCardWithHeader icon={elevatorIcon} header={t`Elevator`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
 
       <Input
-        name="name"
-        label="Elevator Name"
-        value={formData?.name}
+        name="ElevatorName"
+        label={t`Elevator Name`}
+        value={formData?.ElevatorName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.ElevatorName}
         isLoading={isLoading}
       />
 
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="ElevatorDesc"
+        label={t`Description`}
+        value={formData?.ElevatorDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.ElevatorDesc}
         isLoading={isLoading}
       />
+      {(disabled || typeof handleInputChange === 'undefined') &&
+        formData &&
+        'NodeName' in formData &&
+        'SubnodeName' in formData && (
+          <Input
+            name="NodeName"
+            label={t`Node`}
+            value={`${formData?.NodeName} ${formData?.SubnodeName && '-' + formData?.SubnodeName}`}
+            onChange={handleInputChange}
+            isLoading={isLoading}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.NodeName}
+          />
+        )}
+      {formData &&
+        'ElevatorPort' in formData &&
+        (disabled || typeof handleInputChange === 'undefined') && (
+          <Input
+            name="ElevatorPort"
+            label={t`Elevator Port`}
+            value={formData?.ElevatorPort}
+            onChange={handleInputChange}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.ElevatorPort}
+            isLoading={isLoading}
+          />
+        )}
 
       <Selector
-        name="node"
-        label="Node"
-        value={formData?.node}
-        options={nodeData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
-        }))}
-        onChange={handleInputChange}
-        isLoading={isLoading || nodeIsLoading}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.node}
-      />
-
-      <Input
-        name="elevator_stat"
-        type="number"
-        label="Elevator Stat"
-        value={formData?.elevator_stat}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.elevator_stat}
-        isLoading={isLoading}
-      />
-
-      <Selector
-        name="reader_type"
-        label="Reader Type"
-        value={formData?.reader_type}
+        name="ReaderType"
+        label={t`Reader Type`}
+        value={formData?.ReaderType}
         options={readerTypeOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.reader_type}
+        error={formErrors?.ReaderType}
         isLoading={isLoading}
       />
 
-      <Selector
-        name="threat"
-        label="Threat"
-        value={formData?.threat}
-        options={threatData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+      {formData?.SubnodeNo === '0' && readerData?.data?.length ? (
+        <Selector
+          name="Reader"
+          label={t`In Reader`}
+          value={formData?.Reader}
+          onChange={handleInputChange}
+          options={readerData?.data.map((result) => ({
+            value: result.ReaderNo.toString(),
+            label: result.ReaderName,
+          }))}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Reader}
+          isLoading={isLoading || readerIsLoading}
+        />
+      ) : null}
+
+      <MultipleCheckbox
+        name="ThreatNos"
+        inputLabel="Threat List"
+        checkboxData={threatData?.data.map((result) => ({
+          value: result.ThreatNo.toString(),
+          label: result.ThreatName,
         }))}
+        checked={formData?.ThreatNos}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.threat}
+        error={formErrors?.ThreatNos}
         isLoading={isLoading || threatIsLoading}
       />
-
       <Selector
-        name="threat_level"
-        label="Threat Level"
-        value={formData?.threat_level}
-        options={threatLevelOptions}
+        name="ThreatLevel"
+        label={t`Threat Level`}
+        value={formData?.ThreatLevel}
+        options={elevatorThreatLevelOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.threat_level}
+        error={formErrors?.ThreatLevel}
         isLoading={isLoading}
       />
 
-      <SwitchButton
-        name="relay_only"
-        label="Relay Only"
-        checked={formData?.relay_only}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        isLoading={isLoading}
-      />
+      {formData &&
+        'ElevatorStat' in formData &&
+        (disabled || typeof handleInputChange === 'undefined') && (
+          <Input
+            name="ElevatorStat"
+            label={t`Elevator Stat`}
+            value={typeof formData?.ElevatorStat === 'string' ? formData?.ElevatorStat : ''}
+            onChange={handleInputChange}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.ElevatorStat}
+            isLoading={isLoading}
+          />
+        )}
     </FormCardWithHeader>
   )
 }

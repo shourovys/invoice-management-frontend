@@ -1,50 +1,44 @@
-import { THandleFilterInputChange } from 'types/components/common'
-import { INodeScanFilters } from 'types/pages/nodeScan'
-import Icon, { resetIcon, scanIcon } from 'utils/icons'
-import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
+import { THandleInputChange } from '../../../types/components/common'
+import { INewFormErrors } from '../../../types/pages/common'
+import { INodeScanFormData } from '../../../types/pages/nodeScan'
+import Icon, { scanIcon } from '../../../utils/icons'
+import t from '../../../utils/translator'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
 
 interface IProps {
-  filterState: INodeScanFilters
-  handleFilterApply: () => void
-  handleFilterStateReset: () => void
-  handleInputChange: THandleFilterInputChange
+  formData: INodeScanFormData
+  handleInputChange: THandleInputChange
+  formErrors: INewFormErrors<INodeScanFormData>
+  refetchListData: () => void
 }
 
-function NodeTableToolbar({
-  filterState,
-  handleFilterApply,
-  handleFilterStateReset,
-  handleInputChange,
-}: IProps) {
+function NodeTableToolbar({ formData, handleInputChange, formErrors, refetchListData }: IProps) {
   return (
-    <TableToolbarContainer>
+    <div className="pb-3 space-y-2 md:pb-4">
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
         <Input
-          name="id"
-          placeholder="User Id"
-          value={filterState.id}
+          name="UserId"
+          placeholder={t`User ID`}
+          value={formData.UserId}
           onChange={handleInputChange}
+          error={formErrors.UserId}
         />
         <Input
-          name="password"
-          placeholder="Password"
-          value={filterState.password}
+          name="Password"
+          placeholder={t`Password`}
+          value={formData.Password}
           onChange={handleInputChange}
+          error={formErrors.Password}
         />
       </div>
       <div className="flex gap-3.5 lg:gap-4">
-        <Button onClick={handleFilterApply}>
+        <Button onClick={refetchListData}>
           <Icon icon={scanIcon} />
-          <span>Scan</span>
-        </Button>
-        <Button color="gray" onClick={handleFilterStateReset}>
-          <Icon icon={resetIcon} />
-          <span>Reset</span>
+          <span>{t`Scan`}</span>
         </Button>
       </div>
-    </TableToolbarContainer>
+    </div>
   )
 }
 

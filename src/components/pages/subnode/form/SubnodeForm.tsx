@@ -1,14 +1,15 @@
-import { serialApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { nodeApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { ISerialResult } from 'types/pages/serial'
-import { ISubnodeFormData, subnodeModelOptions } from 'types/pages/subnode'
-import { SERVER_QUERY } from 'utils/config'
-import { doorIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { INodeResult } from '../../../../types/pages/node'
+import { ISubnodeFormData, subnodeDeviceTypeOptions } from '../../../../types/pages/subnode'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { doorIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: ISubnodeFormData
@@ -19,74 +20,102 @@ interface IProps {
 }
 
 function SubnodeForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
-  const { isLoading: serialIsLoading, data: serialData } = useSWR<
-    IListServerResponse<ISerialResult[]>
-  >(
+  const { isLoading: nodeIsLoading, data: nodeData } = useSWR<IListServerResponse<INodeResult[]>>(
     disabled || typeof handleInputChange === 'undefined'
       ? null
-      : serialApi.list(SERVER_QUERY.selectorDataQuery)
+      : nodeApi.list(SERVER_QUERY.selectorDataQuery)
   )
 
   return (
-    <FormCardWithHeader icon={doorIcon} header="Subnode">
+    <FormCardWithHeader icon={doorIcon} header={t`Subnode`}>
       <Input
-        name="name"
-        label="Subnode Name"
-        value={formData?.name}
+        name="SubnodeName"
+        label={t`Subnode Name`}
+        value={formData?.SubnodeName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.SubnodeName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="SubnodeDesc"
+        label={t`Description`}
+        value={formData?.SubnodeDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         error={formErrors?.description}
         isLoading={isLoading}
       />
       <Selector
-        name="serial"
-        label="Serial"
-        value={formData?.serial}
-        options={serialData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Node"
+        label={t`Node`}
+        value={formData?.Node}
+        options={nodeData?.data.map((result) => ({
+          value: result.NodeNo.toString(),
+          label: result.NodeName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.serial}
-        isLoading={isLoading || serialIsLoading}
+        error={formErrors?.Node}
+        isLoading={isLoading || nodeIsLoading}
       />
       <Input
-        name="address"
-        label="Address"
-        value={formData?.address}
+        name="Address"
+        label={t`Address`}
+        type="number"
+        value={formData?.Address}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.address}
+        error={formErrors?.Address}
+        isLoading={isLoading}
+      />
+      <Input
+        name="Device"
+        label={t`Device`}
+        value={formData?.Device}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.Device}
+        isLoading={isLoading}
+      />
+      <Input
+        name="Baudrate"
+        label={t`Baudrate`}
+        type="number"
+        value={formData?.Baudrate}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.Baudrate}
         isLoading={isLoading}
       />
       <Selector
-        name="model"
-        label="Model"
-        value={formData?.model}
-        options={subnodeModelOptions}
+        name="DeviceType"
+        label={t`Device Type`}
+        value={formData?.DeviceType}
+        options={subnodeDeviceTypeOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.model}
+        error={formErrors?.DeviceType}
+        isLoading={isLoading}
+      />
+      <Input
+        name="PortCount"
+        label={t`Port Count`}
+        type="number"
+        value={formData?.PortCount}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.PortCount}
         isLoading={isLoading}
       />
       {(disabled || typeof handleInputChange === 'undefined') && (
         <Input
-          name="online"
-          label="Online"
-          value={formData?.online ? 'Yes' : 'No'}
+          name="Online"
+          label={t`Online`}
+          value={formData?.Online}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.online}
+          error={formErrors?.Online}
           isLoading={isLoading}
         />
       )}

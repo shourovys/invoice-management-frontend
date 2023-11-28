@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import PersonAccessForm from './PersonAccessForm'
 import PersonDefinedFieldForm from './PersonDefinedFieldForm'
 import PersonOptionForm from './PersonOptionForm'

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import FormatFacilityNumberForm from './FormatFacilityNumberForm'
 import FormatForm from './FormatForm'
 import FormatParity1Form from './FormatParity1Form'

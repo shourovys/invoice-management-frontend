@@ -1,15 +1,16 @@
-import { partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
+import { partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IPartitionResult } from 'types/pages/partition'
-import { IRegionFormData } from 'types/pages/region'
-import { SERVER_QUERY } from 'utils/config'
-import { regionIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IRegionFormData } from '../../../../types/pages/region'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { regionIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IRegionFormData
@@ -29,42 +30,42 @@ function RegionForm({ formData, handleInputChange, formErrors, disabled, isLoadi
   )
 
   return (
-    <FormCardWithHeader icon={regionIcon} header="Region">
+    <FormCardWithHeader icon={regionIcon} header={t`Region`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Region Name"
-        value={formData?.name}
+        name="RegionName"
+        label={t`Region Name`}
+        value={formData?.RegionName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.RegionName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="RegionDesc"
+        label={t`Description`}
+        value={formData?.RegionDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.RegionDesc}
         isLoading={isLoading}
       />
-      <SwitchButton
-        name="only_muster"
-        label="Only Muster"
-        checked={formData?.only_muster}
+      <SwitchButtonSelect
+        name="OnlyMuster"
+        label={t`Only Muster`}
+        value={formData?.OnlyMuster}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}

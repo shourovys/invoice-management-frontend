@@ -1,32 +1,33 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { ITriggerResult } from 'types/pages/trigger'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { ITriggerResult } from '../../../types/pages/trigger'
 import Checkbox from '../../atomic/Checkbox'
 
 type IProps = {
   row: ITriggerResult
   selected: string[]
-  handleSelectRow: (_selectedId: string) => void
+  handleSelectRow: (selectedId: string) => void
 }
+
 function TriggerTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.triggerInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.TriggerNo}
+      link={routeProperty.triggerInfo.path(row.TriggerNo.toString())}
+      selected={selected.indexOf(row.TriggerNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.partition.name}</TableData>
-      <TableData>{row.name}</TableData>
-      <TableData>{row.description}</TableData>
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableData>{row.TriggerNo}</TableData>
+      <TableData>{row.Partition.PartitionName}</TableData>
+      <TableData>{row.TriggerName}</TableData>
+      <TableData>{row.TriggerDesc}</TableData>
+      <TableDataAction selected={selected.indexOf(row.TriggerNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.TriggerNo}`}
+          checked={selected.indexOf(row.TriggerNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.TriggerNo.toString())
           }}
         />
       </TableDataAction>

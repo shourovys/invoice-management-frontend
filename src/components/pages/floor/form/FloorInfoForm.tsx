@@ -1,31 +1,34 @@
-import { partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import IconButton from 'components/atomic/IconButton'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import routeProperty from 'routes/routeProperty'
+import { partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import IconButton from '../../../../components/atomic/IconButton'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
+import { useNavigate, useParams } from 'react-router-dom'
+import routeProperty from '../../../../routes/routeProperty'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IFloorInfoFormData } from 'types/pages/floor'
-import { IPartitionResult } from 'types/pages/partition'
-import { SERVER_QUERY } from 'utils/config'
-import { doorIcon, editIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IListServerResponse, INewFormErrors } from '../../../../types/pages/common'
+import { IFloorInfoFormData } from '../../../../types/pages/floor'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { doorIcon, editIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
+import useAuth from '../../../../hooks/useAuth'
 
 interface IProps {
   formData?: IFloorInfoFormData
   handleInputChange?: THandleInputChange
-  formErrors?: IFormErrors
+  formErrors?: INewFormErrors<IFloorInfoFormData>
   disabled?: boolean
   isLoading?: boolean
 }
 
 function FloorInfoForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
+  const { has_license } = useAuth()
   const navigate = useNavigate()
   // Get the floor ID from the router query
-  const [searchParams] = useSearchParams()
-  const queryId = searchParams.get('id') as string
+  const params = useParams()
+  const queryId = params.id as string
 
   const { isLoading: partitionIsLoading, data: partitionData } = useSWR<
     IListServerResponse<IPartitionResult[]>
@@ -39,325 +42,402 @@ function FloorInfoForm({ formData, handleInputChange, formErrors, disabled, isLo
     navigate(routeProperty.floorInfoEdit.path(`${queryId}?type=${type}`))
 
   return (
-    <FormCardWithHeader icon={doorIcon} header="Floor">
+    <FormCardWithHeader icon={doorIcon} header={t`Floor`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Floor Name"
-        value={formData?.name}
+        name="FloorName"
+        label={t`Floor Name`}
+        value={formData?.FloorName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.FloorName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="FloorDesc"
+        label={t`Description`}
+        value={formData?.FloorDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.FloorDesc}
         isLoading={isLoading}
       />
       <div className="flex items-end gap-2">
         <Input
-          name="node"
-          label="Node"
-          value={formData?.node.map((item) => item.name).join(', ')}
+          name="Node"
+          label={t`Node`}
+          value={formData?.Node.map((item) => item.Name).join(', ')}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.node}
+          error={formErrors?.Node}
           isLoading={isLoading}
         />
         <IconButton
           icon={editIcon}
           tooltip="Edit"
           iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('node')}
+          onClick={() => handleFloorInfoEdit('Node')}
         />
       </div>
       <div className="flex items-end gap-2">
         <Input
-          name="door"
-          label="Door"
-          value={formData?.door.map((item) => item.name).join(', ')}
+          name="Door"
+          label={t`Door`}
+          value={formData?.Door.map((item) => item.Name).join(', ')}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.door}
+          error={formErrors?.Door}
           isLoading={isLoading}
         />
         <IconButton
           icon={editIcon}
           tooltip="Edit"
           iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('door')}
+          onClick={() => handleFloorInfoEdit('Door')}
         />
       </div>
       <div className="flex items-end gap-2">
         <Input
-          name="region"
-          label="Region"
-          value={formData?.region.map((item) => item.name).join(', ')}
+          name="Region"
+          label={t`Region`}
+          value={formData?.Region.map((item) => item.Name).join(', ')}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.region}
+          error={formErrors?.Region}
           isLoading={isLoading}
         />
         <IconButton
           icon={editIcon}
           tooltip="Edit"
           iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('region')}
+          onClick={() => handleFloorInfoEdit('Region')}
         />
       </div>
       <div className="flex items-end gap-2">
         <Input
-          name="input"
-          label="Input"
-          value={formData?.input.map((item) => item.name).join(', ')}
+          name="Input"
+          label={t`Input`}
+          value={formData?.Input.map((item) => item.Name).join(', ')}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.input}
+          error={formErrors?.Input}
           isLoading={isLoading}
         />
         <IconButton
           icon={editIcon}
           tooltip="Edit"
           iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('input')}
+          onClick={() => handleFloorInfoEdit('Input')}
         />
       </div>
       <div className="flex items-end gap-2">
         <Input
-          name="output"
-          label="Output"
-          value={formData?.output.map((item) => item.name).join(', ')}
+          name="Output"
+          label={t`Output`}
+          value={formData?.Output.map((item) => item.Name).join(', ')}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.output}
+          error={formErrors?.Output}
           isLoading={isLoading}
         />
         <IconButton
           icon={editIcon}
           tooltip="Edit"
           iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('output')}
+          onClick={() => handleFloorInfoEdit('Output')}
         />
       </div>
       <div className="flex items-end gap-2">
         <Input
-          name="elevator"
-          label="Elevator"
-          value={formData?.elevator.map((item) => item.name).join(', ')}
+          name="Elevator"
+          label={t`Elevator`}
+          value={formData?.Elevator.map((item) => item.Name).join(', ')}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.elevator}
+          error={formErrors?.Elevator}
           isLoading={isLoading}
         />
         <IconButton
           icon={editIcon}
           tooltip="Edit"
           iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('elevator')}
+          onClick={() => handleFloorInfoEdit('Elevator')}
         />
       </div>
       <div className="flex items-end gap-2">
         <Input
-          name="relay"
-          label="Relay"
-          value={formData?.relay.map((item) => item.name).join(', ')}
+          name="Relay"
+          label={t`Relay`}
+          value={formData?.Relay.map((item) => item.Name).join(', ')}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.relay}
+          error={formErrors?.Relay}
           isLoading={isLoading}
         />
         <IconButton
           icon={editIcon}
           tooltip="Edit"
           iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('relay')}
+          onClick={() => handleFloorInfoEdit('Relay')}
+        />
+      </div>
+      {has_license('Camera') && (
+        <div className="flex items-end gap-2">
+          <Input
+            name="Camera"
+            label={t`Camera`}
+            value={formData?.Camera.map((item) => item.Name).join(', ')}
+            onChange={handleInputChange}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.Camera}
+            isLoading={isLoading}
+          />
+          <IconButton
+            icon={editIcon}
+            tooltip="Edit"
+            iconClass="mb-.5"
+            onClick={() => handleFloorInfoEdit('Camera')}
+          />
+        </div>
+      )}
+      {has_license('Channel') && (
+        <>
+          <div className="flex items-end gap-2">
+            <Input
+              name="Nvr"
+              label={t`NVR`}
+              value={formData?.Nvr.map((item) => item.Name).join(', ')}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              error={formErrors?.Nvr}
+              isLoading={isLoading}
+            />
+            <IconButton
+              icon={editIcon}
+              tooltip="Edit"
+              iconClass="mb-.5"
+              onClick={() => handleFloorInfoEdit('Nvr')}
+            />
+          </div>
+          <div className="flex items-end gap-2">
+            <Input
+              name="Channel"
+              label={t`Channel`}
+              value={formData?.Channel.map((item) => item.Name).join(', ')}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              error={formErrors?.Channel}
+              isLoading={isLoading}
+            />
+            <IconButton
+              icon={editIcon}
+              tooltip="Edit"
+              iconClass="mb-.5"
+              onClick={() => handleFloorInfoEdit('Channel')}
+            />
+          </div>
+        </>
+      )}
+      {has_license('Lockset') && (
+        <>
+          <div className="flex items-end gap-2">
+            <Input
+              name="Gateway"
+              label={t`Gateway`}
+              value={formData?.Gateway.map((item) => item.Name).join(', ')}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              error={formErrors?.Gateway}
+              isLoading={isLoading}
+            />
+            <IconButton
+              icon={editIcon}
+              tooltip="Edit"
+              iconClass="mb-.5"
+              onClick={() => handleFloorInfoEdit('Gateway')}
+            />
+          </div>
+          <div className="flex items-end gap-2">
+            <Input
+              name="Logset"
+              label={t`Lockset`}
+              value={formData?.Logset.map((item) => item.Name).join(', ')}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              error={formErrors?.Logset}
+              isLoading={isLoading}
+            />
+            <IconButton
+              icon={editIcon}
+              tooltip="Edit"
+              iconClass="mb-.5"
+              onClick={() => handleFloorInfoEdit('Logset')}
+            />
+          </div>
+        </>
+      )}
+
+      {has_license('Facegate') && (
+        <div className="flex items-end gap-2">
+          <Input
+            name="Facegate"
+            label={t`Facegate`}
+            value={formData?.Facegate.map((item) => item.Name).join(', ')}
+            onChange={handleInputChange}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.Facegate}
+            isLoading={isLoading}
+          />
+          <IconButton
+            icon={editIcon}
+            tooltip="Edit"
+            iconClass="mb-.5"
+            onClick={() => handleFloorInfoEdit('Facegate')}
+          />
+        </div>
+      )}
+
+      {has_license('Subnode') && (
+        <>
+          <div className="flex items-end gap-2">
+            <Input
+              name="Subnode"
+              label={t`Subnode`}
+              value={formData?.Subnode.map((item) => item.Name).join(', ')}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              error={formErrors?.Subnode}
+              isLoading={isLoading}
+            />
+            <IconButton
+              icon={editIcon}
+              tooltip="Edit"
+              iconClass="mb-.5"
+              onClick={() => handleFloorInfoEdit('Subnode')}
+            />
+          </div>
+
+          <div className="flex items-end gap-2">
+            <Input
+              name="Reader"
+              label={t`Reader`}
+              value={formData?.Reader.map((item) => item.Name).join(', ')}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              error={formErrors?.Reader}
+              isLoading={isLoading}
+            />
+            <IconButton
+              icon={editIcon}
+              tooltip="Edit"
+              iconClass="mb-.5"
+              onClick={() => handleFloorInfoEdit('Reader')}
+            />
+          </div>
+        </>
+      )}
+      {has_license('ContLock') && (
+        <>
+          <div className="flex items-end gap-2">
+            <Input
+              name="ContGate"
+              label={t`ContGate`}
+              value={formData?.ContGate.map((item) => item.Name).join(', ')}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              error={formErrors?.ContGate}
+              isLoading={isLoading}
+            />
+            <IconButton
+              icon={editIcon}
+              tooltip="Edit"
+              iconClass="mb-.5"
+              onClick={() => handleFloorInfoEdit('ContGate')}
+            />
+          </div>
+
+          <div className="flex items-end gap-2">
+            <Input
+              name="ContLock"
+              label={t`ContLock`}
+              value={formData?.ContLock.map((item) => item.Name).join(', ')}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              error={formErrors?.ContLock}
+              isLoading={isLoading}
+            />
+            <IconButton
+              icon={editIcon}
+              tooltip="Edit"
+              iconClass="mb-.5"
+              onClick={() => handleFloorInfoEdit('ContLock')}
+            />
+          </div>
+        </>
+      )}
+      {has_license('Intercom') && (
+        <div className="flex items-end gap-2">
+          <Input
+            name="Intercom"
+            label={t`Intercom`}
+            value={formData?.Intercom.map((item) => item.Name).join(', ')}
+            onChange={handleInputChange}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.Intercom}
+            isLoading={isLoading}
+          />
+          <IconButton
+            icon={editIcon}
+            tooltip="Edit"
+            iconClass="mb-.5"
+            onClick={() => handleFloorInfoEdit('Intercom')}
+          />
+        </div>
+      )}
+      <div className="flex items-end gap-2">
+        <Input
+          name="Trigger"
+          label={t`Trigger`}
+          value={formData?.Trigger.map((item) => item.Name).join(', ')}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Trigger}
+          isLoading={isLoading}
+        />
+        <IconButton
+          icon={editIcon}
+          tooltip="Edit"
+          iconClass="mb-.5"
+          onClick={() => handleFloorInfoEdit('Trigger')}
         />
       </div>
       <div className="flex items-end gap-2">
         <Input
-          name="camera"
-          label="Camera"
-          value={formData?.camera.map((item) => item.name).join(', ')}
+          name="Threat"
+          label={t`Threat`}
+          value={formData?.Threat.map((item) => item.Name).join(', ')}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.camera}
+          error={formErrors?.Threat}
           isLoading={isLoading}
         />
         <IconButton
           icon={editIcon}
           tooltip="Edit"
           iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('camera')}
-        />
-      </div>
-      <div className="flex items-end gap-2">
-        <Input
-          name="nvr"
-          label="NVR"
-          value={formData?.nvr.map((item) => item.name).join(', ')}
-          onChange={handleInputChange}
-          disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.nvr}
-          isLoading={isLoading}
-        />
-        <IconButton
-          icon={editIcon}
-          tooltip="Edit"
-          iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('nvr')}
-        />
-      </div>
-      <div className="flex items-end gap-2">
-        <Input
-          name="channel"
-          label="Channel"
-          value={formData?.channel.map((item) => item.name).join(', ')}
-          onChange={handleInputChange}
-          disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.channel}
-          isLoading={isLoading}
-        />
-        <IconButton
-          icon={editIcon}
-          tooltip="Edit"
-          iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('channel')}
-        />
-      </div>
-      <div className="flex items-end gap-2">
-        <Input
-          name="gateway"
-          label="Gateway"
-          value={formData?.gateway.map((item) => item.name).join(', ')}
-          onChange={handleInputChange}
-          disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.gateway}
-          isLoading={isLoading}
-        />
-        <IconButton
-          icon={editIcon}
-          tooltip="Edit"
-          iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('gateway')}
-        />
-      </div>
-      <div className="flex items-end gap-2">
-        <Input
-          name="logset"
-          label="Logset"
-          value={formData?.logset?.map((item) => item.name).join(', ')}
-          onChange={handleInputChange}
-          disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.logset}
-          isLoading={isLoading}
-        />
-        <IconButton
-          icon={editIcon}
-          tooltip="Edit"
-          iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('logset')}
-        />
-      </div>
-      <div className="flex items-end gap-2">
-        <Input
-          name="facegate"
-          label="Facegate"
-          value={formData?.facegate.map((item) => item.name).join(', ')}
-          onChange={handleInputChange}
-          disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.facegate}
-          isLoading={isLoading}
-        />
-        <IconButton
-          icon={editIcon}
-          tooltip="Edit"
-          iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('facegate')}
-        />
-      </div>
-      <div className="flex items-end gap-2">
-        <Input
-          name="serial"
-          label="Serial"
-          value={formData?.serial.map((item) => item.name).join(', ')}
-          onChange={handleInputChange}
-          disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.serial}
-          isLoading={isLoading}
-        />
-        <IconButton
-          icon={editIcon}
-          tooltip="Edit"
-          iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('serial')}
-        />
-      </div>
-      <div className="flex items-end gap-2">
-        <Input
-          name="subnode"
-          label="Subnode"
-          value={formData?.subnode.map((item) => item.name).join(', ')}
-          onChange={handleInputChange}
-          disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.subnode}
-          isLoading={isLoading}
-        />
-        <IconButton
-          icon={editIcon}
-          tooltip="Edit"
-          iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('subnode')}
-        />
-      </div>
-      <div className="flex items-end gap-2">
-        <Input
-          name="tigger"
-          label="Trigger"
-          value={formData?.tigger.map((item) => item.name).join(', ')}
-          onChange={handleInputChange}
-          disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.tigger}
-          isLoading={isLoading}
-        />
-        <IconButton
-          icon={editIcon}
-          tooltip="Edit"
-          iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('tigger')}
-        />
-      </div>
-      <div className="flex items-end gap-2">
-        <Input
-          name="threat"
-          label="Threat"
-          value={formData?.threat.map((item) => item.name).join(', ')}
-          onChange={handleInputChange}
-          disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.threat}
-          isLoading={isLoading}
-        />
-        <IconButton
-          icon={editIcon}
-          tooltip="Edit"
-          iconClass="mb-.5"
-          onClick={() => handleFloorInfoEdit('threat')}
+          onClick={() => handleFloorInfoEdit('Threat')}
         />
       </div>
     </FormCardWithHeader>

@@ -1,16 +1,17 @@
-import { partitionApi, personApi, userRoleApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { partitionApi, personApi, userRoleApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IPartitionResult } from 'types/pages/partition'
-import { IPersonResult } from 'types/pages/person'
-import { IUserFormData } from 'types/pages/user'
-import { IUserRoleResult } from 'types/pages/userRole'
-import { SERVER_QUERY } from 'utils/config'
-import { userIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IPersonResult } from '../../../../types/pages/person'
+import { IUserFormData } from '../../../../types/pages/user'
+import { IUserRoleResult } from '../../../../types/pages/userRole'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { userIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IUserFormData
@@ -46,81 +47,81 @@ function UserEditForm({ formData, handleInputChange, formErrors, disabled, isLoa
   )
 
   return (
-    <FormCardWithHeader icon={userIcon} header="User">
+    <FormCardWithHeader icon={userIcon} header={t`User`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionDesc,
         }))}
         onChange={handleInputChange}
-        disabled
-        error={formErrors?.partition}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="username"
-        label="User ID"
-        value={formData?.username}
+        name="UserId"
+        label={t`User ID`}
+        value={formData?.UserId}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.username}
+        error={formErrors?.UserId}
         isLoading={isLoading}
       />
       <Input
-        name="password"
-        label="Password"
+        name="Password"
+        label={t`Password`}
         type="password"
-        value={formData?.password}
+        value={formData?.Password}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.password}
+        error={formErrors?.Password}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="UserDesc"
+        label={t`Description`}
+        value={formData?.UserDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.UserDesc}
         isLoading={isLoading}
       />
       <Input
-        name="email"
-        label="Email"
-        value={formData?.email}
+        name="Email"
+        label={t`Email`}
+        value={formData?.Email}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.email}
+        error={formErrors?.Email}
         isLoading={isLoading}
       />
       <Selector
-        name="role"
-        label="User Role"
-        value={formData?.role}
-        options={roleData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Role"
+        label={t`User Role`}
+        value={formData?.Role}
+        options={roleData?.data.map((result) => ({
+          value: result.RoleNo.toString(),
+          label: result.RoleName,
         }))}
         onChange={handleInputChange}
-        disabled
-        error={formErrors?.role}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.Role}
         isLoading={isLoading || roleIsLoading}
       />
       <Selector
-        name="person"
-        label="Person"
-        value={formData?.person}
-        options={personData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.last_name,
+        name="Person"
+        label={t`Person`}
+        value={formData?.Person}
+        options={personData?.data.map((result) => ({
+          value: result.PersonNo.toString(),
+          label: result.LastName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.person}
+        error={formErrors?.Person}
         isLoading={isLoading || personIsLoading}
       />
     </FormCardWithHeader>

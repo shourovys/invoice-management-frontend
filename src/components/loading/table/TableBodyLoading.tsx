@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import createArray from 'utils/createArray'
+import createArray from '../../../utils/createArray'
 import { TABLE_ROW_HEIGHT, TABLE_ROW_PER_PAGE } from '../../../utils/config'
 
 interface IProps {

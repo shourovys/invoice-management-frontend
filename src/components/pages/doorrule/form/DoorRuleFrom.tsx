@@ -1,17 +1,17 @@
-import { doorApi, partitionApi, scheduleApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { doorApi, partitionApi, scheduleApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IDoorResult } from 'types/pages/door'
-import { IDoorRuleFormData, doorRuleType } from 'types/pages/doorRule'
-import { IPartitionResult } from 'types/pages/partition'
-import { IScheduleResult } from 'types/pages/schedule'
-import { SERVER_QUERY } from 'utils/config'
-import { doorRuleIcon } from 'utils/icons'
-
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IDoorResult } from '../../../../types/pages/door'
+import { IDoorRuleFormData, doorRuleTypeOption } from '../../../../types/pages/doorRule'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IScheduleResult } from '../../../../types/pages/schedule'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { doorRuleIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 interface IProps {
   formData: IDoorRuleFormData
   formErrors?: IFormErrors
@@ -20,7 +20,7 @@ interface IProps {
   isLoading?: boolean
 }
 
-function DoorRuleFrom({ formData, formErrors, handleInputChange, disabled, isLoading }: IProps) {
+function DoorRuleForm({ formData, formErrors, handleInputChange, disabled, isLoading }: IProps) {
   const { isLoading: partitionIsLoading, data: partitionData } = useSWR<
     IListServerResponse<IPartitionResult[]>
   >(
@@ -44,88 +44,76 @@ function DoorRuleFrom({ formData, formErrors, handleInputChange, disabled, isLoa
   )
 
   return (
-    <FormCardWithHeader icon={doorRuleIcon} header="DoorRule">
+    <FormCardWithHeader icon={doorRuleIcon} header={t`Door Rule`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading || partitionIsLoading}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
       />
       <Input
-        name="name"
-        label="DoorRule Name"
-        value={formData.name}
+        name="RuleName"
+        label={t`Door Rule Name`}
+        value={formData.RuleName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.RuleName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData.description}
+        name="RuleDesc"
+        label={t`Description`}
+        value={formData.RuleDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.RuleDesc}
         isLoading={isLoading}
       />
       <Selector
-        name="type"
-        label="Rule Type"
-        value={formData.type}
-        options={doorRuleType}
+        name="RuleType"
+        label={t`Rule Type`}
+        value={formData.RuleType}
+        options={doorRuleTypeOption}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.type}
+        error={formErrors?.RuleType}
         isLoading={isLoading}
       />
-      {(formData.type?.value === '2' || formData.type?.value === '4') && (
-        <Input
-          name="card_time"
-          label="Card Time"
-          type="number"
-          value={formData.card_time}
-          onChange={handleInputChange}
-          disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.card_time}
-          isLoading={isLoading}
-        />
-      )}
       <Selector
-        name="door"
-        label="Door"
-        value={formData.door}
-        options={doorData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Door"
+        label={t`Door`}
+        value={formData.Door}
+        options={doorData?.data.map((result) => ({
+          value: result.DoorNo.toString(),
+          label: result.DoorName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.door}
+        error={formErrors?.Door}
         isLoading={isLoading || doorIsLoading}
       />
       <Selector
-        name="schedule"
-        label="Schedule"
-        value={formData.schedule}
-        options={scheduleData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Schedule"
+        label={t`Schedule`}
+        value={formData.Schedule}
+        options={scheduleData?.data.map((result) => ({
+          value: result.ScheduleNo.toString(),
+          label: result.ScheduleName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading || scheduleIsLoading}
-        error={formErrors?.schedule}
+        error={formErrors?.Schedule}
       />
     </FormCardWithHeader>
   )
 }
 
-export default DoorRuleFrom
+export default DoorRuleForm

@@ -1,16 +1,17 @@
-import { partitionApi, userRoleApi } from 'api/urls'
+import { partitionApi, userRoleApi } from '../../../api/urls'
 import useSWR from 'swr'
-import { THandleFilterInputChange } from 'types/components/common'
-import { IListServerResponse } from 'types/pages/common'
-import { IPartitionResult } from 'types/pages/partition'
-import { IUserFilters } from 'types/pages/user'
-import { IUserRoleResult } from 'types/pages/userRole'
-import Icon, { applyIcon, resetIcon } from 'utils/icons'
+import { THandleFilterInputChange } from '../../../types/components/common'
+import { IListServerResponse } from '../../../types/pages/common'
+import { IPartitionResult } from '../../../types/pages/partition'
+import { IUserFilters } from '../../../types/pages/user'
+import { IUserRoleResult } from '../../../types/pages/userRole'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import { SERVER_QUERY } from '../../../utils/config'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
 import Selector from '../../atomic/Selector'
+import t from '../../../utils/translator'
 
 interface IProps {
   filterState: IUserFilters
@@ -37,35 +38,35 @@ function UserTableToolbar({
     <TableToolbarContainer>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
         <Input
-          name="id"
-          placeholder="User No"
-          value={filterState.id}
+          name="UserNo"
+          placeholder={t`User No`}
+          value={filterState.UserNo}
           onChange={handleInputChange}
         />
         <Selector
-          name="partition"
-          placeholder="Partition"
-          value={filterState.partition}
-          options={partitionData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Partition"
+          placeholder={t`Partition`}
+          value={filterState.Partition}
+          options={partitionData?.data.map((result) => ({
+            value: result.PartitionNo.toString(),
+            label: result.PartitionName,
           }))}
           onChange={handleInputChange}
           isLoading={partitionIsLoading}
         />
         <Input
-          name="name"
-          placeholder="User ID"
-          value={filterState.name}
+          name="UserId"
+          placeholder={t`User ID`}
+          value={filterState.UserId}
           onChange={handleInputChange}
         />
         <Selector
-          name="role"
-          placeholder="Role"
-          value={filterState.role}
-          options={roleData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Role"
+          placeholder={t`Role`}
+          value={filterState.Role}
+          options={roleData?.data.map((result) => ({
+            value: result.RoleNo.toString(),
+            label: result.RoleName,
           }))}
           onChange={handleInputChange}
           isLoading={roleIsLoading}
@@ -74,11 +75,11 @@ function UserTableToolbar({
       <div className="flex gap-3.5 lg:gap-4">
         <Button onClick={handleFilterApply}>
           <Icon icon={applyIcon} />
-          <span>Apply</span>
+          <span>{t`Apply`}</span>
         </Button>
-        <Button color="gray" onClick={handleFilterStateReset}>
+        <Button color="danger" onClick={handleFilterStateReset}>
           <Icon icon={resetIcon} />
-          <span>Reset</span>
+          <span>{t`Reset`}</span>
         </Button>
       </div>
     </TableToolbarContainer>

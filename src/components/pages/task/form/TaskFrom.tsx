@@ -1,19 +1,22 @@
-import { groupApi, partitionApi, scheduleApi } from 'api/urls'
-import { ElementsApi } from 'api/urls/common'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector, { TSelectValue } from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
-import MultiSelect from 'components/common/form/MultiSelect'
+import { partitionApi, scheduleApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IElementsResult, IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IGroupResult } from 'types/pages/device'
-import { IPartitionResult } from 'types/pages/partition'
-import { IScheduleResult } from 'types/pages/schedule'
-import { ITaskFormData, taskDeviceTypes, taskSelectType } from 'types/pages/task'
-import { SERVER_QUERY } from 'utils/config'
-import { taskIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IScheduleResult } from '../../../../types/pages/schedule'
+import {
+  ITaskFormData,
+  taskActionControlsWithType,
+  taskActionTypes,
+} from '../../../../types/pages/task'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { taskIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
+import useLicenseFilter from '../../../../hooks/useLicenseFilter'
 
 interface IProps {
   formData: ITaskFormData
@@ -23,7 +26,7 @@ interface IProps {
   isLoading?: boolean
 }
 
-function TaskFrom({ formData, formErrors, handleInputChange, disabled, isLoading }: IProps) {
+function TaskForm({ formData, formErrors, handleInputChange, disabled, isLoading }: IProps) {
   const { isLoading: partitionIsLoading, data: partitionData } = useSWR<
     IListServerResponse<IPartitionResult[]>
   >(
@@ -40,152 +43,111 @@ function TaskFrom({ formData, formErrors, handleInputChange, disabled, isLoading
       : scheduleApi.list(SERVER_QUERY.selectorDataQuery)
   )
 
-  const handleTypeChange = (name: string, selectedValue: TSelectValue) => {
-    if (handleInputChange) {
+  const handleTypeChange: THandleInputChange = (name, selectedValue) => {
+    if (
+      handleInputChange &&
+      selectedValue &&
+      typeof selectedValue === 'object' &&
+      'value' in selectedValue
+    ) {
       handleInputChange(name, selectedValue)
-      handleInputChange('devices', [])
-      handleInputChange('groups', [])
+      handleInputChange('TaskItemIds', [])
+      handleInputChange('GroupItemIds', [])
+      handleInputChange('ActionCtrl', taskActionControlsWithType[selectedValue.value][0])
     }
   }
 
-  // Fetch elements by type from the server
-  const { isLoading: devicesIsLoading, data: devicesData } = useSWR<
-    IListServerResponse<IElementsResult[]>
-  >(
-    // disabled ||
-    //     typeof handleInputChange === "undefined" ||
-    formData.select_type?.value !== 'individual' || !formData.action_type?.value
-      ? null
-      : ElementsApi.list(`type=${formData?.action_type?.value}`)
-  )
-
-  const { isLoading: groupIsLoading, data: groupData } = useSWR<
-    IListServerResponse<IGroupResult[]>
-  >(
-    // disabled ||
-    //     typeof handleInputChange === "undefined" ||
-    formData.select_type?.value !== 'group' || !formData.action_type?.value
-      ? null
-      : groupApi.list(`${SERVER_QUERY.selectorDataQuery}&type=${formData.action_type?.value}`)
-  )
+  const filteredTaskActionTypes = useLicenseFilter(taskActionTypes, {
+    '10': 'Camera',
+    '12': 'Lockset',
+    '13': 'Facegate',
+    '15': 'ContLock',
+    '16': 'Intercom',
+  })
 
   return (
-    <FormCardWithHeader icon={taskIcon} header="Task">
+    <FormCardWithHeader icon={taskIcon} header={t`Task`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading || partitionIsLoading}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
       />
       <Input
-        name="name"
-        label="Task Name"
-        value={formData.name}
+        name="TaskName"
+        label={t`Task Name`}
+        value={formData.TaskName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.TaskName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData.description}
+        name="TaskDesc"
+        label={t`Description`}
+        value={formData.TaskDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.TaskDesc}
         isLoading={isLoading}
       />
       <Selector
-        name="schedule"
-        label="Schedule"
-        value={formData.schedule}
-        options={scheduleData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Schedule"
+        label={t`Schedule`}
+        value={formData.Schedule}
+        options={scheduleData?.data.map((result) => ({
+          value: result.ScheduleNo.toString(),
+          label: result.ScheduleName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading || scheduleIsLoading}
-        error={formErrors?.schedule}
+        error={formErrors?.Schedule}
       />
 
       <Selector
-        name="action_type"
-        label="Action Type"
-        value={formData.action_type}
-        options={taskDeviceTypes}
+        name="ActionType"
+        label={t`Action Type`}
+        value={formData.ActionType}
+        options={filteredTaskActionTypes}
         onChange={handleTypeChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.action_type}
+        error={formErrors?.ActionType}
         isLoading={isLoading}
       />
 
-      <Selector
-        name="select_type"
-        label="Select Type"
-        value={formData.select_type}
-        options={taskSelectType}
-        onChange={handleTypeChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.select_type}
-        isLoading={isLoading}
-      />
-
-      <SwitchButton
-        name="start_only"
-        label="Start Only"
-        checked={formData.start_only}
+      <SwitchButtonSelect
+        name="StartOnly"
+        label={t`Start Only`}
+        value={formData.StartOnly}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
 
-      <div>
-        {formData.select_type?.value !== 'individual' && (
-          <MultiSelect
-            name="groups"
-            label="Task Item"
-            value={formData?.groups}
-            options={groupData?.results.map((item) => ({
-              id: item.id.toString(),
-              label: item.name,
-            }))}
-            onChange={handleInputChange}
-            disabled={
-              disabled || typeof handleInputChange === 'undefined' || !formData.action_type?.value
-            }
-            isLoading={groupIsLoading}
-          />
-        )}
-      </div>
-
-      <div>
-        {formData.select_type?.value === 'individual' && (
-          <MultiSelect
-            name="devices"
-            label="Task Item"
-            value={formData?.devices}
-            options={devicesData?.results.map((item) => ({
-              id: item.id.toString(),
-              label: item.name,
-            }))}
-            onChange={handleInputChange}
-            disabled={
-              disabled || typeof handleInputChange === 'undefined' || !formData.action_type?.value
-            }
-            isLoading={devicesIsLoading}
-          />
-        )}
-      </div>
+      {formData.StartOnly?.value === '1' && (
+        <Selector
+          name="ActionCtrl"
+          label={t`Action Control`}
+          value={formData.ActionCtrl}
+          options={
+            formData.ActionType?.value ? taskActionControlsWithType[formData.ActionType?.value] : []
+          }
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.ActionCtrl}
+          isLoading={isLoading}
+        />
+      )}
     </FormCardWithHeader>
   )
 }
 
-export default TaskFrom
+export default TaskForm

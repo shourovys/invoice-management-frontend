@@ -1,15 +1,16 @@
-import { holidayApi, partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { holidayApi, partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IHolidayResult } from 'types/pages/holiday'
-import { IPartitionResult } from 'types/pages/partition'
-import { IScheduleFormData } from 'types/pages/schedule'
-import { SERVER_QUERY } from 'utils/config'
-import { doorIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IHolidayResult } from '../../../../types/pages/holiday'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IScheduleFormData } from '../../../../types/pages/schedule'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { doorIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IScheduleFormData
@@ -37,49 +38,51 @@ function ScheduleForm({ formData, handleInputChange, formErrors, disabled, isLoa
   )
 
   return (
-    <FormCardWithHeader icon={doorIcon} header="Schedule">
+    <FormCardWithHeader icon={doorIcon} header={t`Schedule`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
+        isClearable={false}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Schedule Name"
-        value={formData?.name}
+        name="ScheduleName"
+        label={t`Schedule Name`}
+        value={formData?.ScheduleName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.ScheduleName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="ScheduleDesc"
+        label={t`Description`}
+        value={formData?.ScheduleDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.ScheduleDesc}
         isLoading={isLoading}
       />
       <Selector
-        name="holiday"
-        label="Holiday"
-        value={formData?.holiday}
-        options={holidayData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Holiday"
+        label={t`Holiday`}
+        value={formData?.Holiday}
+        options={holidayData?.data.map((result) => ({
+          value: result.HolidayNo.toString(),
+          label: result.HolidayName,
         }))}
+        isClearable={true}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.holiday}
+        error={formErrors?.Holiday}
         isLoading={isLoading || holidayIsLoading}
       />
     </FormCardWithHeader>

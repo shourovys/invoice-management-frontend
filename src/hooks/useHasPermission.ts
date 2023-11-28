@@ -1,16 +1,17 @@
 import { useMemo } from 'react'
-import checkPermission from 'utils/checkPermission'
+import { IPermission } from '../types/context/auth'
+import checkPermission from '../utils/checkPermission'
 import useAuth from './useAuth'
 
-function useHasPermission(actionPermission: string[]): boolean {
-  const { isAuthenticated, user } = useAuth()
+function useHasPermission(actionPermission: IPermission): boolean {
+  const { isAuthenticated, permissions } = useAuth()
 
   const userPermissions = useMemo(() => {
-    if (isAuthenticated && user?.permissions) {
-      return user.permissions.map((permission) => permission.split('.')[1])
+    if (isAuthenticated && permissions) {
+      return permissions.map((permission) => permission)
     }
     return []
-  }, [isAuthenticated, user?.permissions])
+  }, [isAuthenticated, permissions])
 
   return useMemo(() => {
     return checkPermission(actionPermission, userPermissions)

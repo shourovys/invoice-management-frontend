@@ -1,23 +1,27 @@
-import { nodeApi, partitionApi, userApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { nodeApi, partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
 import {
   IFacegateFormData,
+  IFacegateInfoFromData,
+  facegateGateTypeOptions,
   facegateOpenDoorWayOptions,
   facegateVerifyModeOptions,
-} from 'types/pages/facegate'
-import { INodeResult } from 'types/pages/node'
-import { IPartitionResult } from 'types/pages/partition'
-import { IUserResult } from 'types/pages/user'
-import { SERVER_QUERY } from 'utils/config'
-import { doorIcon } from 'utils/icons'
+} from '../../../../types/pages/facegate'
+import { INodeResult } from '../../../../types/pages/node'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { doorIcon } from '../../../../utils/icons'
+
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import t from '../../../../utils/translator'
 
 interface IProps {
-  formData?: IFacegateFormData
+  formData?: IFacegateFormData | IFacegateInfoFromData
   handleInputChange?: THandleInputChange
   formErrors?: IFormErrors
   disabled?: boolean
@@ -39,139 +43,257 @@ function FacegateForm({ formData, handleInputChange, formErrors, disabled, isLoa
       : nodeApi.list(SERVER_QUERY.selectorDataQuery)
   )
 
-  const { isLoading: userIsLoading, data: userData } = useSWR<IListServerResponse<IUserResult[]>>(
-    disabled || typeof handleInputChange === 'undefined'
-      ? null
-      : userApi.list(SERVER_QUERY.selectorDataQuery)
-  )
+  // useEffect(() => {
+  //   if (formData?.GateType?.value === '0' || formData?.GateType?.value === '1') {
+  //     handleInputChange?.('SipGateId', '')
+  //     handleInputChange?.('SipPassword', '')
+  //     handleInputChange?.('SipOperatorId', '')
+  //     handleInputChange?.('SipDtmfLock', '')
+  //     handleInputChange?.('SipIncomingCall', null)
+  //   }
+  // }, [formData?.GateType])
+
+  const isGateTypeNot0or2 = formData?.GateType?.value !== '0' && formData?.GateType?.value !== '2'
+  const isInfoPage =
+    (disabled || typeof handleInputChange === 'undefined') && formData && 'Online' in formData
 
   return (
-    <FormCardWithHeader icon={doorIcon} header="Facegate">
+    <FormCardWithHeader icon={doorIcon} header={t`Facegate`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Facegate Name"
-        value={formData?.name}
+        name="FacegateName"
+        label={t`Facegate Name`}
+        value={formData?.FacegateName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.FacegateName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="FacegateDesc"
+        label={t`Description`}
+        value={formData?.FacegateDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.FacegateDesc}
         isLoading={isLoading}
       />
       <Selector
-        name="node"
-        label="Node"
-        value={formData?.node}
-        options={nodeData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Node"
+        label={t`Node`}
+        value={formData?.Node}
+        options={nodeData?.data.map((result) => ({
+          value: result.NodeNo.toString(),
+          label: result.NodeName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.node}
+        error={formErrors?.Node}
         isLoading={isLoading || nodeIsLoading}
       />
       <Input
-        name="ip_address"
-        label="IP Address"
-        value={formData?.ip_address}
+        name="IpAddress"
+        label={t`IP Address`}
+        value={formData?.IpAddress}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.ip_address}
+        error={formErrors?.IpAddress}
         isLoading={isLoading}
       />
       <Input
-        name="api_port"
+        name="ApiPort"
         type="number"
-        label="API Port"
-        value={formData?.api_port}
+        label={t`API Port`}
+        value={formData?.ApiPort}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.api_port}
+        error={formErrors?.ApiPort}
         isLoading={isLoading}
       />
+      <Input
+        name="UserId"
+        label={t`User ID`}
+        value={formData?.UserId}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.UserId}
+        isLoading={isLoading}
+      />
+      <Input
+        name="Password"
+        label={t`Password`}
+        value={formData?.Password}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.Password}
+        isLoading={isLoading}
+      />
+      <Input
+        name="DeviceId"
+        label={t`Device ID`}
+        value={formData?.DeviceId}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.DeviceId}
+        isLoading={isLoading}
+      />
+
       <Selector
-        name="user"
-        label="User ID"
-        value={formData?.user}
-        options={userData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.username,
-        }))}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.user}
-        isLoading={isLoading || userIsLoading}
-      />
-      <Input
-        name="password"
-        label="Password"
-        value={formData?.password}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.password}
-        isLoading={isLoading}
-      />
-      <Input
-        name="device_id"
-        type="number"
-        label="Device ID"
-        value={formData?.device_id}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.device_id}
-        isLoading={isLoading}
-      />
-      <Input
-        name="face_threshold"
-        type="number"
-        label="Face Threshold"
-        value={formData?.face_threshold}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.face_threshold}
-        isLoading={isLoading}
-      />
-      <Selector
-        name="open_door_way"
-        label="Open Door Way"
-        value={formData?.open_door_way}
+        name="OpenDoorWay"
+        label={t`Open Door Way`}
+        value={formData?.OpenDoorWay}
         options={facegateOpenDoorWayOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.open_door_way}
+        error={formErrors?.OpenDoorWay}
         isLoading={isLoading}
       />
+
       <Selector
-        name="verify_mode"
-        label="Verify Mode"
-        value={formData?.verify_mode}
+        name="GateType"
+        label={t`Gate Type`}
+        value={formData?.GateType}
+        options={facegateGateTypeOptions}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.GateType}
+        isLoading={isLoading}
+      />
+
+      <Selector
+        name="VerifyMode"
+        label={t`Verify Mode`}
+        value={formData?.VerifyMode}
         options={facegateVerifyModeOptions}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.verify_mode}
+        error={formErrors?.VerifyMode}
         isLoading={isLoading}
       />
+
+      {formData?.GateType?.value !== '0' && formData?.GateType?.value !== '1' && (
+        <Input
+          name="FaceThreshold"
+          type="number"
+          label={t`Face Threshold`}
+          value={formData?.FaceThreshold}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.FaceThreshold}
+          isLoading={isLoading}
+        />
+      )}
+      {isGateTypeNot0or2 && (
+        <Input
+          name="SipGateId"
+          label={t`SIP Gate ID`}
+          value={formData?.SipGateId}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.SipGateId}
+          isLoading={isLoading}
+        />
+      )}
+      {isGateTypeNot0or2 && (
+        <Input
+          name="SipPassword"
+          label={t`SIP Password`}
+          value={formData?.SipPassword}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.SipPassword}
+          isLoading={isLoading}
+        />
+      )}
+      {isGateTypeNot0or2 && (
+        <Input
+          name="SipOperatorId"
+          label={t`SIP Operator ID`}
+          value={formData?.SipOperatorId}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.SipOperatorId}
+          isLoading={isLoading}
+        />
+      )}
+      {isGateTypeNot0or2 && (
+        <Input
+          name="SipDtmfLock"
+          type="number"
+          label={t`SIP DTMF Lock`}
+          value={formData?.SipDtmfLock}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.SipDtmfLock}
+          isLoading={isLoading}
+        />
+      )}
+      {isGateTypeNot0or2 && (
+        <SwitchButtonSelect
+          name="SipIncomingCall"
+          label={t`Sip Incoming Call`}
+          value={formData?.SipIncomingCall}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          isLoading={isLoading}
+        />
+      )}
+      {isInfoPage && (
+        <Input
+          name="Online"
+          label={t`Online`}
+          value={formData?.Online}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Online}
+          isLoading={isLoading}
+        />
+      )}
+      {isInfoPage && (
+        <Input
+          name="Busy"
+          label={t`Busy`}
+          value={formData?.Busy}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Busy}
+          isLoading={isLoading}
+        />
+      )}
+      {isInfoPage && (
+        <Input
+          name="LockStat"
+          label={t`Lock Stat`}
+          value={formData?.LockStat}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.LockStat}
+          isLoading={isLoading}
+        />
+      )}
+      {isInfoPage && (
+        <Input
+          name="ContactStat"
+          label={t`Contact Stat`}
+          value={formData?.ContactStat}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.ContactStat}
+          isLoading={isLoading}
+        />
+      )}
     </FormCardWithHeader>
   )
 }

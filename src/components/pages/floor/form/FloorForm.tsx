@@ -1,15 +1,15 @@
-import { partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IFloorFormData } from 'types/pages/floor'
-import { IPartitionResult } from 'types/pages/partition'
-import { SERVER_QUERY } from 'utils/config'
-import { doorIcon } from 'utils/icons'
-
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IFloorFormData } from '../../../../types/pages/floor'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { doorIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 interface IProps {
   formData?: IFloorFormData
   handleInputChange?: THandleInputChange
@@ -28,36 +28,36 @@ function FloorForm({ formData, handleInputChange, formErrors, disabled, isLoadin
   )
 
   return (
-    <FormCardWithHeader icon={doorIcon} header="Floor">
+    <FormCardWithHeader icon={doorIcon} header={t`Floor`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Floor Name"
-        value={formData?.name}
+        name="FloorName"
+        label={t`Floor Name`}
+        value={formData?.FloorName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.FloorName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="FloorDesc"
+        label={t`Description`}
+        value={formData?.FloorDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.FloorDesc}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

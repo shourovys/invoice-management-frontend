@@ -48,7 +48,7 @@ const useTable = (props: IProps) => {
   const [dense, setDense] = useState(false)
 
   useEffect(() => {
-    if (defaultOrderBy && !searchParams.get(orderBy)) {
+    if (defaultOrderBy && !searchParams.get('orderBy')) {
       updateRouteQueryWithReplace({
         query: {
           orderBy: defaultOrderBy,
@@ -57,12 +57,20 @@ const useTable = (props: IProps) => {
         pathName: location.pathname,
       })
     }
-  }, [defaultOrderBy])
+  }, [location.search, location.pathname])
 
   useEffect(() => {
+    // console.log(
+    //   location && location.pathname + location.search && location.search !== location.pathname
+    // )
     if (location && location.pathname + location.search && location.search !== location.pathname) {
       const queryPage = searchParams.get('page') as string
       setPage(queryPage && !Number.isNaN(+queryPage) ? +queryPage : 1)
+
+      const queryRowPerPage = searchParams.get('rowsPerPage') as string
+      setRowsPerPage(
+        queryRowPerPage && !Number.isNaN(+queryRowPerPage) ? +queryRowPerPage : defaultRowsPerPage
+      )
 
       const orderByValue = searchParams.get('orderBy')
       setOrderBy(typeof orderByValue === 'string' ? orderByValue : '')
@@ -133,7 +141,7 @@ const useTable = (props: IProps) => {
   }
 
   const handleChangeRowsPerPage = (_rowsPerPage: number) => {
-    setPage(1)
+    handleChangePage(1)
     setRowsPerPage(_rowsPerPage)
     if (onChangeRowsPerPage) {
       onChangeRowsPerPage(_rowsPerPage)

@@ -1,15 +1,16 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IPersonFormData, personThreatOptions } from 'types/pages/person'
-import { listIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
+import { THandleInputChange } from '../../../../types/components/common'
+import { INewFormErrors } from '../../../../types/pages/common'
+import { IPersonFormData, personThreatOptions } from '../../../../types/pages/person'
+import { listIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData: IPersonFormData
   handleInputChange?: THandleInputChange
-  formErrors?: IFormErrors
+  formErrors?: INewFormErrors<IPersonFormData>
   disabled?: boolean
   isLoading?: boolean
 }
@@ -22,42 +23,42 @@ function PersonOptionForm({
   isLoading,
 }: IProps) {
   return (
-    <FormCardWithHeader icon={listIcon} header="Option">
+    <FormCardWithHeader icon={listIcon} header={t`Option`}>
       <div className="flex items-center justify-between">
-        <SwitchButton
-          name="ada"
-          checked={formData.ada}
+        <SwitchButtonSelect
+          name="Ada"
+          value={formData.Ada}
           onChange={handleInputChange}
-          label="Ada"
+          label={t`Ada`}
           disabled={disabled || typeof handleInputChange === 'undefined'}
           isLoading={isLoading}
         />
-        <SwitchButton
-          name="invite"
-          checked={formData.invite}
+        <SwitchButtonSelect
+          name="Invite"
+          value={formData.Invite}
           onChange={handleInputChange}
-          label="Invite"
+          label={t`Invite`}
           disabled={disabled || typeof handleInputChange === 'undefined'}
           isLoading={isLoading}
         />
-        <SwitchButton
-          name="exempt"
-          checked={formData.exempt}
+        <SwitchButtonSelect
+          name="Exempt"
+          value={formData.Exempt}
           onChange={handleInputChange}
-          label="Exempt"
+          label={t`Exempt`}
           disabled={disabled || typeof handleInputChange === 'undefined'}
           isLoading={isLoading}
         />
       </div>
 
       <Selector
-        name="threat_level"
-        label="Threat Level"
+        name="ThreatLevel"
+        label={t`Threat Level`}
         options={personThreatOptions}
-        value={formData.threat_level}
+        value={formData.ThreatLevel}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.threat_level}
+        error={formErrors?.ThreatLevel}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

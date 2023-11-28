@@ -1,23 +1,20 @@
-import Navbar from './Navbar'
-import Sidebar from './Sidebar'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import useAuth from '../../hooks/useAuth'
+import MasterLayout from './MasterLayout'
+import WorkerLayout from './WorkerLayout'
 
 interface IMainLayoutProps {
   children: JSX.Element | JSX.Element[]
 }
 
 function MainLayout({ children }: IMainLayoutProps): JSX.Element {
-  return (
-    <div className="flex flex-col h-full min-h-screen bg-gray-bg">
-      <Navbar />
-
-      <div className="flex flex-col flex-grow md:flex-row">
-        <Sidebar />
-        <main className="relative flex-1 pb-6 overflow-y-auto md:pb-8 focus:outline-none">
-          <div className="mx-auto md:px-5">{children}</div>
-        </main>
-      </div>
-    </div>
-  )
+  const { isAuthenticated, layout } = useAuth()
+  if (isAuthenticated && layout === 'Master') {
+    return <MasterLayout>{children}</MasterLayout>
+  } else if (isAuthenticated && layout !== 'Master') {
+    return <WorkerLayout>{children}</WorkerLayout>
+  }
+  return <>{children}</>
 }
 
 export default MainLayout

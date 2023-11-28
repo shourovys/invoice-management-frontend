@@ -1,18 +1,24 @@
-/* eslint-disable prettier/prettier */
 import {
   faChessPawn,
   faCircleCheck,
   faCircleDot,
   faClock,
   faCompass,
+  faCopy,
   faEdit,
   faEnvelope,
+  faFaceSmile,
+  faFloppyDisk,
   faFolderClosed,
   faHourglass,
+  faIdCard,
+  faImages,
   faMap,
   faPaperPlane,
   faRectangleXmark,
+  faRegistered,
   faSquare,
+  faSquareCheck,
   faTrashCan,
 } from '@fortawesome/free-regular-svg-icons'
 import {
@@ -27,6 +33,7 @@ import {
   faArrowRightToBracket,
   faArrowUpFromBracket,
   faArrowUpLong,
+  faArrowUpRightFromSquare,
   faArrowsRotate,
   faArrowsSpin,
   faBackward,
@@ -35,6 +42,7 @@ import {
   faBarsProgress,
   faBarsStaggered,
   faBell,
+  faBookAtlas,
   faBookOpenReader,
   faBrain,
   faBriefcase,
@@ -52,100 +60,132 @@ import {
   faChessBoard,
   faCircleInfo,
   faCircleNodes,
+  faCircleUp,
+  faCircleUser,
   faClockRotateLeft,
   faClone,
   faCloud,
   faCloudArrowDown,
+  faCloudDownload,
   faCompactDisc,
   faCookie,
   faCookieBite,
   faCropSimple,
+  faD,
   faDatabase,
+  faDiamond,
+  faDiceD6,
   faDisease,
   faDna,
+  faDoorClosed,
   faDoorOpen,
+  faDownLeftAndUpRightToCenter,
   faDungeon,
   faElevator,
   faEllipsisVertical,
+  faEraser,
   faExpand,
   faEye,
-  faFaceMeh,
   faFile,
   faFileImport,
   faFileLines,
+  faFilter,
+  faFingerprint,
   faFolderOpen,
+  faForwardFast,
   faGear,
   faGears,
+  faH,
   faHandcuffs,
+  faHardDrive,
   faHillRockslide,
   faHome,
   faHouse,
   faHouseFloodWater,
   faHouseLaptop,
-  faHouseLock,
   faHurricane,
-  faIdBadge,
   faIdCardClip,
   faJar,
   faKey,
   faLaptopFile,
+  faLayerGroup,
   faList,
   faListCheck,
-  faLocation,
-  faLocationDot,
   faLock,
   faLockOpen,
   faMicrochip,
+  faMinus,
   faMobile,
   faMobileScreen,
+  faO,
   faPen,
   faPenToSquare,
   faPersonArrowDownToLine,
   faPersonArrowUpFromLine,
   faPowerOff,
+  faRecordVinyl,
+  faRecycle,
   faRetweet,
   faRobot,
+  faRotate,
   faRotateRight,
+  faSatelliteDish,
   faSdCard,
-  faShareNodes,
-  faShekelSign,
+  faServer,
   faShopLock,
   faShuttleSpace,
   faSoap,
-  faSpinner,
   faSquarePen,
   faStar,
-  faStopwatch,
+  faStop,
+  faT,
   faTableCellsLarge,
   faTableColumns,
+  faTextHeight,
   faToggleOff,
   faTowerBroadcast,
   faTowerCell,
+  faTractor,
+  faTruckRampBox,
   faTurnDown,
+  faTv,
   faUnlockKeyhole,
-  faUpDownLeftRight,
   faUser,
   faUserLock,
   faUserTie,
   faUsers,
+  faVial,
+  faVideo,
+  faVideoSlash,
+  faWarehouse,
+  faWarning,
   faWifi,
   faXmark,
+  faStopwatch,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // pages icons
 export const addIcon = faAdd
-export const importIcon = faFileImport
-export const bulkLoadIcon = faArrowRightToBracket
+export const selectIcon = faSquareCheck
+export const importIcon = faArrowRightToBracket
+export const exportIcon = faFileImport
+export const bulkLoadIcon = faTruckRampBox
+export const clearIcon = faEraser
+export const refreshIcon = faArrowsRotate
+export const statusIcon = faSatelliteDish
+export const discoverIcon = faBookAtlas
 export const groupEditIcon = faEdit
 export const sendInvitationEmailIcon = faPaperPlane
 export const deleteIcon = faTrashCan
 export const csvIcon = faCloudArrowDown
+export const warningIcon = faWarning
 export const applyIcon = faCircleCheck
 export const cancelIcon = faXmark
 export const resetIcon = faArrowsRotate
 export const passthruIcon = faCompass
+export const normalIcon = faCircleCheck
 export const probeIcon = faCircleDot
 export const setTimerIcon = faClock
 export const swSyncIcon = faHourglass
@@ -161,42 +201,57 @@ export const lockIcon = faLock
 export const unlockIcon = faLockOpen
 export const mUnlockIcon = faAnchorLock
 export const provIcon = faHandcuffs
-export const bdUpdateIcon = faClockRotateLeft
-export const bdInitializeIcon = faArrowsSpin
+export const dbUpdateIcon = faClockRotateLeft
+export const dbInitializeIcon = faArrowsSpin
 export const serveIcon = faBarsStaggered
+export const highIcon = faTextHeight
 export const elevatedIcon = faElevator
 export const guardedIcon = faDisease
 export const lowIcon = faTurnDown
 export const disableIcon = faBan
 export const dbSyncIcon = faDatabase
 export const reloadIcon = faRotateRight
-export const bookReader = faBookOpenReader
-export const shekelSign = faShekelSign
+// export const bookReader = faBookOpenReader
+// export const shekelSign = faShekelSign
 export const idCard = faIdCardClip
-export const houseLock = faHouseLock
+// export const houseLock = faHouseLock
 export const cookie = faCookie
-export const dungeon = faDungeon
-export const allArrowSign = faUpDownLeftRight
+// export const dungeon = faDungeon
+// export const allArrowSign = faUpDownLeftRight
 export const notification = faBell
 export const shuttleSpace = faShuttleSpace
-export const stopwatch = faStopwatch
-export const shareIcon = faShareNodes
-export const loadImage = faSpinner
+// export const stopwatch = faStopwatch
+// export const shareIcon = faShareNodes
+// export const loadImage = faSpinner
 export const editIcon = faPenToSquare
+export const checkIcon = faCircleCheck
+export const testIcon = faVial
 export const toggleFloorIcon = faToggleOff
 export const fourBoxIcon = faTableCellsLarge
 export const twoBoxIcon = faTableColumns
 export const oneBoxIcon = faSquare
-export const imageLoadIcon = faList // need to change with icon!!!!!!!
-export const editLayoutIcon = faList // need to change with icon!!!!!!!
-export const recordOffIcon = faList // need to change with icon!!!!!!!
-export const recordOnIcon = faList // need to change with icon!!!!!!!
-export const instantRecordIcon = faList // need to change with icon!!!!!!!
+export const imageLoadIcon = faImages
+export const editLayoutIcon = faLayerGroup
+export const recordOffIcon = faVideoSlash
+export const recordOnIcon = faVideo
+export const instantRecordIcon = faRecordVinyl
+export const keyIcon = faKey
+export const updateLicenseIcon = faIdCard
+export const eventIcon = faCalendarDays
+export const actionIcon = faCalendarDay
+export const fwUpdateIcon = faCircleUp
+export const stopIcon = faStop
+export const certificateDownloadIcon = faCloudDownload
+export const avatarIcon = faCircleUser
+export const filterIcon = faFilter
+export const streamIcon = faVideo
 
 // only icon button (no title/name)
 export const threeDotsIcon = faEllipsisVertical // for mobile dropdown menu
 export const rightArrowIcon = faAngleRight // right angle for access form
 export const leftArrowIcon = faAngleLeft // for mobile dropdown menu
+// export const upAngleIcon = faAngleRight // right angle for access form
+// export const downAngleIcon = faAngleLeft // for mobile dropdown menu
 export const downArrowIcon = faArrowDownLong // for table header sort desc
 export const upArrowIcon = faArrowUpLong // for table header sort asc
 
@@ -211,10 +266,10 @@ export const playbackIcon = faBackward
 export const logReportIcon = faCircleInfo
 export const accessReportIcon = faLaptopFile
 export const ackReportIcon = faHouseLaptop
-export const smartReportIcon = faList // need to change with icon!!!!!!!
-export const copyLogFromDatabaseIcon = faList // need to change with icon!!!!!!!
-export const getbackLogFromArchiveIcon = faList // need to change with icon!!!!!!!
-export const saveIcon = faList // need to change with icon!!!!!!!
+// export const smartReportIcon = faList // need to change with icon!!!!!!!
+export const copyLogFromDatabaseIcon = faCopy
+export const getbackLogFromArchiveIcon = faDownLeftAndUpRightToCenter
+export const saveIcon = faFloppyDisk
 // user
 export const partitionIcon = faClone
 export const userIcon = faUser
@@ -223,23 +278,25 @@ export const userRoleIcon = faUserLock
 export const personIcon = faUserTie
 export const definedFieldIcon = faSquarePen
 export const credentialIcon = faKey
-export const credentialAccessIcon = faList // need to change with icon!!!!!!!
+export const credentialAccessIcon = faFingerprint
 export const formatIcon = faJar
 export const accessIcon = faUnlockKeyhole
 // device
 export const nodeIcon = faCompactDisc
 export const nodeScanIcon = faHurricane
 export const doorIcon = faDoorOpen
-export const antiPassbackRuleIcon = faList // need to change with icon!!!!!!!
-export const antiTailgateRuleIcon = faList // need to change with icon!!!!!!!
-export const occupancyRuleIcon = faList // need to change with icon!!!!!!!
-export const deadmanRuleIcon = faList // need to change with icon!!!!!!!
-export const regionStatusIcon = faList // need to change with icon!!!!!!!
-export const hazmatRuleIcon = faList // need to change with icon!!!!!!!
-export const nvrIcon = faList // need to change with icon!!!!!!!
-export const channelIcon = faList // need to change with icon!!!!!!!
-export const gatewayIcon = faList // need to change with icon!!!!!!!
-export const LogIcon = faList // need to change with icon!!!!!!!
+export const doorOpenIcon = faDoorOpen
+export const doorCloseIcon = faDoorClosed
+export const antiPassbackRuleIcon = faForwardFast
+export const antiTailgateRuleIcon = faT
+export const occupancyRuleIcon = faO
+export const deadmanRuleIcon = faD
+export const regionStatusIcon = faRegistered
+export const hazmatRuleIcon = faH
+export const nvrIcon = faHardDrive
+export const channelIcon = faDiceD6
+export const gatewayIcon = faDiamond
+export const LogIcon = faGears
 export const doorRuleIcon = faDungeon
 export const regionIcon = faMap
 export const inputIcon = faArrowUpFromBracket
@@ -248,9 +305,13 @@ export const elevatorIcon = faElevator
 export const relayIcon = faBullseye
 export const cameraIcon = faCamera
 export const locksetIcon = faShopLock
-export const facegateIcon = faFaceMeh
+export const facegateIcon = faFaceSmile
+export const intercomIcon = faFaceSmile
 export const serialIcon = faChartSimple
 export const subnodeIcon = faCircleNodes
+export const readerIcon = faBookOpenReader
+export const contGateIcon = faCircleNodes
+export const contLockIcon = faCircleNodes
 export const triggerIcon = faList
 export const threatIcon = faCookieBite
 // work
@@ -266,6 +327,8 @@ export const ftpIcon = faFile
 export const restAPIIcon = faGear
 export const logAPIIcon = faFileLines
 export const geminiIcon = faDna
+export const faceIcon = faFaceSmile
+export const sipIcon = faServer
 // monitoring
 export const floorIcon = faCropSimple
 export const viewIcon = faEye
@@ -281,20 +344,20 @@ export const defaultIcon = faArrowsRotate
 export const databaseIcon = faDatabase
 export const rebootIcon = faPowerOff
 export const miscellaneousIcon = faChessPawn
-export const capacityIcon = faList // need to change with icon!!!!!!!
-export const factoryDefaultIcon = faList // need to change with icon!!!!!!!
-export const logResetIcon = faList // need to change with icon!!!!!!!
-export const loadDatabaseFromStorage = faList // need to change with icon!!!!!!!
-export const saveDatabaseToStorage = faList // need to change with icon!!!!!!!
-export const saveDataAndRebootIcon = faList // need to change with icon!!!!!!!
-export const rebootWithoutSavingDataIcon = faList // need to change with icon!!!!!!!
+export const capacityIcon = faWarehouse
+export const factoryDefaultIcon = faTractor
+export const logResetIcon = faRecycle
+export const loadDatabaseFromStorage = faDatabase
+export const saveDatabaseToStorage = faFloppyDisk
+export const saveDataAndRebootIcon = faFloppyDisk
+export const rebootWithoutSavingDataIcon = faRotate
 // system
-export const licenseIcon = faIdBadge
+export const licenseIcon = faIdCard
 export const systemIcon = faGears
 export const networkIcon = faTowerCell
 export const timeIcon = faBusinessTime
-export const locationIcon = faLocation
-export const addressIcon = faLocationDot
+// export const locationIcon = faLocation
+// export const addressIcon = faLocationDot
 export const sdCardIcon = faSdCard
 export const usbIcon = faMicrochip
 export const macIcon = faChalkboard
@@ -307,17 +370,18 @@ export const wifiIcon = faWifi
 
 // menu header icons
 export const homeIcon = faHome
+export const monitorIcon = faTv
 export const reportIcon = faBarsProgress
-// export const userIcon = faList; // need to change with icon!!!!!!!
-// export const personIcon = faList; // need to change with icon!!!!!!!
 export const deviceIcon = faMobileScreen
+export const externalIcon = faArrowUpRightFromSquare
 export const workIcon = faBriefcase
 export const serviceIcon = faChartLine
-export const monitoringIcon = faLaptopFile
 export const maintenanceIcon = faChartSimple
-// export const systemIcon = faList; // need to change with icon!!!!!!!
-export const favoriteIcon = faStar // need to change with icon!!!!!!!
-export const menuIcon = faBars // need to change with icon!!!!!!!
+export const favoriteIcon = faStar
+// export const menuIcon = faBars
+export const menuIcon = faStopwatch
+
+export const dashIcon = faMinus
 
 // icon component and type
 const Icon = FontAwesomeIcon

@@ -1,9 +1,10 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { INodeInfoFormData } from 'types/pages/node'
-import { nodeIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors } from '../../../../types/pages/common'
+import { INodeInfoFormData } from '../../../../types/pages/node'
+import { nodeIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: INodeInfoFormData
@@ -15,142 +16,142 @@ interface IProps {
 
 function NodeInfoForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={nodeIcon} header="Node">
+    <FormCardWithHeader icon={nodeIcon} header={t`Node`}>
       <Input
-        name="name"
-        label="Node Name"
-        value={formData?.name}
+        name="NodeName"
+        label={t`Node Name`}
+        value={formData?.NodeName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.NodeName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="NodeDesc"
+        label={t`Description`}
+        value={formData?.NodeDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.NodeDesc}
         isLoading={isLoading}
       />
       <Input
-        name="mac"
-        label="MAC Address"
-        value={formData?.mac}
+        name="Mac"
+        label={t`MAC Address`}
+        value={formData?.Mac}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.mac}
+        error={formErrors?.Mac}
         isLoading={isLoading}
       />
       <Input
-        name="product"
-        label="Product"
-        value={formData?.product}
+        name="Product"
+        label={t`Product`}
+        value={formData?.Product}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.product}
+        error={formErrors?.Product}
         isLoading={isLoading}
       />
       <Input
-        name="model"
-        label="Model"
-        value={formData?.model}
+        name="Model"
+        label={t`Model`}
+        value={formData?.Model}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.model}
+        error={formErrors?.Model}
         isLoading={isLoading}
       />
       <Input
-        name="type"
-        label="Type"
-        value={formData?.type}
+        name="Type"
+        label={t`Type`}
+        value={formData?.Type}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.type}
+        error={formErrors?.Type}
         isLoading={isLoading}
       />
       <Input
-        name="oem_no"
-        label="OEM Number"
-        value={formData?.oem_no}
+        name="OemNo"
+        label={t`OEM`}
+        value={formData?.Oem?.OemName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.oem_no}
+        error={formErrors?.OemNo}
         isLoading={isLoading}
       />
       <Input
-        name="version"
-        label="Version"
-        value={formData?.version ?? ''}
+        name="Version"
+        label={t`Version`}
+        value={formData?.Version ?? ''}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.version}
+        error={formErrors?.Version}
         isLoading={isLoading}
       />
       <Input
-        name="address"
-        label="Address"
-        value={formData?.address ?? ''}
+        name="Address"
+        label={t`Address`}
+        value={formData?.Address ?? ''}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.address}
+        error={formErrors?.Address}
         isLoading={isLoading}
       />
       <Input
-        name="timezone"
-        label="Timezone"
-        value={formData?.timezone ?? ''}
+        name="Timezone"
+        label={t`Timezone`}
+        value={formData?.Timezone ?? ''}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.timezone}
+        error={formErrors?.Timezone}
         isLoading={isLoading}
       />
       <Input
-        name="online"
-        label="Online"
-        value={formData?.online ? 'Yes' : 'No'}
+        name="Online"
+        label={t`Online`}
+        value={formData?.Online}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.online}
-        isLoading={isLoading}
-      />
-
-      <Input
-        name="power_fault_type"
-        label="Power Fault Type"
-        value={formData?.power_fault_type}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.power_fault_type}
-        isLoading={isLoading}
-      />
-      <Input
-        name="tamper_type"
-        label="Tamper Type"
-        value={formData?.tamper_type}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.tamper_type}
+        error={formErrors?.Online}
         isLoading={isLoading}
       />
 
       <Input
-        name="power_fault_stat"
-        label="Power Fault Stat"
-        value={formData?.power_fault_stat ? 'Yes' : 'No'}
+        name="PowerFaultType"
+        label={t`Power Fault Type`}
+        value={formData?.PowerFaultType}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.power_fault_stat}
+        error={formErrors?.PowerFaultType}
         isLoading={isLoading}
       />
       <Input
-        name="tamper_stat"
-        label="Tamper Stat"
-        value={formData?.tamper_stat ? 'Yes' : 'No'}
+        name="TamperType"
+        label={t`Tamper Type`}
+        value={formData?.TamperType}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.tamper_stat}
+        error={formErrors?.TamperType}
+        isLoading={isLoading}
+      />
+
+      <Input
+        name="PowerFaultStat"
+        label={t`Power Fault Stat`}
+        value={formData?.PowerFaultStat}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.PowerFaultStat}
+        isLoading={isLoading}
+      />
+      <Input
+        name="TamperStat"
+        label={t`Tamper Stat`}
+        value={formData?.TamperStat}
+        onChange={handleInputChange}
+        disabled={disabled || typeof handleInputChange === 'undefined'}
+        error={formErrors?.TamperStat}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

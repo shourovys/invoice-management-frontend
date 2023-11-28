@@ -1,16 +1,17 @@
-import { gatewayApi, partitionApi } from 'api/urls'
+import { gatewayApi, partitionApi } from '../../../api/urls'
 import useSWR from 'swr'
-import { THandleFilterInputChange } from 'types/components/common'
-import { IListServerResponse } from 'types/pages/common'
-import { IGatewayResult } from 'types/pages/gateway'
+import { THandleFilterInputChange } from '../../../types/components/common'
+import { IListServerResponse } from '../../../types/pages/common'
+import { IGatewayResult } from '../../../types/pages/gateway'
+import { IPartitionResult } from '../../../types/pages/partition'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import { ILocksetFilters } from '../../../types/pages/lockset'
-import { IPartitionResult } from 'types/pages/partition'
-import Icon, { applyIcon, resetIcon } from 'utils/icons'
 import { SERVER_QUERY } from '../../../utils/config'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
 import Selector from '../../atomic/Selector'
+import t from '../../../utils/translator'
 
 interface IProps {
   filterState: ILocksetFilters
@@ -37,56 +38,56 @@ function LocksetTableToolbar({
     <TableToolbarContainer>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
         <Input
-          name="id"
+          name="LocksetNo"
           type="number"
-          placeholder="Lockset No"
-          value={filterState.id}
+          placeholder={t`Lockset No`}
+          value={filterState.LocksetNo}
           onChange={handleInputChange}
         />
         <Selector
-          name="partition"
-          placeholder="Partition"
-          value={filterState.partition}
-          options={partitionData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Partition"
+          placeholder={t`Partition`}
+          value={filterState.Partition}
+          options={partitionData?.data.map((result) => ({
+            value: result.PartitionNo.toString(),
+            label: result.PartitionName,
           }))}
           onChange={handleInputChange}
           isLoading={partitionIsLoading}
         />
         <Input
-          name="name"
-          placeholder="Lockset Name"
-          value={filterState.name}
+          name="LocksetName"
+          placeholder={t`Lockset Name`}
+          value={filterState.LocksetName}
           onChange={handleInputChange}
         />
         <Selector
-          name="gateway"
-          placeholder="Gateway"
-          value={filterState.gateway}
-          options={gatewayData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Gateway"
+          placeholder={t`Gateway`}
+          value={filterState.Gateway}
+          options={gatewayData?.data.map((result) => ({
+            value: result.GatewayNo.toString(),
+            label: result.GatewayName,
           }))}
           onChange={handleInputChange}
           isLoading={gatewayIsLoading}
         />
         <Input
-          name="link_id"
-          type="number"
-          placeholder="Link ID"
-          value={filterState.link_id}
+          name="LinkId"
+          type="text"
+          placeholder={t`Link ID`}
+          value={filterState.LinkId}
           onChange={handleInputChange}
         />
       </div>
       <div className="flex gap-3.5 lg:gap-4">
         <Button onClick={handleFilterApply}>
           <Icon icon={applyIcon} />
-          <span>Apply</span>
+          <span>{t`Apply`}</span>
         </Button>
-        <Button color="gray" onClick={handleFilterStateReset}>
+        <Button color="danger" onClick={handleFilterStateReset}>
           <Icon icon={resetIcon} />
-          <span>Reset</span>
+          <span>{t`Reset`}</span>
         </Button>
       </div>
     </TableToolbarContainer>

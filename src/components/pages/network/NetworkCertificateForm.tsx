@@ -1,11 +1,12 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { INetworkFormData, networkCountryOptions } from 'types/pages/network'
-import { certificateIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../components/HOC/FormCardWithHeader'
+import Input from '../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../components/atomic/SelectSwitch'
+import Selector from '../../../components/atomic/Selector'
+import { THandleInputChange } from '../../../types/components/common'
+import { IFormErrors } from '../../../types/pages/common'
+import { INetworkFormData, networkCountryOptions } from '../../../types/pages/network'
+import { certificateIcon } from '../../../utils/icons'
+import t from '../../../utils/translator'
 
 interface IProps {
   formData?: INetworkFormData
@@ -23,69 +24,65 @@ function NetworkCertificateForm({
   isLoading,
 }: IProps) {
   return (
-    <FormCardWithHeader icon={certificateIcon} header="Certificate">
-      <SwitchButton
-        name="self_signed"
-        label="Self-Signed"
-        checked={formData?.self_signed}
+    <FormCardWithHeader icon={certificateIcon} header={t`Certificate`}>
+      <SwitchButtonSelect
+        name="SelfSigned"
+        label={t`Self-Signed`}
+        value={formData?.SelfSigned}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
 
-      <div>
-        {!formData?.self_signed && (
-          <Selector
-            name="country"
-            label="Country"
-            value={formData?.country}
-            options={networkCountryOptions}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.country}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {!formData?.self_signed && (
-          <Input
-            name="organization"
-            label="Organization"
-            value={formData?.organization}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.organization}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {!formData?.self_signed && (
-          <Input
-            name="address2"
-            label="Address 2"
-            value={formData?.address2}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.address2}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
-      <div>
-        {!formData?.self_signed && (
-          <Input
-            name="address3"
-            label="Address 3"
-            value={formData?.address3}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.address3}
-            isLoading={isLoading}
-          />
-        )}
-      </div>
+      {formData?.SelfSigned?.value === '1' && (
+        <Selector
+          name="Country"
+          label={t`Country`}
+          value={formData?.Country}
+          options={networkCountryOptions}
+          isSelected={false}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Country}
+          isLoading={isLoading}
+        />
+      )}
+
+      {formData?.SelfSigned?.value === '1' && (
+        <Input
+          name="Organization"
+          label={t`Organization`}
+          value={formData?.Organization}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Organization}
+          isLoading={isLoading}
+        />
+      )}
+
+      {formData?.SelfSigned?.value === '1' && (
+        <Input
+          name="Address2"
+          label={t`Address 2`}
+          value={formData?.Address2}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Address2}
+          isLoading={isLoading}
+        />
+      )}
+
+      {formData?.SelfSigned?.value === '1' && (
+        <Input
+          name="Address3"
+          label={t`Address 3`}
+          value={formData?.Address3}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Address3}
+          isLoading={isLoading}
+        />
+      )}
     </FormCardWithHeader>
   )
 }

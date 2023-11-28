@@ -1,8 +1,8 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { IFloorResult } from 'types/pages/floor'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { IFloorResult } from '../../../types/pages/floor'
 import Checkbox from '../../atomic/Checkbox'
 
 type IProps = {
@@ -10,23 +10,24 @@ type IProps = {
   selected: string[]
   handleSelectRow: (_selectedId: string) => void
 }
+
 function FloorTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.floorInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.FloorNo}
+      link={routeProperty.floorInfo.path(row.FloorNo)}
+      selected={selected.indexOf(row.FloorNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.partition.name}</TableData>
-      <TableData>{row.name}</TableData>
-      <TableData>{row.description}</TableData>
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableData>{row.FloorNo}</TableData>
+      <TableData>{row.Partition.PartitionName}</TableData>
+      <TableData>{row.FloorName}</TableData>
+      <TableData>{row.FloorDesc}</TableData>
+      <TableDataAction selected={selected.indexOf(row.FloorNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.FloorNo}`}
+          checked={selected.indexOf(row.FloorNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.FloorNo.toString())
           }}
         />
       </TableDataAction>

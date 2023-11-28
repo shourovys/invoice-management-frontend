@@ -1,8 +1,10 @@
 import classNames from 'classnames'
-import TableData from 'components/HOC/style/table/TableData'
-import TableNoData from 'components/common/table/TableNoData'
-import TableBodyLoading from 'components/loading/table/TableBodyLoading'
-import { IDeviceStatuses } from 'types/pages/dashboard'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableNoData from '../../../components/common/table/TableNoData'
+import TableBodyLoading from '../../../components/loading/table/TableBodyLoading'
+import { useNavigate } from 'react-router-dom'
+import routeProperty from '../../../routes/routeProperty'
+import { IDeviceStatuses } from '../../../types/pages/dashboard'
 import Icon, {
   cameraIcon,
   doorIcon,
@@ -10,22 +12,25 @@ import Icon, {
   facegateIcon,
   gatewayIcon,
   inputIcon,
+  intercomIcon,
   locksetIcon,
   nodeIcon,
   outputIcon,
   regionIcon,
   relayIcon,
   subnodeIcon,
-} from 'utils/icons'
+} from '../../../utils/icons'
+import t from '../../../utils/translator'
+import useAuth from '../../../hooks/useAuth'
 
 const TABLE_HEAD = [
-  { id: 'icon', label: '', align: 'left' },
-  { id: 'device', label: 'Device', align: 'left' },
-  { id: 'total', label: 'Total' },
-  { id: 'online', label: 'Online' },
-  { id: 'offline', label: 'Offline' },
-  { id: 'normal', label: 'Normal' },
-  { id: 'alert', label: 'Alert' },
+  { id: 'icon', label: t``, align: 'left' },
+  { id: 'device', label: t`Device`, align: 'left' },
+  { id: 'Total', label: t`Total` },
+  { id: 'Online', label: t('Online') },
+  { id: 'Offline', label: t`Offline` },
+  { id: 'Normal', label: t`Normal` },
+  { id: 'Alert', label: t`Alert` },
 ]
 
 type IProps = {
@@ -34,7 +39,10 @@ type IProps = {
 }
 
 function DashboardList({ data, isLoading }: IProps) {
+  const { has_license } = useAuth()
+
   const isNotFound = !data && !isLoading
+  const navigate = useNavigate()
 
   return (
     <div className="flex flex-col overflow-y-hidden ">
@@ -42,14 +50,14 @@ function DashboardList({ data, isLoading }: IProps) {
         <div className="min-w-full">
           <div className="overflow-x-auto ">
             <table className="min-w-full">
-              <thead className="bg-[#F0F1F3]">
+              <thead className="bg-bwTableHeaderBg">
                 <tr className="">
                   {TABLE_HEAD.map((item) => (
                     <th
                       key={item.id}
                       scope="col"
                       className={classNames(
-                        'px-3 py-4 text-sm font-medium whitespace-nowrap',
+                        'px-3 py-3 md:py-4 text-sm font-medium whitespace-nowrap text-bwTableHeaderBgText',
                         item.align === 'left' && 'text-left'
                       )}
                     >
@@ -59,208 +67,223 @@ function DashboardList({ data, isLoading }: IProps) {
                 </tr>
               </thead>
               <tbody>
-                {!isLoading && (
+                {data && (
                   <>
                     <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                      onClick={() => navigate(routeProperty.node.path())}
+                      className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
                       style={{ height: 42 }}
                     >
                       <TableData>
                         <Icon icon={nodeIcon} className="text-sm md:text-l text-primary" />
                       </TableData>
-                      <TableData align="left">Node</TableData>
-                      <TableData>{data?.node.total}</TableData>
-                      <TableData>{data?.node.online}</TableData>
-                      <TableData>{data?.node.offline}</TableData>
-                      <TableData>{data?.node.normal}</TableData>
-                      <TableData>{data?.node.alert}</TableData>
+                      <TableData align="left">{t`Node`}</TableData>
+                      <TableData>{data?.Node.Total}</TableData>
+                      <TableData>{data?.Node.Online}</TableData>
+                      <TableData>{data?.Node.Offline}</TableData>
+                      <TableData>{data?.Node.Normal}</TableData>
+                      <TableData>{data?.Node.Alert}</TableData>
                     </tr>
                     <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                      onClick={() => navigate(routeProperty.door.path())}
+                      className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
                       style={{ height: 42 }}
                     >
                       <TableData>
                         <Icon icon={doorIcon} className="text-sm md:text-l text-primary" />
                       </TableData>
-                      <TableData align="left">Door</TableData>
-                      <TableData>{data?.door.total}</TableData>
-                      <TableData>{data?.door.online}</TableData>
-                      <TableData>{data?.door.offline}</TableData>
-                      <TableData>{data?.door.normal}</TableData>
-                      <TableData>{data?.door.alert}</TableData>
+                      <TableData align="left">{t`Door`}</TableData>
+                      <TableData>{data?.Door.Total}</TableData>
+                      <TableData>{data?.Door.Online}</TableData>
+                      <TableData>{data?.Door.Offline}</TableData>
+                      <TableData>{data?.Door.Normal}</TableData>
+                      <TableData>{data?.Door.Alert}</TableData>
                     </tr>
                     <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                      onClick={() => navigate(routeProperty.region.path())}
+                      className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
                       style={{ height: 42 }}
                     >
                       <TableData>
                         <Icon icon={regionIcon} className="text-sm md:text-l text-primary" />
                       </TableData>
-                      <TableData align="left">Region</TableData>
-                      <TableData>{data?.region.total}</TableData>
-                      <TableData>{data?.region.online}</TableData>
-                      <TableData>{data?.region.offline}</TableData>
-                      <TableData>{data?.region.normal}</TableData>
-                      <TableData>{data?.region.alert}</TableData>
+                      <TableData align="left">{t`Region`}</TableData>
+                      <TableData>{data?.Region.Total}</TableData>
+                      <TableData>{data?.Region.Online}</TableData>
+                      <TableData>{data?.Region.Offline}</TableData>
+                      <TableData>{data?.Region.Normal}</TableData>
+                      <TableData>{data?.Region.Alert}</TableData>
                     </tr>
 
                     <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                      onClick={() => navigate(routeProperty.input.path())}
+                      className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
                       style={{ height: 42 }}
                     >
                       <TableData>
                         <Icon icon={inputIcon} className="text-sm md:text-l text-primary" />
                       </TableData>
-                      <TableData align="left">Input</TableData>
-                      <TableData>{data?.input.total}</TableData>
-                      <TableData>{data?.input.online}</TableData>
-                      <TableData>{data?.input.offline}</TableData>
-                      <TableData>{data?.input.normal}</TableData>
-                      <TableData>{data?.input.alert}</TableData>
+                      <TableData align="left">{t`Input`}</TableData>
+                      <TableData>{data?.Input.Total}</TableData>
+                      <TableData>{data?.Input.Online}</TableData>
+                      <TableData>{data?.Input.Offline}</TableData>
+                      <TableData>{data?.Input.Normal}</TableData>
+                      <TableData>{data?.Input.Alert}</TableData>
                     </tr>
+
                     <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
-                      style={{
-                        height: 42,
-                      }}
+                      onClick={() => navigate(routeProperty.output.path())}
+                      className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                      style={{ height: 42 }}
                     >
                       <TableData>
                         <Icon icon={outputIcon} className="text-sm md:text-l text-primary" />
                       </TableData>
-                      <TableData align="left">Output</TableData>
-                      <TableData>{data?.output.total}</TableData>
-                      <TableData>{data?.output.online}</TableData>
-                      <TableData>{data?.output.offline}</TableData>
-                      <TableData>{data?.output.normal}</TableData>
-                      <TableData>{data?.output.alert}</TableData>
+                      <TableData align="left">{t`Output`}</TableData>
+                      <TableData>{data?.Output.Total}</TableData>
+                      <TableData>{data?.Output.Online}</TableData>
+                      <TableData>{data?.Output.Offline}</TableData>
+                      <TableData>{data?.Output.Normal}</TableData>
+                      <TableData>{data?.Output.Alert}</TableData>
                     </tr>
+
                     <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                      onClick={() => navigate(routeProperty.elevator.path())}
+                      className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
                       style={{ height: 42 }}
                     >
                       <TableData>
                         <Icon icon={elevatorIcon} className="text-sm md:text-l text-primary" />
                       </TableData>
-                      <TableData align="left">Elevator</TableData>
-                      <TableData>{data?.elevator.total}</TableData>
-                      <TableData>{data?.elevator.online}</TableData>
-                      <TableData>{data?.elevator.offline}</TableData>
-                      <TableData>{data?.elevator.normal}</TableData>
-                      <TableData>{data?.elevator.alert}</TableData>
+                      <TableData align="left">{t`Elevator`}</TableData>
+                      <TableData>{data?.Elevator.Total}</TableData>
+                      <TableData>{data?.Elevator.Online}</TableData>
+                      <TableData>{data?.Elevator.Offline}</TableData>
+                      <TableData>{data?.Elevator.Normal}</TableData>
+                      <TableData>{data?.Elevator.Alert}</TableData>
                     </tr>
                     <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                      onClick={() => navigate(routeProperty.relay.path())}
+                      className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
                       style={{ height: 42 }}
                     >
                       <TableData>
                         <Icon icon={relayIcon} className="text-sm md:text-l text-primary" />
                       </TableData>
-                      <TableData align="left">Relay</TableData>
-                      <TableData>{data?.relay.total}</TableData>
-                      <TableData>{data?.relay.online}</TableData>
-                      <TableData>{data?.relay.offline}</TableData>
-                      <TableData>{data?.relay.normal}</TableData>
-                      <TableData>{data?.relay.alert}</TableData>
+                      <TableData align="left">{t`Relay`}</TableData>
+                      <TableData>{data?.Relay.Total}</TableData>
+                      <TableData>{data?.Relay.Online}</TableData>
+                      <TableData>{data?.Relay.Offline}</TableData>
+                      <TableData>{data?.Relay.Normal}</TableData>
+                      <TableData>{data?.Relay.Alert}</TableData>
                     </tr>
-                    <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
-                      style={{ height: 42 }}
-                    >
-                      <TableData>
-                        <Icon icon={cameraIcon} className="text-sm md:text-l text-primary" />
-                      </TableData>
-                      <TableData align="left">Camera</TableData>
-                      <TableData>{data?.camera.total}</TableData>
-                      <TableData>{data?.camera.online}</TableData>
-                      <TableData>{data?.camera.offline}</TableData>
-                      <TableData>{data?.camera.normal}</TableData>
-                      <TableData>{data?.camera.alert}</TableData>
-                    </tr>
-                    <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
-                      style={{ height: 42 }}
-                    >
-                      <TableData>
-                        <Icon icon={gatewayIcon} className="text-sm md:text-l text-primary" />
-                      </TableData>
-                      <TableData align="left">Gateway</TableData>
-                      <TableData>{data?.gateway.total}</TableData>
-                      <TableData>{data?.gateway.online}</TableData>
-                      <TableData>{data?.gateway.offline}</TableData>
-                      <TableData>{data?.gateway.normal}</TableData>
-                      <TableData>{data?.gateway.alert}</TableData>
-                    </tr>
-                    <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
-                      style={{ height: 42 }}
-                    >
-                      <TableData>
-                        <Icon icon={locksetIcon} className="text-sm md:text-l text-primary" />
-                      </TableData>
-                      <TableData align="left">Lockset</TableData>
-                      <TableData>{data?.lockset.total}</TableData>
-                      <TableData>{data?.lockset.online}</TableData>
-                      <TableData>{data?.lockset.offline}</TableData>
-                      <TableData>{data?.lockset.normal}</TableData>
-                      <TableData>{data?.lockset.alert}</TableData>
-                    </tr>
-                    <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
-                      style={{ height: 42 }}
-                    >
-                      <TableData>
-                        <Icon icon={facegateIcon} className="text-sm md:text-l text-primary" />
-                      </TableData>
-                      <TableData align="left">Facegate</TableData>
-                      <TableData>{data?.facegate.total}</TableData>
-                      <TableData>{data?.facegate.online}</TableData>
-                      <TableData>{data?.facegate.offline}</TableData>
-                      <TableData>{data?.facegate.normal}</TableData>
-                      <TableData>{data?.facegate.alert}</TableData>
-                    </tr>
-                    <tr
-                      className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
-                      style={{ height: 42 }}
-                    >
-                      <TableData>
-                        <Icon icon={subnodeIcon} className="text-sm md:text-l text-primary" />
-                      </TableData>
-                      <TableData align="left">Subnode</TableData>
-                      <TableData>{data?.subnode.total}</TableData>
-                      <TableData>{data?.subnode.online}</TableData>
-                      <TableData>{data?.subnode.offline}</TableData>
-                      <TableData>{data?.subnode.normal}</TableData>
-                      <TableData>{data?.subnode.alert}</TableData>
-                    </tr>
-                    {/* <tr
-                                            className="bg-white border-b border-gray-200 custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
-                                            style={{ height: 42 }}
-                                        >
-                                            <TableData>
-                                                <Icon
-                                                    icon={contlockIcon}
-                                                    className="text-sm md:text-l text-primary"
-                                                />
-                                            </TableData>
-                                            <TableData align="left">
-                                                ContLock
-                                            </TableData>
-                                            <TableData>
-                                                {data?.contlock.total}
-                                            </TableData>
-                                            <TableData>
-                                                {data?.contlock.online}
-                                            </TableData>
-                                            <TableData>
-                                                {data?.contlock.offline}
-                                            </TableData>
-                                            <TableData>
-                                                {data?.contlock.normal}
-                                            </TableData>
-                                            <TableData>
-                                                {data?.contlock.alert}
-                                            </TableData>
-                                        </tr> */}
+
+                    {has_license('Camera') && (
+                      <tr
+                        onClick={() => navigate(routeProperty.camera.path())}
+                        className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                        style={{ height: 42 }}
+                      >
+                        <TableData>
+                          <Icon icon={cameraIcon} className="text-sm md:text-l text-primary" />
+                        </TableData>
+                        <TableData align="left">{t`Camera`}</TableData>
+                        <TableData>{data?.Camera.Total}</TableData>
+                        <TableData>{data?.Camera.Online}</TableData>
+                        <TableData>{data?.Camera.Offline}</TableData>
+                        <TableData>{data?.Camera.Normal}</TableData>
+                        <TableData>{data?.Camera.Alert}</TableData>
+                      </tr>
+                    )}
+
+                    {has_license('Lockset') && (
+                      <>
+                        <tr
+                          onClick={() => navigate(routeProperty.gateway.path())}
+                          className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                          style={{ height: 42 }}
+                        >
+                          <TableData>
+                            <Icon icon={gatewayIcon} className="text-sm md:text-l text-primary" />
+                          </TableData>
+                          <TableData align="left">{t`Gateway`}</TableData>
+                          <TableData>{data?.Gateway.Total}</TableData>
+                          <TableData>{data?.Gateway.Online}</TableData>
+                          <TableData>{data?.Gateway.Offline}</TableData>
+                          <TableData>{data?.Gateway.Normal}</TableData>
+                          <TableData>{data?.Gateway.Alert}</TableData>
+                        </tr>
+                        <tr
+                          onClick={() => navigate(routeProperty.lockset.path())}
+                          className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                          style={{ height: 42 }}
+                        >
+                          <TableData>
+                            <Icon icon={locksetIcon} className="text-sm md:text-l text-primary" />
+                          </TableData>
+                          <TableData align="left">{t`Lockset`}</TableData>
+                          <TableData>{data?.Lockset.Total}</TableData>
+                          <TableData>{data?.Lockset.Online}</TableData>
+                          <TableData>{data?.Lockset.Offline}</TableData>
+                          <TableData>{data?.Lockset.Normal}</TableData>
+                          <TableData>{data?.Lockset.Alert}</TableData>
+                        </tr>
+                      </>
+                    )}
+
+                    {has_license('Facegate') && (
+                      <tr
+                        onClick={() => navigate(routeProperty.intercom.path())}
+                        className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                        style={{ height: 42 }}
+                      >
+                        <TableData>
+                          <Icon icon={facegateIcon} className="text-sm md:text-l text-primary" />
+                        </TableData>
+                        <TableData align="left">{t`Facegate`}</TableData>
+                        <TableData>{data?.Facegate.Total}</TableData>
+                        <TableData>{data?.Facegate.Online}</TableData>
+                        <TableData>{data?.Facegate.Offline}</TableData>
+                        <TableData>{data?.Facegate.Normal}</TableData>
+                        <TableData>{data?.Facegate.Alert}</TableData>
+                      </tr>
+                    )}
+
+                    {has_license('Subnode') && (
+                      <tr
+                        onClick={() => navigate(routeProperty.subnode.path())}
+                        className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                        style={{ height: 42 }}
+                      >
+                        <TableData>
+                          <Icon icon={subnodeIcon} className="text-sm md:text-l text-primary" />
+                        </TableData>
+                        <TableData align="left">{t`Subnode`}</TableData>
+                        <TableData>{data?.Subnode.Total}</TableData>
+                        <TableData>{data?.Subnode.Online}</TableData>
+                        <TableData>{data?.Subnode.Offline}</TableData>
+                        <TableData>{data?.Subnode.Normal}</TableData>
+                        <TableData>{data?.Subnode.Alert}</TableData>
+                      </tr>
+                    )}
+
+                    {has_license('Intercom') && (
+                      <tr
+                        onClick={() => navigate(routeProperty.intercom.path())}
+                        className="bg-white border-b border-gray-200 cursor-pointer custom_transition group border-x border-x-white hover:border-x-gray-200 hover:bg-gray-100 last:border-b-0"
+                        style={{ height: 42 }}
+                      >
+                        <TableData>
+                          <Icon icon={intercomIcon} className="text-sm md:text-l text-primary" />
+                        </TableData>
+                        <TableData align="left">{t`Intercom`}</TableData>
+                        <TableData>{data?.Intercom.Total}</TableData>
+                        <TableData>{data?.Intercom.Online}</TableData>
+                        <TableData>{data?.Intercom.Offline}</TableData>
+                        <TableData>{data?.Intercom.Normal}</TableData>
+                        <TableData>{data?.Intercom.Alert}</TableData>
+                      </tr>
+                    )}
                   </>
                 )}
               </tbody>

@@ -1,11 +1,12 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import IconButton from 'components/atomic/IconButton'
-import Input from 'components/atomic/Input'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IRestApiFormData } from 'types/pages/restApi'
-import { resetIcon, restAPIIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../components/HOC/FormCardWithHeader'
+import IconButton from '../../../components/atomic/IconButton'
+import Input from '../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../components/atomic/SelectSwitch'
+import { THandleInputChange } from '../../../types/components/common'
+import { IFormErrors } from '../../../types/pages/common'
+import { IRestApiFormData } from '../../../types/pages/restApi'
+import { resetIcon, restAPIIcon } from '../../../utils/icons'
+import t from '../../../utils/translator'
 
 function generateRandomString(): string {
   const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -23,25 +24,25 @@ interface IProps {
 
 function RestApiForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={restAPIIcon} header="RestApi Configuration">
-      <SwitchButton
-        name="is_active"
-        label="Enable"
-        checked={formData?.is_active}
+    <FormCardWithHeader icon={restAPIIcon} header={t`Rest API Configuration`}>
+      <SwitchButtonSelect
+        name="Enable"
+        label={t`Enable`}
+        value={formData?.Enable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
       <div>
-        {formData?.is_active && (
+        {formData?.Enable?.value === '1' && (
           <div className="flex items-end gap-2">
             <Input
-              name="api_key"
-              label="API key"
-              value={formData?.api_key}
+              name="ApiKey"
+              label={t`API key`}
+              value={formData?.ApiKey}
               onChange={handleInputChange}
               disabled={disabled || typeof handleInputChange === 'undefined'}
-              error={formErrors?.api_key}
+              error={formErrors?.ApiKey}
               isLoading={isLoading}
             />
 
@@ -51,7 +52,7 @@ function RestApiForm({ formData, handleInputChange, formErrors, disabled, isLoad
                 tooltip="Generate"
                 iconClass="mb-.5"
                 onClick={() => {
-                  handleInputChange('api_key', generateRandomString())
+                  handleInputChange('ApiKey', generateRandomString())
                 }}
               />
             )}

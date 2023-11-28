@@ -1,32 +1,31 @@
-import { IFormErrors } from 'types/pages/common'
+import { INewFormErrors } from '../../types/pages/common'
 import { ILocksetFormData } from '../../types/pages/lockset'
+import t from '../translator'
 
-const validateLocksetFormData = (formData: ILocksetFormData): IFormErrors => {
-  const errors: IFormErrors = {}
-  if (!formData.name) {
-    errors.name = 'Device name is required'
+const validateLocksetFormData = (formData: ILocksetFormData): INewFormErrors<ILocksetFormData> => {
+  const errors: INewFormErrors<ILocksetFormData> = {}
+  if (!formData.LocksetName) {
+    errors.LocksetName = t`Lockset name is required`
   }
-  if (!formData.link_id) {
-    errors.link_id = 'Link ID is required'
+  // if (!formData.Name) {
+  //   errors.Name = t`Device name is required`
+  // }
+  if (!formData.LinkId) {
+    errors.LinkId = t`Link ID is required`
   }
-  if (!formData.device_id) {
-    errors.device_id = 'Device ID is required'
+  // if (!formData.DeviceId) {
+  //   errors.DeviceId = t`Device ID is required`
+  // }
+  // if (!formData.Model) {
+  //   errors.Model = t`Model is required`
+  // }
+  if (!formData.Partition?.value) {
+    errors.Partition = t`Partition is required`
   }
-  if (!formData.model) {
-    errors.model = 'Model is required'
-  }
-  if (!formData.lock_stat) {
-    errors.lock_stat = 'Lock status is required'
-  }
-  if (!formData.contact_stat) {
-    errors.contact_stat = 'Contact status is required'
-  }
-  if (!formData.partition?.value) {
-    errors.partition = 'Partition is required'
-  }
-  if (!formData.gateway?.value) {
-    errors.gateway = 'Gateway is required'
+  if (!formData.Gateway?.value) {
+    errors.Gateway = t`Gateway is required`
   }
   return errors
 }
+
 export default validateLocksetFormData

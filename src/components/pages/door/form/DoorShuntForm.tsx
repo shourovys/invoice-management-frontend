@@ -1,14 +1,15 @@
-import { outputApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
+import { outputApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IDoorFormData } from 'types/pages/door'
-import { IOutputResult } from 'types/pages/output'
-import { SERVER_QUERY } from 'utils/config'
-import { listIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IDoorFormData } from '../../../../types/pages/door'
+import { IOutputResult } from '../../../../types/pages/output'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { listIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IDoorFormData
@@ -24,31 +25,32 @@ function DoorShuntForm({ formData, handleInputChange, formErrors, disabled, isLo
   >(
     disabled || typeof handleInputChange === 'undefined'
       ? null
-      : outputApi.list(SERVER_QUERY.selectorDataQuery)
+      : outputApi.list(`${SERVER_QUERY.selectorDataQuery}&NodeNo=${formData?.NodeNo}`)
   )
+
   return (
-    <FormCardWithHeader icon={listIcon} header="Shunt">
-      <SwitchButton
-        name="shunt_enable"
-        label="Shunt Enable"
-        checked={formData?.shunt_enable}
+    <FormCardWithHeader icon={listIcon} header={t`Shunt`}>
+      <SwitchButtonSelect
+        name="ShuntEnable"
+        label={t`Shunt Enable`}
+        value={formData?.ShuntEnable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
 
-      {formData?.shunt_enable && (
+      {formData?.ShuntEnable?.value === '1' && (
         <Selector
-          name="shunt_output"
-          label="Shunt Output"
-          value={formData?.shunt_output}
-          options={outputData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="ShuntOutput"
+          label={t`Shunt Output`}
+          value={formData?.ShuntOutput}
+          options={outputData?.data.map((result) => ({
+            value: result.OutputNo.toString(),
+            label: result.OutputName,
           }))}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.shunt_output}
+          error={formErrors?.ShuntOutput}
           isLoading={isLoading || outputIsLoading}
         />
       )}

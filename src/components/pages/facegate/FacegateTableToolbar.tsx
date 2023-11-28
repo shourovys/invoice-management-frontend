@@ -1,16 +1,17 @@
-import { nodeApi, partitionApi } from 'api/urls'
+import { nodeApi, partitionApi } from '../../../api/urls'
 import useSWR from 'swr'
-import { THandleFilterInputChange } from 'types/components/common'
-import { IListServerResponse } from 'types/pages/common'
-import { IFacegateFilters } from 'types/pages/facegate'
-import { INodeResult } from 'types/pages/node'
-import { IPartitionResult } from 'types/pages/partition'
-import Icon, { applyIcon, resetIcon } from 'utils/icons'
+import { THandleFilterInputChange } from '../../../types/components/common'
+import { IListServerResponse } from '../../../types/pages/common'
+import { IFacegateFilters } from '../../../types/pages/facegate'
+import { INodeResult } from '../../../types/pages/node'
+import { IPartitionResult } from '../../../types/pages/partition'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import { SERVER_QUERY } from '../../../utils/config'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
 import Selector from '../../atomic/Selector'
+import t from '../../../utils/translator'
 
 interface IProps {
   filterState: IFacegateFilters
@@ -37,54 +38,56 @@ function FacegateTableToolbar({
     <TableToolbarContainer>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
         <Input
-          name="id"
-          placeholder="Facegtae No"
-          value={filterState.id}
+          name="FacegateNo"
+          placeholder={t`Facegate No`}
+          value={filterState.FacegateNo}
           onChange={handleInputChange}
         />
         <Selector
-          name="partition"
-          placeholder="Partition"
-          value={filterState.partition}
-          options={partitionData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Partition"
+          placeholder={t`Partition`}
+          value={filterState.Partition}
+          options={partitionData?.data.map((result) => ({
+            value: result.PartitionNo.toString(),
+            label: result.PartitionName,
           }))}
           onChange={handleInputChange}
           isLoading={partitionIsLoading}
         />
         <Input
-          name="name"
-          placeholder="Facegtae Name"
-          value={filterState.name}
+          name="FacegateName"
+          placeholder={t`Facegate Name`}
+          value={filterState.FacegateName}
           onChange={handleInputChange}
         />
         <Selector
-          name="node"
-          placeholder="Node"
-          value={filterState.node}
-          options={nodeData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Node"
+          placeholder={t`Node`}
+          value={filterState.Node}
+          options={nodeData?.data.map((result) => ({
+            value: result.NodeNo.toString(),
+            label: result.NodeName,
           }))}
           onChange={handleInputChange}
           isLoading={nodeIsLoading}
         />
         <Input
-          name="ip_address"
-          placeholder="IP Addess"
-          value={filterState.ip_address}
+          name="IpAddress"
+          type="number"
+          placeholder={t`IP Address`}
+          value={filterState.IpAddress}
           onChange={handleInputChange}
         />
       </div>
+
       <div className="flex gap-3.5 lg:gap-4">
         <Button onClick={handleFilterApply}>
           <Icon icon={applyIcon} />
-          <span>Apply</span>
+          <span>{t`Apply`}</span>
         </Button>
-        <Button color="gray" onClick={handleFilterStateReset}>
+        <Button color="danger" onClick={handleFilterStateReset}>
           <Icon icon={resetIcon} />
-          <span>Reset</span>
+          <span>{t`Reset`}</span>
         </Button>
       </div>
     </TableToolbarContainer>

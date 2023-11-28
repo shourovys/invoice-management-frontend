@@ -1,37 +1,44 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { IFacegateResult } from 'types/pages/facegate'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { booleanSelectObject } from '../../../types/pages/common'
+import {
+  IFacegateResult,
+  facegateContactStatObject,
+  facegateLockStatObject,
+} from '../../../types/pages/facegate'
 import Checkbox from '../../atomic/Checkbox'
 
 type IProps = {
   row: IFacegateResult
   selected: string[]
-  handleSelectRow: (_selectedId: string) => void
+  handleSelectRow: (selectedId: string) => void
 }
+
 function FacegateTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.facegateInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.FacegateNo}
+      link={routeProperty.facegateInfo.path(row.FacegateNo.toString())}
+      selected={selected.indexOf(row.FacegateNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.partition.name}</TableData>
-      <TableData>{row.name}</TableData>
-      <TableData>{row.description}</TableData>
-      <TableData>{row.node.name}</TableData>
-      <TableData>{row.ip_address}</TableData>
-      <TableData>{row.online ? 'Yes' : 'No'}</TableData>
-      <TableData>{row.lock_stat ? 'Yes' : 'No'}</TableData>
-      <TableData>{row.contact_stat ? 'Yes' : 'No'}</TableData>
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableData>{row.FacegateNo}</TableData>
+      <TableData>{row.Partition.PartitionName}</TableData>
+      <TableData>{row.FacegateName}</TableData>
+      <TableData>{row.FacegateDesc}</TableData>
+      <TableData>{row.Node?.NodeName}</TableData>
+      <TableData>{row.IpAddress}</TableData>
+      <TableData>{booleanSelectObject[row.Online]}</TableData>
+      <TableData>{booleanSelectObject[row.Busy]}</TableData>
+      <TableData>{facegateLockStatObject[row.LockStat]}</TableData>
+      <TableData>{facegateContactStatObject[row.ContactStat]}</TableData>
+      <TableDataAction selected={selected.indexOf(row.FacegateNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.FacegateNo}`}
+          checked={selected.indexOf(row.FacegateNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.FacegateNo.toString())
           }}
         />
       </TableDataAction>

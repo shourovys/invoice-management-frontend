@@ -1,16 +1,20 @@
 import classNames from 'classnames'
-import React, { useEffect, useRef, useState } from 'react'
-import InputsContainer from 'components/HOC/style/form/InputsContainer'
-import Input from 'components/atomic/Input'
-import MultiSelectListLoading from 'components/loading/form/MultiSelectListLoading'
-import compareArrays from 'utils/compareArrays'
-import Icon, { leftArrowIcon, rightArrowIcon } from 'utils/icons'
+import { useEffect, useReducer } from 'react'
+import InputsContainer from '../../../components/HOC/style/form/InputsContainer'
+import Checkbox from '../../../components/atomic/Checkbox'
+import Input from '../../../components/atomic/Input'
+import MultiSelectListLoading from '../../../components/loading/form/MultiSelectListLoading'
+import {
+  MultiSelectOption,
+  multiSelectInitialState,
+  multiSelectReducer,
+} from '../../../reducer/multiSelectReducer'
+import { THandleInputSelect } from '../../../types/components/common'
+import { ERROR_CLASS } from '../../../utils/config'
+import Icon, { leftArrowIcon, rightArrowIcon } from '../../../utils/icons'
+import CustomSelect from './CustomSelect'
 
-interface MultiSelectOption {
-  id: string
-  label: string
-}
-
+// Define the MultiSelectProps interface
 interface MultiSelectProps {
   name: string
   label?: string
@@ -21,8 +25,14 @@ interface MultiSelectProps {
   error?: string | null
   isLoading?: boolean
   disabled?: boolean
+  verticalLayout?: boolean
+  gridColSpan2?: boolean
+  // Props for checkbox in label
+  isSelected?: boolean
+  handleSelect?: THandleInputSelect
 }
 
+// Define the MultiSelect component
 function MultiSelect({
   name,
   label,
@@ -31,198 +41,248 @@ function MultiSelect({
   options = [],
   helpText,
   error,
-  isLoading = false,
-  disabled = false,
+  isLoading,
+  disabled,
+  verticalLayout,
+  gridColSpan2,
+  isSelected,
+  handleSelect,
 }: MultiSelectProps) {
-  const [leftOptions, setLeftOptions] = useState<MultiSelectOption[]>([])
-  const [rightOptions, setRightOptions] = useState<MultiSelectOption[]>([])
-  const optionsRef = useRef<MultiSelectOption[]>()
-  const valueRef = useRef<string[]>()
+  // Use useReducer to manage component state
+  const [multiSelectState, dispatch] = useReducer(multiSelectReducer, multiSelectInitialState)
 
-  const [selectedLeftOptions, setSelectedLeftOptions] = useState<string[]>([])
-  const [selectedRightOptions, setSelectedRightOptions] = useState<string[]>([])
-  const [leftSearch, setLeftSearch] = useState<string>('')
-  const [rightSearch, setRightSearch] = useState<string>('')
+  const {
+    leftOptions,
+    rightOptions,
+    selectedLeftOptions,
+    selectedRightOptions,
+    leftSearch,
+    rightSearch,
+  } = multiSelectState
 
-  const [leftOptionsFiltered, setLeftOptionsFiltered] = useState<MultiSelectOption[]>([])
-  const [rightOptionsFiltered, setRightOptionsFiltered] = useState<MultiSelectOption[]>([])
+  // const optionsRef = useRef<MultiSelectOption[]>()
+  // const valueRef = useRef<string[]>()
 
+  // Update left and right options when the component receives new props
   useEffect(() => {
-    if (
-      JSON.stringify(options) !== JSON.stringify(optionsRef.current) ||
-      (JSON.stringify(value) !== JSON.stringify(valueRef) && value.length)
-    ) {
-      setLeftOptions(options.filter((option) => !value.includes(option.id)))
-      setRightOptions(options.filter((option) => value.includes(option.id)))
+    if (value.length || options) {
+      dispatch({
+        type: 'SET_LEFT_OPTIONS',
+        payload: options.filter((option) => !value.includes(option.id)),
+      })
+      dispatch({
+        type: 'SET_RIGHT_OPTIONS',
+        payload: options.filter((option) => value.includes(option.id)),
+      })
     }
-    optionsRef.current = options
-    valueRef.current = value
-  }, [options])
+    // optionsRef.current = options
+    // valueRef.current = value
+  }, [value, options])
 
-  const handleLeftSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLeftOptions(Array.from(e.target.selectedOptions).map((o) => o.value))
-  }
-  const handleRightSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedRightOptions(Array.from(e.target.selectedOptions).map((o) => o.value))
+  // Handle selection in the left options list
+  const handleLeftOptionSelect = (selected: string[]) => {
+    dispatch({ type: 'SELECT_LEFT', payload: selected })
   }
 
-  const handleMoveLeft = () => {
+  // Handle selection in the right options list
+  const handleRightOptionSelect = (selected: string[]) => {
+    dispatch({ type: 'SELECT_RIGHT', payload: selected })
+  }
+
+  // Update formData on right option change
+  const updateFormData = (updatedOptions: MultiSelectOption[]) => {
+    if (onChange) {
+      onChange(
+        name,
+        updatedOptions.map((option) => option.id)
+      )
+    }
+  }
+
+  // Move selected options from left to right
+  const moveLeftToRight = () => {
     if (disabled || leftOptions.length === 0) {
       return
     }
-    setRightOptions([
-      ...rightOptions,
-      ...leftOptions.filter((option) => selectedLeftOptions.includes(option.id)),
-    ])
-    setLeftOptions(leftOptions.filter((option) => !selectedLeftOptions.includes(option.id)))
-    setSelectedLeftOptions([])
+
+    const updatedRightOptions = [...rightOptions]
+    const updatedLeftOptions = [...leftOptions]
+
+    selectedLeftOptions.forEach((optionId) => {
+      const selectedOptionIndex = updatedLeftOptions.findIndex((option) => option.id === optionId)
+      if (selectedOptionIndex !== -1) {
+        const selectedOption = updatedLeftOptions[selectedOptionIndex]
+        updatedRightOptions.push(selectedOption)
+        updatedLeftOptions.splice(selectedOptionIndex, 1)
+      }
+    })
+
+    dispatch({ type: 'SET_RIGHT_OPTIONS', payload: updatedRightOptions })
+    dispatch({ type: 'SET_LEFT_OPTIONS', payload: updatedLeftOptions })
+    dispatch({ type: 'SELECT_LEFT', payload: [] })
+    updateFormData(updatedRightOptions)
   }
 
-  const handleMoveRight = () => {
+  // Move selected options from right to left
+  const moveRightToLeft = () => {
     if (disabled || rightOptions.length === 0) {
       return
     }
-    setLeftOptions([
-      ...leftOptions,
-      ...rightOptions.filter((option) => selectedRightOptions.includes(option.id)),
-    ])
-    setRightOptions(rightOptions.filter((option) => !selectedRightOptions.includes(option.id)))
-    setSelectedRightOptions([])
+
+    const updatedRightOptions = [...rightOptions]
+    const updatedLeftOptions = [...leftOptions]
+
+    selectedRightOptions.forEach((optionId) => {
+      const selectedOptionIndex = updatedRightOptions.findIndex((option) => option.id === optionId)
+      if (selectedOptionIndex !== -1) {
+        const selectedOption = updatedRightOptions[selectedOptionIndex]
+        updatedLeftOptions.push(selectedOption)
+        updatedRightOptions.splice(selectedOptionIndex, 1)
+      }
+    })
+
+    dispatch({ type: 'SET_RIGHT_OPTIONS', payload: updatedRightOptions })
+    dispatch({ type: 'SET_LEFT_OPTIONS', payload: updatedLeftOptions })
+    dispatch({ type: 'SELECT_RIGHT', payload: [] })
+    updateFormData(updatedRightOptions)
   }
 
-  useEffect(() => {
-    if (leftSearch === '') {
-      setLeftOptionsFiltered(leftOptions)
-    } else {
-      setLeftOptionsFiltered(
-        leftOptions.filter((option) =>
-          option.label.toLowerCase().includes(leftSearch.toLowerCase())
-        )
-      )
-    }
-  }, [leftSearch, leftOptions])
+  const handleLeftSearchInputChange = (value: string) => {
+    dispatch({ type: 'SET_LEFT_SEARCH', payload: value })
+  }
 
-  useEffect(() => {
-    if (rightSearch === '') {
-      setRightOptionsFiltered(rightOptions)
-    } else {
-      setRightOptionsFiltered(
-        rightOptions.filter((option) =>
-          option.label.toLowerCase().includes(rightSearch.toLowerCase())
-        )
-      )
-    }
-  }, [rightSearch, rightOptions])
+  const handleRightSearchInputChange = (value: string) => {
+    dispatch({ type: 'SET_RIGHT_SEARCH', payload: value })
+  }
 
-  useEffect(() => {
-    const assignValue = rightOptions.map((option) => option.id)
-
-    if (
-      onChange &&
-      !compareArrays(assignValue, value)
-      // &&
-      // !!assignValue.length
-    ) {
-      onChange(
-        name,
-        rightOptions.map((option) => option.id)
-      )
+  const renderLeftOptions = () => {
+    if (isLoading) {
+      return <MultiSelectListLoading />
     }
-  }, [rightOptions])
+
+    return (
+      <CustomSelect
+        options={leftOptions}
+        selectedOptions={selectedLeftOptions}
+        onChange={handleLeftOptionSelect}
+        disabled={disabled}
+        isLoading={isLoading}
+        search={leftSearch}
+      />
+    )
+  }
+
+  const renderRightOptions = () => {
+    if (isLoading) {
+      return <MultiSelectListLoading />
+    }
+
+    return (
+      <CustomSelect
+        options={rightOptions}
+        selectedOptions={selectedRightOptions}
+        onChange={handleRightOptionSelect}
+        disabled={disabled}
+        isLoading={isLoading}
+        search={rightSearch}
+      />
+    )
+  }
 
   return (
-    <div className="w-full space-y-0.5">
+    <div className={classNames('w-full space-y-0.5' && gridColSpan2 && 'sm:col-span-2')}>
+      {/* Render label if provided */}
       {label && (
-        <label className="inline-block w-full text-sm text-gray-700 form-label" htmlFor={name}>
-          {label}
-        </label>
+        <>
+          {handleSelect ? (
+            // Render a checkbox in the label if handleSelect prop is provided
+            <div className="py-0.5">
+              <Checkbox
+                label={label}
+                value={name}
+                checked={isSelected}
+                onChange={(checked) => {
+                  handleSelect(name, checked)
+                }}
+              />
+            </div>
+          ) : (
+            // Render a regular label if handleSelect prop is not provided
+            <label className="inline-block w-full text-sm text-gray-700 form-label" htmlFor={name}>
+              {label}
+            </label>
+          )}
+        </>
       )}
-      <div className="flex gap-4 sm:gap-6 md:gap-4 xl:gap-8">
+      <div
+        className={classNames(
+          'flex gap-2',
+          error && ERROR_CLASS,
+          verticalLayout
+            ? 'flex-col'
+            : 'flex-wrap justify-center sm:justify-start sm:flex-nowrap sm:gap-6 md:gap-4 xl:gap-8'
+        )}
+      >
+        {/* Left side input container */}
         <InputsContainer>
+          {/* Input field for left side search */}
           <Input
             name="leftSearch"
             value={leftSearch}
-            onChange={(n, inputValue) => setLeftSearch(inputValue)}
+            onChange={(inputName, inputValue) => handleLeftSearchInputChange(inputValue)}
             disabled={disabled}
             isLoading={isLoading}
           />
-
-          <div>
-            {isLoading ? (
-              <MultiSelectListLoading />
-            ) : (
-              <select
-                multiple
-                onChange={handleLeftSelect}
-                disabled={disabled}
-                className="w-full px-1 py-1.5 text-sm m-0 transition ease-in-out border border-gray-300 border-solid rounded-md focus:text-gray-700 focus:bg-white focus:border-primary focus:outline-none min-h-[10rem]"
-              >
-                {leftOptionsFiltered.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
+          <div>{renderLeftOptions()}</div>
         </InputsContainer>
 
+        {/* Middle section with arrow icons */}
         <div className="min-h-max">
           <div className="flex items-center justify-center h-full">
-            <div className="mt-16 space-y-2">
+            <div
+              className={classNames(
+                verticalLayout ? 'space-x-6' : 'space-x-6 sm:space-x-0 sm:space-y-2 sm:mt-16'
+              )}
+            >
+              {/* Icon for moving selected options from left to right */}
               <Icon
                 icon={rightArrowIcon}
                 className={classNames(
-                  'px-3 py-1 text-lg text-white bg-gray-400 rounded-md md:text-2xl md:px-4 md:py-2'
-                  // isRightArrowDisabled()
-                  //     ? "opacity-50 cursor-default"
-                  //     : "cursor-pointer",
+                  'text-lg px-3 py-3 text-white bg-gray-400 cursor-pointer hover:bg-gray-600 rounded-md md:text-2xl rotate-90',
+                  !verticalLayout && 'sm:px-4 sm:py-2 rotate-90 sm:rotate-0'
                 )}
-                onClick={handleMoveLeft}
+                onClick={moveLeftToRight}
               />
 
+              {/* Icon for moving selected options from right to left */}
               <Icon
                 icon={leftArrowIcon}
                 className={classNames(
-                  'px-3 py-1 text-lg text-white bg-gray-400 rounded-md md:text-2xl md:px-4 md:py-2'
-                  // isLeftArrowDisabled()
-                  //     ? "opacity-50 cursor-default"
-                  //     : "cursor-pointer",
+                  'text-lg px-3 py-3 text-white bg-gray-400 cursor-pointer hover:bg-gray-600 rounded-md md:text-2xl rotate-90',
+                  !verticalLayout && 'sm:px-4 sm:py-2 rotate-90 sm:rotate-0'
                 )}
-                onClick={handleMoveRight}
+                onClick={moveRightToLeft}
               />
             </div>
           </div>
         </div>
+
+        {/* Right side input container */}
         <InputsContainer>
+          {/* Input field for right side search */}
           <Input
             name="searchRight"
             value={rightSearch}
-            onChange={(n, inputValue) => setRightSearch(inputValue)}
+            onChange={(inputName, inputValue) => handleRightSearchInputChange(inputValue)}
             disabled={disabled}
             isLoading={isLoading}
           />
-          <div>
-            {isLoading ? (
-              <MultiSelectListLoading />
-            ) : (
-              <select
-                multiple
-                onChange={handleRightSelect}
-                disabled={disabled}
-                className="w-full px-1 py-1.5 text-sm m-0 transition ease-in-out border border-gray-300 border-solid rounded-md focus:text-gray-700 focus:bg-white focus:border-primary focus:outline-none min-h-[10rem]"
-              >
-                {rightOptionsFiltered.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
+          <div>{renderRightOptions()}</div>
         </InputsContainer>
       </div>
+      {/* Render error message if error is present */}
       {error && <p className="mt-1 text-xs text-red-500 md:text-sm">{error}</p>}
+      {/* Render help text if provided */}
       {helpText && <p className="mt-1 text-xs text-gray-500 md:text-sm">{helpText}</p>}
     </div>
   )

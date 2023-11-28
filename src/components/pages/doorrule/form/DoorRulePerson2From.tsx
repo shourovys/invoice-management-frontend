@@ -1,25 +1,24 @@
-import { groupApi } from 'api/urls'
-import { ElementsApi } from 'api/urls/common'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Selector, { TSelectValue } from 'components/atomic/Selector'
-import MultiSelect from 'components/common/form/MultiSelect'
-import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IElementsResult, IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IDoorRuleFormData, doorRuleSelectType } from 'types/pages/doorRule'
-import { IGroupResult } from 'types/pages/group'
-import { SERVER_QUERY } from 'utils/config'
-import { doorRuleIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import FormCardInputTwoPart from '../../../../components/HOC/style/form/FormCardInputTwoPart'
+import Selector, { TSelectValue } from '../../../../components/atomic/Selector'
+import Textarea from '../../../../components/atomic/Textarea'
+import MultiSelect from '../../../../components/common/form/MultiSelect'
+import { useElementSelectData, useGroupSelectData } from '../../../../hooks/useSelectData'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, accessSelectOption } from '../../../../types/pages/common'
+import { IDoorRuleFormData, IDoorRuleInfoFormData } from '../../../../types/pages/doorRule'
+import { doorRuleIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
-  formData: IDoorRuleFormData
+  formData: IDoorRuleFormData | IDoorRuleInfoFormData
   formErrors?: IFormErrors
   handleInputChange?: THandleInputChange
   disabled?: boolean
   isLoading?: boolean
 }
 
-function DoorRulePerson2From({
+function DoorRulePerson2Form({
   formData,
   formErrors,
   handleInputChange,
@@ -27,82 +26,93 @@ function DoorRulePerson2From({
   isLoading,
 }: IProps) {
   // Fetch elements by type from the server
-  const { isLoading: personIsLoading, data: personData } = useSWR<
-    IListServerResponse<IElementsResult[]>
-  >(
-    // disabled ||
-    //     typeof handleInputChange === "undefined" ||
-    formData.select_type_two?.value !== 'individual' ? null : ElementsApi.list(`type=person`)
+  const { isLoading: personIsLoading, data: personData } = useElementSelectData(
+    disabled ||
+      typeof handleInputChange === 'undefined' ||
+      formData.PersonSelect2?.label !== 'Individual',
+    'Person'
   )
 
-  const { isLoading: groupIsLoading, data: groupData } = useSWR<
-    IListServerResponse<IGroupResult[]>
-  >(
-    // disabled ||
-    //     typeof handleInputChange === "undefined" ||
-    formData.select_type_two?.value !== 'group'
-      ? null
-      : groupApi.list(`${SERVER_QUERY.selectorDataQuery}&type=person`)
+  const { isLoading: groupIsLoading, data: groupData } = useGroupSelectData(
+    disabled ||
+      typeof handleInputChange === 'undefined' ||
+      formData.PersonSelect2?.label !== 'Group',
+    'Person'
   )
 
   const handleTypeChange = (name: string, selectedValue: TSelectValue) => {
     if (handleInputChange) {
-      handleInputChange('devices', [])
-      handleInputChange('groups_two', [])
       handleInputChange(name, selectedValue)
+      handleInputChange('PersonIds2', [])
+      handleInputChange('GroupIds2', [])
     }
   }
 
   return (
-    <FormCardWithHeader icon={doorRuleIcon} header="Rule Person" twoPart={false}>
-      <Selector
-        name="select_type_two"
-        label="Select Type"
-        value={formData.select_type_two}
-        options={doorRuleSelectType}
-        onChange={handleTypeChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.select_type_two}
-        isLoading={isLoading}
-      />
-
-      <div>
-        {formData.select_type_two?.value !== 'individual' && (
-          <MultiSelect
-            name="groups_two"
-            label="Rule Person"
-            value={formData?.groups_two}
-            options={groupData?.results.map((item) => ({
-              id: item.id.toString(),
-              label: item.name,
-            }))}
-            onChange={handleInputChange}
+    <FormCardWithHeader icon={doorRuleIcon} header={t`Rule Person 2`} twoPart={false}>
+      <FormCardInputTwoPart>
+        <Selector
+          name="PersonSelect2"
+          label={t`Select Type`}
+          value={formData.PersonSelect2}
+          options={accessSelectOption}
+          onChange={handleTypeChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.PersonSelect2}
+          isLoading={isLoading}
+        />
+        {(disabled || typeof handleInputChange === 'undefined') && 'Groups' in formData && (
+          <Textarea
+            name="groups2AndPersons2"
+            label={t`Rule Person`}
+            value={
+              formData?.Groups2?.length
+                ? formData?.Groups2.map((group) => group.GroupName).join(', ')
+                : formData?.Persons2?.map((person) => person.LastName).join(', ')
+            }
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            isLoading={groupIsLoading}
-            error={formErrors?.groups_two}
+            isLoading={isLoading || groupIsLoading || personIsLoading}
           />
         )}
-      </div>
+      </FormCardInputTwoPart>
 
-      <div>
-        {formData.select_type_two?.value === 'individual' && (
-          <MultiSelect
-            name="persons_two"
-            label="Rule Person"
-            value={formData?.persons_two}
-            options={personData?.results.map((item) => ({
-              id: item.id.toString(),
-              label: item.name,
-            }))}
-            onChange={handleInputChange}
-            disabled={disabled || typeof handleInputChange === 'undefined'}
-            isLoading={isLoading || personIsLoading}
-            error={formErrors?.persons_two}
-          />
-        )}
-      </div>
+      {!(disabled || typeof handleInputChange === 'undefined') && (
+        <>
+          {formData.PersonSelect2?.label === 'Individual' && (
+            <MultiSelect
+              name="PersonIds2"
+              label={t`Rule Person`}
+              value={formData?.PersonIds2}
+              options={personData?.data.map((item) => ({
+                id: item.No.toString(),
+                label: item.Name,
+              }))}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              isLoading={isLoading || personIsLoading}
+              error={formErrors?.PersonIds2}
+            />
+          )}
+
+          {formData.PersonSelect2?.label !== 'Individual' && (
+            <MultiSelect
+              name="GroupIds2"
+              label={t`Rule Person`}
+              value={formData?.GroupIds2}
+              options={groupData?.data.map((item) => ({
+                id: item.GroupNo.toString(),
+                label: item.GroupName,
+              }))}
+              onChange={handleInputChange}
+              disabled={disabled || typeof handleInputChange === 'undefined'}
+              isLoading={groupIsLoading}
+              error={formErrors?.GroupIds2}
+            />
+          )}
+        </>
+      )}
     </FormCardWithHeader>
   )
 }
 
-export default DoorRulePerson2From
+export default DoorRulePerson2Form

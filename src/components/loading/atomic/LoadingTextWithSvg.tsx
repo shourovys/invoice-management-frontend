@@ -1,5 +1,6 @@
-import { TSize } from 'types/components/common'
+import { TSize } from '../../../types/components/common'
 import LoadingSvg from './LoadingSvg'
+import t from '../../../utils/translator'
 
 interface IProps {
   size?: TSize
@@ -9,7 +10,7 @@ function LoadingTextWithSvg({ size }: IProps) {
   return (
     <>
       <LoadingSvg size={size} />
-      Loading...
+      {t`Loading...`}
     </>
   )
 }

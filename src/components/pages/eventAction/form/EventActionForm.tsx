@@ -1,20 +1,21 @@
-import { partitionApi, scheduleApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { partitionApi, scheduleApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IEventActionFormData } from 'types/pages/eventAction'
-import { IPartitionResult } from 'types/pages/partition'
-import { IScheduleResult } from 'types/pages/schedule'
-import { SERVER_QUERY } from 'utils/config'
-import { eventActionIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IListServerResponse, INewFormErrors } from '../../../../types/pages/common'
+import { IEventActionFormData } from '../../../../types/pages/eventAction'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IScheduleResult } from '../../../../types/pages/schedule'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { eventActionIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IEventActionFormData
   handleInputChange?: THandleInputChange
-  formErrors?: IFormErrors
+  formErrors?: INewFormErrors<IEventActionFormData>
   disabled?: boolean
   isLoading?: boolean
 }
@@ -37,49 +38,51 @@ function EventActionForm({ formData, handleInputChange, formErrors, disabled, is
   )
 
   return (
-    <FormCardWithHeader icon={eventActionIcon} header="Event Action">
+    <FormCardWithHeader icon={eventActionIcon} header={t`Event Action`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
+        isClearable={false}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Event Action Name"
-        value={formData?.name}
+        name="EventActionName"
+        label={t`Event Action Name`}
+        value={formData?.EventActionName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.EventActionName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="EventActionDesc"
+        label={t`Description`}
+        value={formData?.EventActionDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.EventActionDesc}
         isLoading={isLoading}
       />
       <Selector
-        name="schedule"
-        label="Schedule"
-        value={formData?.schedule}
-        options={scheduleData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Schedule"
+        label={t`Schedule`}
+        value={formData?.Schedule}
+        options={scheduleData?.data.map((result) => ({
+          value: result.ScheduleNo.toString(),
+          label: result.ScheduleName,
         }))}
+        isClearable={false}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.schedule}
+        error={formErrors?.Schedule}
         isLoading={isLoading || scheduleIsLoading}
       />
     </FormCardWithHeader>

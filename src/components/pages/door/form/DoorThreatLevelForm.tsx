@@ -1,15 +1,16 @@
-import { threatApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import MultipleCheckbox from 'components/atomic/MultipleCheckbox'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
+import { threatApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import MultipleCheckbox from '../../../../components/atomic/MultipleCheckbox'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IDoorFormData, doorThreatLevel } from 'types/pages/door'
-import { IThreatResult } from 'types/pages/threat'
-import { SERVER_QUERY } from 'utils/config'
-import { listIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IDoorFormData, doorThreatLevelOption } from '../../../../types/pages/door'
+import { IThreatResult } from '../../../../types/pages/threat'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { listIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IDoorFormData
@@ -28,41 +29,37 @@ function DoorThreatLevelForm({
 }: IProps) {
   const { isLoading: threatIsLoading, data: threatData } = useSWR<
     IListServerResponse<IThreatResult[]>
-  >(
-    disabled || typeof handleInputChange === 'undefined'
-      ? null
-      : threatApi.list(SERVER_QUERY.selectorDataQuery)
-  )
+  >(threatApi.list(SERVER_QUERY.selectorDataQuery))
 
   return (
-    <FormCardWithHeader icon={listIcon} header="Threat Level">
+    <FormCardWithHeader icon={listIcon} header={t`Threat Level`}>
       <MultipleCheckbox
-        name="threats"
+        name="ThreatNos"
         inputLabel="Threat List"
-        checkboxData={threatData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        checkboxData={threatData?.data.map((result) => ({
+          value: result.ThreatNo.toString(),
+          label: result.ThreatName,
         }))}
-        checked={formData?.threats}
+        checked={formData?.ThreatNos}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.threats}
+        error={formErrors?.ThreatNos}
         isLoading={isLoading || threatIsLoading}
       />
       <Selector
-        name="threat_level"
-        label="Threat Level"
-        value={formData?.threat_level}
-        options={doorThreatLevel}
+        name="ThreatLevel"
+        label={t`Threat Level`}
+        value={formData?.ThreatLevel}
+        options={doorThreatLevelOption}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.threat_level}
+        error={formErrors?.ThreatLevel}
         isLoading={isLoading}
       />
-      <SwitchButton
-        name="threat_ignore_rex_enable"
-        label="Threat Ignore Rex"
-        checked={formData?.threat_ignore_rex_enable}
+      <SwitchButtonSelect
+        name="ThreatIgnoreRex"
+        label={t`Threat Ignore Rex`}
+        value={formData?.ThreatIgnoreRex}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}

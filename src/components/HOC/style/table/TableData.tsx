@@ -1,8 +1,9 @@
-import { TTextAlign } from 'types/components/common'
+import { ReactNode } from 'react'
+import { TTextAlign } from '../../../../types/components/common'
 
 interface IProps {
   align?: TTextAlign
-  children: JSX.Element | JSX.Element[] | string | number | null | undefined
+  children: ReactNode
 }
 
 function TableData({ align = 'center', children }: IProps) {

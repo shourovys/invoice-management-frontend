@@ -1,6 +1,6 @@
-import { THandleFilterInputChange } from 'types/components/common'
-import { IDefinedFieldResult } from 'types/pages/definedField'
-import { IPersonFilters } from 'types/pages/person'
+import { THandleFilterInputChange } from '../../../types/components/common'
+import { IDefinedFieldResult } from '../../../types/pages/definedField'
+import { IPersonFilters } from '../../../types/pages/person'
 import Input from '../../atomic/Input'
 
 interface IProps {
@@ -10,141 +10,141 @@ interface IProps {
 }
 
 function DefinedFieldsInputs({ definedField, filterState, handleInputChange }: IProps) {
-  const { id, filterable, name } = definedField
-  if (filterable) {
-    switch (id) {
+  const { FieldNo, FieldEnable, FieldName } = definedField
+  if (FieldEnable) {
+    switch (FieldNo) {
       case 1:
         return (
           <Input
-            name="field1"
-            placeholder={name}
-            value={filterState.field1}
+            name="Field1"
+            placeholder={FieldName}
+            value={filterState.Field1}
             onChange={handleInputChange}
           />
         )
       case 2:
         return (
           <Input
-            name="field2"
-            placeholder={name}
-            value={filterState.field2}
+            name="Field2"
+            placeholder={FieldName}
+            value={filterState.Field2}
             onChange={handleInputChange}
           />
         )
       case 3:
         return (
           <Input
-            name="field3"
-            placeholder={name}
-            value={filterState.field3}
+            name="Field3"
+            placeholder={FieldName}
+            value={filterState.Field3}
             onChange={handleInputChange}
           />
         )
       case 4:
         return (
           <Input
-            name="field4"
-            placeholder={name}
-            value={filterState.field4}
+            name="Field4"
+            placeholder={FieldName}
+            value={filterState.Field4}
             onChange={handleInputChange}
           />
         )
       case 5:
         return (
           <Input
-            name="field5"
-            placeholder={name}
-            value={filterState.field5}
+            name="Field5"
+            placeholder={FieldName}
+            value={filterState.Field5}
             onChange={handleInputChange}
           />
         )
       case 6:
         return (
           <Input
-            name="field6"
-            placeholder={name}
-            value={filterState.field6}
+            name="Field6"
+            placeholder={FieldName}
+            value={filterState.Field6}
             onChange={handleInputChange}
           />
         )
       case 7:
         return (
           <Input
-            name="field7"
-            placeholder={name}
-            value={filterState.field7}
+            name="Field7"
+            placeholder={FieldName}
+            value={filterState.Field7}
             onChange={handleInputChange}
           />
         )
       case 8:
         return (
           <Input
-            name="field8"
-            placeholder={name}
-            value={filterState.field8}
+            name="Field8"
+            placeholder={FieldName}
+            value={filterState.Field8}
             onChange={handleInputChange}
           />
         )
       case 9:
         return (
           <Input
-            name="field9"
-            placeholder={name}
-            value={filterState.field9}
+            name="Field9"
+            placeholder={FieldName}
+            value={filterState.Field9}
             onChange={handleInputChange}
           />
         )
       case 10:
         return (
           <Input
-            name="field10"
-            placeholder={name}
-            value={filterState.field10}
+            name="Field10"
+            placeholder={FieldName}
+            value={filterState.Field10}
             onChange={handleInputChange}
           />
         )
       case 11:
         return (
           <Input
-            name="field11"
-            placeholder={name}
-            value={filterState.field11}
+            name="Field11"
+            placeholder={FieldName}
+            value={filterState.Field11}
             onChange={handleInputChange}
           />
         )
       case 12:
         return (
           <Input
-            name="field12"
-            placeholder={name}
-            value={filterState.field12}
+            name="Field12"
+            placeholder={FieldName}
+            value={filterState.Field12}
             onChange={handleInputChange}
           />
         )
       case 13:
         return (
           <Input
-            name="field13"
-            placeholder={name}
-            value={filterState.field13}
+            name="Field13"
+            placeholder={FieldName}
+            value={filterState.Field13}
             onChange={handleInputChange}
           />
         )
       case 14:
         return (
           <Input
-            name="field14"
-            placeholder={name}
-            value={filterState.field14}
+            name="Field14"
+            placeholder={FieldName}
+            value={filterState.Field14}
             onChange={handleInputChange}
           />
         )
       case 15:
         return (
           <Input
-            name="field15"
-            placeholder={name}
-            value={filterState.field15}
+            name="Field15"
+            placeholder={FieldName}
+            value={filterState.Field15}
             onChange={handleInputChange}
           />
         )

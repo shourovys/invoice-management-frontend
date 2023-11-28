@@ -1,14 +1,15 @@
-import { channelApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
+import { channelApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IChannelResult } from 'types/pages/channel'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IDoorFormData } from 'types/pages/door'
-import { SERVER_QUERY } from 'utils/config'
-import { listIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IChannelResult } from '../../../../types/pages/channel'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IDoorFormData } from '../../../../types/pages/door'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { listIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IDoorFormData
@@ -27,28 +28,28 @@ function DoorChannelForm({ formData, handleInputChange, formErrors, disabled, is
       : channelApi.list(SERVER_QUERY.selectorDataQuery)
   )
   return (
-    <FormCardWithHeader icon={listIcon} header="Channel">
-      <SwitchButton
-        name="channel_enable"
-        checked={formData?.channel_enable}
+    <FormCardWithHeader icon={listIcon} header={t`Channel`}>
+      <SwitchButtonSelect
+        name="ChannelEnable"
+        value={formData?.ChannelEnable}
         onChange={handleInputChange}
-        label="Channel Enable"
+        label={t`Channel Enable`}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
 
-      {formData?.channel_enable && (
+      {formData?.ChannelEnable?.value === '1' && (
         <Selector
-          name="channel"
-          label="Pair Door"
-          value={formData?.channel}
-          options={channelData?.results.map((item) => ({
-            value: item.id.toString(),
-            label: item.name,
+          name="Channel"
+          label={t`Channel`}
+          value={formData?.Channel}
+          options={channelData?.data.map((item) => ({
+            value: item.ChannelNo.toString(),
+            label: item.ChannelName,
           }))}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.channel}
+          error={formErrors?.Channel}
           isLoading={isLoading || channelIsLoading}
         />
       )}

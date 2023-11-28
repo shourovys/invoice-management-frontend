@@ -1,30 +1,29 @@
-import { IFormErrors } from 'types/pages/common'
-import { IGatewayFormData } from 'types/pages/gateway'
+import { INewFormErrors } from '../../types/pages/common'
+import { IGatewayFormData } from '../../types/pages/gateway'
+import t from '../translator'
 
-const validateGatewayFormData = (formData: IGatewayFormData): IFormErrors => {
-  const errors: IFormErrors = {}
-  if (!formData.name) {
-    errors.name = 'Gateway Name is required'
+const validateGatewayFormData = (formData: IGatewayFormData): INewFormErrors<IGatewayFormData> => {
+  const errors: INewFormErrors<IGatewayFormData> = {}
+  if (!formData.GatewayName) {
+    errors.GatewayName = t`Gateway Name is required`
   }
-  if (!formData.partition?.value) {
-    errors.partition = 'Partition is required'
+  if (!formData.Node?.value) {
+    errors.Node = t`Node is required`
   }
-  if (!formData.node?.value) {
-    errors.node = 'Node is required'
+  if (!formData.IpAddress) {
+    errors.IpAddress = t`IP Address is required`
   }
-  if (!formData.ip_address) {
-    errors.ip_address = 'IP Address is required'
+  if (!formData.ApiPort) {
+    errors.ApiPort = t`API Port is required`
   }
-  if (!formData.api_port) {
-    errors.api_port = 'API Port is required'
+  if (!formData.UserId) {
+    errors.UserId = t`UserId is required`
   }
-  if (!formData.user?.value) {
-    errors.user = 'User is required'
-  }
-  if (!formData.password) {
-    errors.password = 'Password is required'
+  if (!formData.Password) {
+    errors.Password = t`Password is required`
   }
 
   return errors
 }
+
 export default validateGatewayFormData

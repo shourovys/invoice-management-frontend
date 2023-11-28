@@ -1,8 +1,8 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { IEventActionResult } from 'types/pages/eventAction'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { IEventActionResult } from '../../../types/pages/eventAction'
 import Checkbox from '../../atomic/Checkbox'
 
 type IProps = {
@@ -10,23 +10,24 @@ type IProps = {
   selected: string[]
   handleSelectRow: (_selectedId: string) => void
 }
+
 function EventActionTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.eventActionInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.EventActionNo}
+      link={routeProperty.eventActionInfo.path(row.EventActionNo.toString())}
+      selected={selected.indexOf(row.EventActionNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.partition.name}</TableData>
-      <TableData>{row.name}</TableData>
-      <TableData>{row.description}</TableData>
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableData>{row.EventActionNo}</TableData>
+      <TableData>{row.Partition.PartitionName}</TableData>
+      <TableData>{row.EventActionName}</TableData>
+      <TableData>{row.EventActionDesc}</TableData>
+      <TableDataAction selected={selected.indexOf(row.EventActionNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.EventActionNo}`}
+          checked={selected.indexOf(row.EventActionNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.EventActionNo.toString())
           }}
         />
       </TableDataAction>

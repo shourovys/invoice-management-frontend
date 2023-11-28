@@ -1,19 +1,28 @@
-import { partitionApi } from 'api/urls'
-import { ElementsApi } from 'api/urls/common'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector, { TSelectValue } from 'components/atomic/Selector'
-import MultiSelect from 'components/common/form/MultiSelect'
+import { partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector, { ISelectOption, TSelectValue } from '../../../../components/atomic/Selector'
+import Textarea from '../../../../components/atomic/Textarea'
+import MultiSelect from '../../../../components/common/form/MultiSelect'
+import { useElementSelectData } from '../../../../hooks/useSelectData'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IElementsResult, IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IGroupFormData, groupTypes } from 'types/pages/group'
-import { IPartitionResult } from 'types/pages/partition'
-import { SERVER_QUERY } from 'utils/config'
-import { doorIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import {
+  IGroupFormData,
+  IGroupInfoFormData,
+  IGroupTypes,
+  groupTypesOptions,
+} from '../../../../types/pages/group'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { doorIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
+import useLicenseFilter from '../../../../hooks/useLicenseFilter'
+import FormCardInputTwoPart from '../../../../components/HOC/style/form/FormCardInputTwoPart'
 
 interface IProps {
-  formData?: IGroupFormData
+  formData?: IGroupFormData | IGroupInfoFormData
   handleInputChange?: THandleInputChange
   formErrors?: IFormErrors
   disabled?: boolean
@@ -30,79 +39,105 @@ function GroupForm({ formData, handleInputChange, formErrors, disabled, isLoadin
   )
 
   // Fetch elements by type from the server
-  const { isLoading: group_object_idsIsLoading, data: group_object_idsData } = useSWR<
-    IListServerResponse<IElementsResult[]>
-  >(
-    !formData?.type?.value
-      ? // ||
-        //     disabled ||
-        //     typeof handleInputChange === "undefined"
-        null
-      : ElementsApi.list(`type=${formData?.type?.value}`)
+
+  // Fetch elements by type from the server
+  const { isLoading: groupItemsIsLoading, data: groupItemsData } = useElementSelectData(
+    // disabled || typeof handleInputChange === 'undefined' ||
+    !formData?.GroupType?.label,
+    (formData?.GroupType?.label || '') as keyof IGroupTypes
   )
 
   // call handleInputChange with reset group_object_ids when type changes
   const handleTypeChange = (name: string, selectedValue: TSelectValue) => {
     if (handleInputChange) {
       handleInputChange(name, selectedValue)
-      handleInputChange('group_object_ids', [])
+      handleInputChange('GroupItemIds', [])
     }
   }
-  return (
-    <FormCardWithHeader icon={doorIcon} header="Group">
-      <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
-        }))}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
-        isLoading={isLoading || partitionIsLoading}
-      />
-      <Input
-        name="name"
-        label="Group Name"
-        value={formData?.name}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
-        isLoading={isLoading}
-      />
-      <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
-        onChange={handleInputChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
-        isLoading={isLoading}
-      />
-      <Selector
-        name="type"
-        label="Group Type"
-        value={formData?.type}
-        options={groupTypes}
-        onChange={handleTypeChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.type}
-      />
 
-      <MultiSelect
-        name="group_object_ids"
-        label="Group Item"
-        value={formData?.group_object_ids}
-        onChange={handleInputChange}
-        options={group_object_idsData?.results.map((item) => ({
-          id: item.id.toString(),
-          label: item.name,
-        }))}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        isLoading={isLoading || group_object_idsIsLoading}
-      />
+  const filteredGroupTypesOptions = useLicenseFilter<ISelectOption>(groupTypesOptions, {
+    '8': 'Camera',
+    '12': 'Lockset',
+    '13': 'Facegate',
+    '17': 'ContLock',
+    '18': 'Intercom',
+  })
+
+  return (
+    <FormCardWithHeader icon={doorIcon} header={t`Group`} twoPart={false}>
+      <FormCardInputTwoPart>
+        <Selector
+          name="Partition"
+          label={t`Partition`}
+          value={formData?.Partition}
+          options={partitionData?.data.map((result) => ({
+            value: result.PartitionNo.toString(),
+            label: result.PartitionName,
+          }))}
+          isClearable={false}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.Partition}
+          isLoading={isLoading || partitionIsLoading}
+        />
+        <Input
+          name="GroupName"
+          label={t`Group Name`}
+          value={formData?.GroupName}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.GroupName}
+          isLoading={isLoading}
+        />
+        <Input
+          name="GroupDesc"
+          label={t`Description`}
+          value={formData?.GroupDesc}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.GroupDesc}
+          isLoading={isLoading}
+        />
+
+        <Selector
+          name="GroupType"
+          label={t`Group Type`}
+          value={formData?.GroupType}
+          options={filteredGroupTypesOptions}
+          onChange={handleTypeChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          error={formErrors?.GroupType}
+        />
+      </FormCardInputTwoPart>
+
+      {(disabled || typeof handleInputChange === 'undefined') &&
+        formData &&
+        'GroupItems' in formData && (
+          <Textarea
+            name="GroupItems"
+            label={t`Group Item`}
+            value={formData?.GroupItems}
+            onChange={handleInputChange}
+            disabled={disabled || typeof handleInputChange === 'undefined'}
+            isLoading={isLoading || groupItemsIsLoading}
+          />
+        )}
+
+      {!(disabled || typeof handleInputChange === 'undefined') && (
+        <MultiSelect
+          name="GroupItemIds"
+          label={t`Group Item`}
+          value={formData?.GroupItemIds}
+          onChange={handleInputChange}
+          options={groupItemsData?.data.map((item) => ({
+            id: item.No.toString(),
+            label: item.Name,
+          }))}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          isLoading={isLoading || groupItemsIsLoading}
+          error={formErrors?.GroupItemIds}
+        />
+      )}
     </FormCardWithHeader>
   )
 }

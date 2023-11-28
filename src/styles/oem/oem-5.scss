@@ -1,0 +1,79 @@
+:root[data-oem-id='5'] {
+  /* Text Information */
+  --theme-primary-text-color: #b500d1;
+
+  /* Navbar */
+  --navbar-bg-color: #ffffff;
+
+  /* Light Skin Navbar Button */
+  --light-skin-navbar-btn-bg: #ffffff;
+  --light-skin-navbar-btn-text-color: #4e4e4e;
+  --light-skin-navbar-btn-hover-bg: #ffffff;
+  --light-skin-navbar-btn-hover-text-color: #000000;
+
+  /* Top Menu */
+  --light-skin-top-menu-custom-btn-text-color: #000000;
+  --light-skin-top-menu-custom-btn-hover-text-color: #b500d1;
+
+  /* Sidebar */
+  --sidebar-bg-color: #f1f1f1;
+  --light-skin-sidebar-btn-bg: #f1f1f1;
+  --light-skin-sidebar-btn-text-color: #374151;
+  --light-skin-sidebar-btn-active-bg: #e9b4f9;
+  --light-skin-sidebar-btn-active-text-color: #b500d1;
+  --light-skin-sidebar-btn-hover-bg: #ffffff;
+  --light-skin-sidebar-btn-hover-text-color: #000000;
+
+  /* Table */
+  --bw-table-header-bg-color: #f0f1f3;
+  --bw-table-header-text-color: #70767f;
+  --bw-table-row-hover-bg-color: #f3f4f6;
+  --bw-table-row-text-color: #111827;
+
+  /* Form box */
+  --box-header-title-color: #acadae;
+  --box-header-bg: #f0f1f3;
+  --box-body-bg: #ffffff;
+
+  /* Buttons */
+  --theme-primary-btn-primary-hover-bg: #b500d1;
+  --theme-primary-btn-primary-text-color: #ffffff;
+  --theme-primary-text-btn-primary-text-color: #b500d1;
+
+  --theme-primary-btn-danger-bg: #e9e9e9;
+  --theme-primary-btn-danger-text-color: #b500d1;
+  --theme-primary-text-btn-danger-text-color: #000000;
+
+  --theme-primary-btn-info-bg: #ffa800;
+  --theme-primary-btn-info-text-color: #ffffff;
+  --theme-primary-text-btn-info-text-color: #ffa800;
+
+  /* Pagination */
+  --pagination-active-page-bg: #b500d1;
+  --pagination-active-page-text: #ffffff;
+  --pagination-hover-text-color: #000000;
+  --pagination-hover-bg: #e9b4f9;
+
+  /* CSV Button */
+  --csv-btn-bg: #b500d1;
+  --csv-btn-text-color: #ffffff;
+
+  /* Add Button */
+  --add-button-bg: #b500d1;
+  --add-button-text-color: #ffffff;
+  --add-text-button-text-color: #b500d1;
+
+  /* Cancel Button */
+  --cancel-button-bg: #ffa800;
+  --cancel-button-text-color: #ffffff;
+  --cancel-text-button-text-color: #ffa800;
+
+  /* Mobile Menu */
+  --mobile-menu-bg-color: #ffffff;
+  --light-skin-mobile-menu-btn-bg: #ffffff;
+  --light-skin-mobile-menu-btn-text-color: #374151;
+  --light-skin-mobile-menu-btn-active-bg: #e9b4f9;
+  --light-skin-mobile-menu-btn-active-text-color: #b500d1;
+  --light-skin-mobile-menu-btn-hover-bg: #e9b4f9;
+  --light-skin-mobile-menu-btn-hover-text-color: #000000;
+}

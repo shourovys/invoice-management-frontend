@@ -1,8 +1,14 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { IDoorResult } from 'types/pages/door'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import {
+  IDoorResult,
+  doorAlertStatObject,
+  doorContactStatObject,
+  doorLockStatObject,
+  doorStatObject,
+} from '../../../types/pages/door'
 
 import Checkbox from '../../atomic/Checkbox'
 
@@ -11,30 +17,34 @@ type IProps = {
   selected: string[]
   handleSelectRow: (_selectedId: string) => void
 }
+
 function DoorTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.doorInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.DoorNo}
+      link={routeProperty.doorInfo.path(row.DoorNo)}
+      selected={selected.indexOf(row.DoorNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.partition.name}</TableData>
-      <TableData>{row.name}</TableData>
-      <TableData>{row.description}</TableData>
-      <TableData>{row.node.name}</TableData>
-      <TableData>{row.port}</TableData>
-      {/* <TableData>{row.door_stat ? "Yes" : "NO"}</TableData> */}
-      {/* <TableData>{row.lock_stat ? "Locked" : "UnLocked"}</TableData> */}
-      {/* <TableData>{row.contact_stat ? "Open" : "Close"}</TableData> */}
-      {/* <TableData>{row.alert_stat ? "Yes" : "Node"}</TableData> */}
+      <TableData>{row.DoorNo}</TableData>
+      <TableData>{row.Partition.PartitionName}</TableData>
+      <TableData>{row.DoorName}</TableData>
+      <TableData>{row.DoorDesc}</TableData>
+      <TableData>
+        {row.Node.NodeName}
+        {row.Subnode && ` - ${row.Subnode.SubnodeName}`}
+      </TableData>
+      <TableData>{row.DoorPort}</TableData>
+      <TableData>{doorStatObject[row.DoorStat]}</TableData>
+      <TableData>{doorLockStatObject[row.LockStat]}</TableData>
+      <TableData>{doorContactStatObject[row.ContactStat]}</TableData>
+      <TableData>{doorAlertStatObject[row.AlertStat]}</TableData>
 
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableDataAction selected={selected.indexOf(row.DoorNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.DoorNo}`}
+          checked={selected.indexOf(row.DoorNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.DoorNo.toString())
           }}
         />
       </TableDataAction>

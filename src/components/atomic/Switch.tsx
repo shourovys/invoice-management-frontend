@@ -1,26 +1,53 @@
 import { Switch } from '@headlessui/react'
 import classNames from 'classnames'
+import { THandleInputSelect } from '../../types/components/common'
 import LoadingSvg from '../loading/atomic/LoadingSvg'
+import Checkbox from './Checkbox'
+import t from '../../utils/translator'
 
 interface IProps {
   name: string
   label?: string
   checked?: boolean
   isLoading?: boolean
-  onChange?: (name: string, checked: boolean) => void
+  onChange?: THandleInputSelect
   disabled?: boolean
+  // props for checkbox in label
+  isSelected?: boolean
+  handleSelect?: THandleInputSelect
 }
 
-function SwitchButton({ name, label, checked, isLoading, onChange, disabled }: IProps) {
+function SwitchButton({
+  name,
+  label,
+  checked,
+  isLoading,
+  onChange,
+  disabled,
+  isSelected,
+  handleSelect,
+}: IProps) {
   return (
-    <div className="flex flex-col gap-y-1">
+    <div className="flex flex-col gap-y-0.5">
       {label && (
-        <label
-          className="inline-block w-full text-sm text-gray-700 form-label mt-0.5"
-          htmlFor={name}
-        >
-          {label}
-        </label>
+        <div className="">
+          {handleSelect ? (
+            <div className="py-0.5">
+              <Checkbox
+                label={label}
+                value={name}
+                checked={isSelected}
+                onChange={(_checked) => {
+                  handleSelect(name, _checked)
+                }}
+              />
+            </div>
+          ) : (
+            <label className="inline-block w-full text-sm text-gray-700 form-label" htmlFor={name}>
+              {label}
+            </label>
+          )}
+        </div>
       )}
       <Switch
         id={name}
@@ -37,7 +64,7 @@ function SwitchButton({ name, label, checked, isLoading, onChange, disabled }: I
         )}
         disabled={disabled}
       >
-        <span className="sr-only">Use setting</span>
+        <span className="sr-only">{t`Use setting`}</span>
         <span
           aria-hidden="true"
           className={classNames(

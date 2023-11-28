@@ -1,16 +1,20 @@
-import { formatApi, personApi } from 'api/urls'
+import { formatApi } from '../../../api/urls'
 import useSWR from 'swr'
-import { THandleFilterInputChange } from 'types/components/common'
-import { IListServerResponse } from 'types/pages/common'
-import { ICredentialFilters, credentialStats, credentialTypes } from 'types/pages/credential'
-import { IFormatResult } from 'types/pages/format'
-import { IPersonResult } from 'types/pages/person'
-import Icon, { applyIcon, resetIcon } from 'utils/icons'
+import { THandleFilterInputChange } from '../../../types/components/common'
+import { IListServerResponse } from '../../../types/pages/common'
+import {
+  ICredentialFilters,
+  credentialStatsOptions,
+  credentialTypesOptions,
+} from '../../../types/pages/credential'
+import { IFormatResult } from '../../../types/pages/format'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import { SERVER_QUERY } from '../../../utils/config'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
 import Selector from '../../atomic/Selector'
+import t from '../../../utils/translator'
 
 interface IProps {
   filterState: ICredentialFilters
@@ -29,71 +33,90 @@ function CredentialTableToolbar({
     IListServerResponse<IFormatResult[]>
   >(formatApi.list(SERVER_QUERY.selectorDataQuery))
 
-  const { isLoading: personIsLoading, data: personData } = useSWR<
-    IListServerResponse<IPersonResult[]>
-  >(personApi.list(SERVER_QUERY.selectorDataQuery))
-
   return (
     <TableToolbarContainer>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
         <Input
-          name="id"
-          placeholder="Credential No"
-          value={filterState.id}
+          name="CredentialNo"
+          type="number"
+          placeholder={t`Credential No`}
+          value={filterState.CredentialNo}
           onChange={handleInputChange}
         />
         <Selector
-          name="format"
-          placeholder="Format"
-          value={filterState.format}
-          options={formatData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="Format"
+          placeholder={t`Format`}
+          value={filterState.Format}
+          options={formatData?.data.map((result) => ({
+            value: result.FormatNo.toString(),
+            label: result.FormatName,
           }))}
+          isClearable
           onChange={handleInputChange}
           isLoading={formatIsLoading}
         />
         <Input
-          name="number"
-          placeholder="Credential Number"
-          value={filterState.number}
+          name="CredentialNumb"
+          placeholder={t`Credential Number`}
+          value={filterState.CredentialNumb}
           onChange={handleInputChange}
         />
         <Selector
-          name="type"
-          placeholder="Credential Type"
-          value={filterState.type}
-          options={credentialTypes}
+          name="CredentialType"
+          placeholder={t`Credential Type`}
+          value={filterState.CredentialType}
+          options={credentialTypesOptions}
+          isClearable
           onChange={handleInputChange}
         />
         <Selector
-          name="stat"
-          placeholder="Credential Status"
-          value={filterState.stat}
-          options={credentialStats}
+          name="CredentialStat"
+          placeholder={t`Credential Stat`}
+          value={filterState.CredentialStat}
+          options={credentialStatsOptions}
+          isClearable
           onChange={handleInputChange}
         />
-        <Selector
-          name="person"
-          placeholder="Credential Owner"
-          value={filterState.person}
-          options={personData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.last_name,
+        <Input
+          name="LastName"
+          placeholder={t`Last Name`}
+          value={filterState.LastName}
+          onChange={handleInputChange}
+        />
+        <Input
+          name="FirstName"
+          placeholder={t`First Name`}
+          value={filterState.FirstName}
+          onChange={handleInputChange}
+        />
+        <Input
+          name="Email"
+          placeholder={t`Email`}
+          value={filterState.Email}
+          onChange={handleInputChange}
+        />
+        {/* <Selector
+          name="PersonNo"
+          placeholder={t`Credential Owner`}
+          value={filterState.PersonNo}
+          options={personData?.data.map((result) => ({
+            value: result.PersonNo.toString(),
+            label: result.LastName,
           }))}
+          isClearable
           onChange={handleInputChange}
           isLoading={personIsLoading}
-        />
+        /> */}
       </div>
 
       <div className="flex gap-3.5 lg:gap-4">
         <Button onClick={handleFilterApply}>
           <Icon icon={applyIcon} />
-          <span>Apply</span>
+          <span>{t`Apply`}</span>
         </Button>
-        <Button color="gray" onClick={handleFilterStateReset}>
+        <Button color="danger" onClick={handleFilterStateReset}>
           <Icon icon={resetIcon} />
-          <span>Reset</span>
+          <span>{t`Reset`}</span>
         </Button>
       </div>
     </TableToolbarContainer>

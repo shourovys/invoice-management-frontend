@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import Icon, { applyIcon, resetIcon } from 'utils/icons'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
+import t from '../../../utils/translator'
 
 function ActReportTableToolbar() {
   const [state] = useState({
@@ -14,58 +15,58 @@ function ActReportTableToolbar() {
     actTime: '',
     actUser: '',
   })
-  const handleInputChange = (name: string, value: string): void => {
-    console.log(name, value)
-  }
+  // const handleInputChange = (name: string, value: string): void => {
+  //   // console.log(name, value)
+  // }
   return (
     <TableToolbarContainer>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-3 sm:gap-y-2 lg:gap-x-5">
-        <Input name="logNo" placeholder="Log No" value={state.logNo} onChange={handleInputChange} />
+        <Input name="logNo" placeholder={t`Log No`} value={state.logNo} />
         <Input
           name="eventTime"
-          placeholder="Event Time"
+          placeholder={t`Event Time`}
           value={state.eventTime}
-          onChange={handleInputChange}
+          // onChange={handleInputChange}
         />
         <Input
           name="eventName"
-          placeholder="Event Name"
+          placeholder={t`Event Name`}
           value={state.eventName}
-          onChange={handleInputChange}
+          // onChange={handleInputChange}
         />
         <Input
           name="deviceName"
-          placeholder="Device Name"
+          placeholder={t`Device Name`}
           value={state.deviceName}
-          onChange={handleInputChange}
+          // onChange={handleInputChange}
         />
         <Input
           name="personName"
-          placeholder="Person Name"
+          placeholder={t`Person Name`}
           value={state.personName}
-          onChange={handleInputChange}
+          // onChange={handleInputChange}
         />
         <Input
           name="actTime"
-          placeholder="ACT Time"
+          placeholder={t`ACT Time`}
           value={state.actTime}
-          onChange={handleInputChange}
+          // onChange={handleInputChange}
         />
         <Input
           name="actUser"
-          placeholder="ACT User"
+          placeholder={t`ACT User`}
           value={state.actUser}
-          onChange={handleInputChange}
+          // onChange={handleInputChange}
         />
       </div>
       <div className="flex gap-3.5 lg:gap-4">
         <Button>
           <Icon icon={applyIcon} />
-          <span>Apply</span>
+          <span>{t`Apply`}</span>
         </Button>
-        <Button color="gray">
+        <Button color="danger">
           <Icon icon={resetIcon} />
-          <span>Reset</span>
+          <span>{t`Reset`}</span>
         </Button>
       </div>
     </TableToolbarContainer>

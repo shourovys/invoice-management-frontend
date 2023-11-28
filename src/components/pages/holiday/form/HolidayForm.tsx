@@ -1,15 +1,15 @@
-import { partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import DateInput from 'components/atomic/DateInput'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleDateChange, THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IHolidayFormData } from 'types/pages/holiday'
-import { IPartitionResult } from 'types/pages/partition'
-import { SERVER_QUERY } from 'utils/config'
-import { holidayIcon } from 'utils/icons'
+import { THandleDateChange, THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IHolidayFormData } from '../../../../types/pages/holiday'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { holidayIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IHolidayFormData
@@ -30,55 +30,43 @@ function HolidayForm({ formData, handleInputChange, formErrors, disabled, isLoad
 
   const handleDateChange: THandleDateChange = (name, value) => {
     if (handleInputChange) {
-      handleInputChange('start_time', value?.startDate)
-      handleInputChange('end_time', value?.endDate)
+      handleInputChange('StartTime', value?.startDate)
+      handleInputChange('EndTime', value?.endDate)
     }
   }
 
   return (
-    <FormCardWithHeader icon={holidayIcon} header="Holiday">
+    <FormCardWithHeader icon={holidayIcon} header={t`Holiday`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
+        isClearable={false}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="Holiday Name"
-        value={formData?.name}
+        name="HolidayName"
+        label={t`Holiday Name`}
+        value={formData?.HolidayName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.HolidayName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="HolidayDesc"
+        label={t`Description`}
+        value={formData?.HolidayDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
-        isLoading={isLoading}
-      />
-      <DateInput
-        name="Start & End Time"
-        label="Start & End Time"
-        singleDate={false}
-        value={{
-          startDate: formData?.start_time ? formData?.start_time : null,
-          endDate: formData?.end_time ? formData?.end_time : null,
-        }}
-        onChange={handleDateChange}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.start_time}
+        error={formErrors?.HolidayDesc}
         isLoading={isLoading}
       />
     </FormCardWithHeader>

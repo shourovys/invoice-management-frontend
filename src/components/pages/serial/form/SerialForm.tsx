@@ -1,15 +1,16 @@
-import { nodeApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
+import { nodeApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { parityOptions } from 'types/pages/format'
-import { INodeResult } from 'types/pages/node'
-import { ISerialFormData, serialProtocolOptions } from 'types/pages/serial'
-import { SERVER_QUERY } from 'utils/config'
-import { serialIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { parityOptions } from '../../../../types/pages/format'
+import { INodeResult } from '../../../../types/pages/node'
+import { ISerialFormData, serialProtocolOptions } from '../../../../types/pages/serial'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { serialIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: ISerialFormData
@@ -25,10 +26,10 @@ function SerialForm({ formData, handleInputChange, formErrors, disabled, isLoadi
   )
 
   return (
-    <FormCardWithHeader icon={serialIcon} header="Serial">
+    <FormCardWithHeader icon={serialIcon} header={t`Serial`}>
       <Input
         name="name"
-        label="Serial Name"
+        label={t`Serial Name`}
         value={formData?.name}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
@@ -37,7 +38,7 @@ function SerialForm({ formData, handleInputChange, formErrors, disabled, isLoadi
       />
       <Input
         name="description"
-        label="Description"
+        label={t`Description`}
         value={formData?.description}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
@@ -46,11 +47,11 @@ function SerialForm({ formData, handleInputChange, formErrors, disabled, isLoadi
       />
       <Selector
         name="node"
-        label="Node"
+        label={t`Node`}
         value={formData?.node}
-        options={nodeData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        options={nodeData?.data.map((result) => ({
+          value: result.NodeNo.toString(),
+          label: result.NodeName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
@@ -59,7 +60,7 @@ function SerialForm({ formData, handleInputChange, formErrors, disabled, isLoadi
       />
       <Input
         name="device"
-        label="Device"
+        label={t`Device`}
         value={formData?.device}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
@@ -69,7 +70,7 @@ function SerialForm({ formData, handleInputChange, formErrors, disabled, isLoadi
       <Input
         name="band_rate"
         type="number"
-        label="Baudrate"
+        label={t`Baudrate`}
         value={formData?.band_rate}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
@@ -79,7 +80,7 @@ function SerialForm({ formData, handleInputChange, formErrors, disabled, isLoadi
       <Input
         name="data_bit"
         type="number"
-        label="Databit"
+        label={t`Databit`}
         value={formData?.data_bit}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
@@ -89,7 +90,7 @@ function SerialForm({ formData, handleInputChange, formErrors, disabled, isLoadi
       <Input
         name="stop_bit"
         type="number"
-        label="Stopbit"
+        label={t`Stopbit`}
         value={formData?.stop_bit}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
@@ -98,7 +99,7 @@ function SerialForm({ formData, handleInputChange, formErrors, disabled, isLoadi
       />
       <Selector
         name="parity"
-        label="Parity"
+        label={t`Parity`}
         value={formData?.parity}
         options={parityOptions}
         onChange={handleInputChange}
@@ -108,7 +109,7 @@ function SerialForm({ formData, handleInputChange, formErrors, disabled, isLoadi
       />
       <Selector
         name="protocol"
-        label="Protocol"
+        label={t`Protocol`}
         value={formData?.protocol}
         options={serialProtocolOptions}
         onChange={handleInputChange}

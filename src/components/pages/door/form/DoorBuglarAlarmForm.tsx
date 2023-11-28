@@ -1,15 +1,16 @@
-import { inputApi, outputApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Selector from 'components/atomic/Selector'
-import SwitchButton from 'components/atomic/Switch'
+import { inputApi, outputApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import SwitchButtonSelect from '../../../../components/atomic/SelectSwitch'
+import Selector from '../../../../components/atomic/Selector'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IDoorFormData } from 'types/pages/door'
-import { IInputResult } from 'types/pages/input'
-import { IOutputResult } from 'types/pages/output'
-import { SERVER_QUERY } from 'utils/config'
-import { listIcon } from 'utils/icons'
+import { THandleInputChange } from '../../../../types/components/common'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IDoorFormData } from '../../../../types/pages/door'
+import { IInputResult } from '../../../../types/pages/input' // Update interface import
+import { IOutputResult } from '../../../../types/pages/output' // Update interface import
+import { SERVER_QUERY } from '../../../../utils/config'
+import { listIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IDoorFormData
@@ -31,7 +32,7 @@ function DoorBuglarAlarmForm({
   >(
     disabled || typeof handleInputChange === 'undefined'
       ? null
-      : outputApi.list(SERVER_QUERY.selectorDataQuery)
+      : outputApi.list(`${SERVER_QUERY.selectorDataQuery}&NodeNo=${formData?.NodeNo}`)
   )
 
   const { isLoading: inputIsLoading, data: inputData } = useSWR<
@@ -39,74 +40,74 @@ function DoorBuglarAlarmForm({
   >(
     disabled || typeof handleInputChange === 'undefined'
       ? null
-      : inputApi.list(SERVER_QUERY.selectorDataQuery)
+      : inputApi.list(`${SERVER_QUERY.selectorDataQuery}&NodeNo=${formData?.NodeNo}`)
   )
 
   return (
-    <FormCardWithHeader icon={listIcon} header="Buglar Alarm">
-      <SwitchButton
-        name="burg_alarm_enable"
-        checked={formData?.burg_alarm_enable}
+    <FormCardWithHeader icon={listIcon} header={t`Buglar Alarm`}>
+      <SwitchButtonSelect
+        name="BurgAlarmEnable"
+        value={formData?.BurgAlarmEnable}
         onChange={handleInputChange}
-        label="Burg Alarm Enable"
+        label={t`Burg Alarm Enable`}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
-      {formData?.burg_alarm_enable && (
+      {formData?.BurgAlarmEnable?.value === '1' && (
         <Selector
-          name="burg_output"
-          label="Burglar Alarm Output"
-          value={formData?.burg_output}
-          options={outputData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="BurgOutput"
+          label={t`Burglar Alarm Output`}
+          value={formData?.BurgOutput}
+          options={outputData?.data.map((result) => ({
+            value: result.OutputNo.toString(),
+            label: result.OutputName,
           }))}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.burg_output}
+          error={formErrors?.BurgOutput}
           isLoading={isLoading || outputIsLoading}
         />
       )}
 
-      {formData?.burg_alarm_enable && (
+      {formData?.BurgAlarmEnable?.value === '1' && (
         <Selector
-          name="burg_input"
-          label="Burglar Alarm Input"
-          value={formData?.burg_input}
-          options={outputData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="BurgInput"
+          label={t`Burglar Alarm Input`}
+          value={formData?.BurgInput}
+          options={inputData?.data.map((result) => ({
+            value: result.InputNo.toString(),
+            label: result.InputName,
           }))}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.burg_input}
+          error={formErrors?.BurgInput}
           isLoading={isLoading || outputIsLoading}
         />
       )}
 
-      {formData?.burg_alarm_enable && (
-        <SwitchButton
-          name="burg_zone_enable"
-          checked={formData?.burg_zone_enable}
+      {formData?.BurgAlarmEnable?.value === '1' && (
+        <SwitchButtonSelect
+          name="BurgZoneEnable"
+          value={formData?.BurgZoneEnable}
           onChange={handleInputChange}
-          label="Burg Alarm Enable"
+          label={t`Burg Zone Enable`}
           disabled={disabled || typeof handleInputChange === 'undefined'}
           isLoading={isLoading}
         />
       )}
 
-      {formData?.burg_alarm_enable && formData?.burg_zone_enable && (
+      {formData?.BurgAlarmEnable?.value === '1' && formData?.BurgZoneEnable?.value === '1' && (
         <Selector
-          name="burg_zone_input"
-          label="Burglar Zone Input"
-          value={formData?.burg_zone_input}
-          options={inputData?.results.map((result) => ({
-            value: result.id.toString(),
-            label: result.name,
+          name="BurgZoneInput"
+          label={t`Burglar Zone Input`}
+          value={formData?.BurgZoneInput}
+          options={inputData?.data.map((result) => ({
+            value: result.InputNo.toString(),
+            label: result.InputName,
           }))}
           onChange={handleInputChange}
           disabled={disabled || typeof handleInputChange === 'undefined'}
-          error={formErrors?.burg_zone_input}
+          error={formErrors?.BurgZoneInput}
           isLoading={isLoading || inputIsLoading}
         />
       )}

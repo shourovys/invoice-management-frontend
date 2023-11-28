@@ -1,17 +1,18 @@
-import { channelApi, partitionApi } from 'api/urls'
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import Selector from 'components/atomic/Selector'
-import MultiSelect from 'components/common/form/MultiSelect'
+import { channelApi, partitionApi } from '../../../../api/urls'
+import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
+import Input from '../../../../components/atomic/Input'
+import Selector from '../../../../components/atomic/Selector'
+import Textarea from '../../../../components/atomic/Textarea'
+import MultiSelect from '../../../../components/common/form/MultiSelect'
 import useSWR from 'swr'
-import { THandleInputChange } from 'types/components/common'
-import { IChannelResult } from 'types/pages/channel'
-import { IFormErrors, IListServerResponse } from 'types/pages/common'
-import { IPartitionResult } from 'types/pages/partition'
-import { IViewFormData } from 'types/pages/view'
-import { SERVER_QUERY } from 'utils/config'
-import { doorIcon } from 'utils/icons'
-
+import { THandleInputChange } from '../../../../types/components/common'
+import { IChannelResult } from '../../../../types/pages/channel'
+import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
+import { IPartitionResult } from '../../../../types/pages/partition'
+import { IViewFormData } from '../../../../types/pages/view'
+import { SERVER_QUERY } from '../../../../utils/config'
+import { doorIcon } from '../../../../utils/icons'
+import t from '../../../../utils/translator'
 interface IProps {
   formData?: IViewFormData
   handleInputChange?: THandleInputChange
@@ -34,51 +35,63 @@ function ViewForm({ formData, handleInputChange, formErrors, disabled, isLoading
   >(channelApi.list(SERVER_QUERY.selectorDataQuery))
 
   return (
-    <FormCardWithHeader icon={doorIcon} header="View">
+    <FormCardWithHeader icon={doorIcon} header={t`View`}>
       <Selector
-        name="partition"
-        label="Partition"
-        value={formData?.partition}
-        options={partitionData?.results.map((result) => ({
-          value: result.id.toString(),
-          label: result.name,
+        name="Partition"
+        label={t`Partition`}
+        value={formData?.Partition}
+        options={partitionData?.data.map((result) => ({
+          value: result.PartitionNo.toString(),
+          label: result.PartitionName,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.partition}
+        error={formErrors?.Partition}
         isLoading={isLoading || partitionIsLoading}
       />
       <Input
-        name="name"
-        label="View Name"
-        value={formData?.name}
+        name="ViewName"
+        label={t`View Name`}
+        value={formData?.ViewName}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.name}
+        error={formErrors?.ViewName}
         isLoading={isLoading}
       />
       <Input
-        name="description"
-        label="Description"
-        value={formData?.description}
+        name="ViewDesc"
+        label={t`Description`}
+        value={formData?.ViewDesc}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.description}
+        error={formErrors?.ViewDesc}
         isLoading={isLoading}
       />
-
-      <MultiSelect
-        name="channel_ids"
-        label="View Channel"
-        value={formData?.channel_ids}
-        onChange={handleInputChange}
-        options={channelData?.results.map((item) => ({
-          id: item.id.toString(),
-          label: item.name,
-        }))}
-        disabled={disabled || typeof handleInputChange === 'undefined'}
-        isLoading={isLoading || channelIsLoading}
-      />
+      {(disabled || typeof handleInputChange === 'undefined') && (
+        <Textarea
+          name="ChannelNos"
+          label={t`View Channel`}
+          value={formData?.Channels?.map((channel) => channel.ChannelName).join(', ')}
+          onChange={handleInputChange}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          isLoading={isLoading || channelIsLoading}
+        />
+      )}
+      {!(disabled || typeof handleInputChange === 'undefined') && (
+        <MultiSelect
+          name="ChannelNos"
+          label={t`View Channel`}
+          value={formData?.ChannelNos}
+          onChange={handleInputChange}
+          options={channelData?.data.map((item) => ({
+            id: item.ChannelNo.toString(),
+            label: item.ChannelName,
+          }))}
+          disabled={disabled || typeof handleInputChange === 'undefined'}
+          isLoading={isLoading || channelIsLoading}
+          gridColSpan2
+        />
+      )}
     </FormCardWithHeader>
   )
 }

@@ -1,10 +1,11 @@
-import FormCardWithHeader from 'components/HOC/FormCardWithHeader'
-import Input from 'components/atomic/Input'
-import SwitchButton from 'components/atomic/Switch'
-import { THandleInputChange } from 'types/components/common'
-import { IFormErrors } from 'types/pages/common'
-import { IFtpFormData } from 'types/pages/ftp'
-import { ftpIcon } from 'utils/icons'
+import FormCardWithHeader from '../../../components/HOC/FormCardWithHeader'
+import Input from '../../../components/atomic/Input'
+import SwitchButtonSelect from '../../../components/atomic/SelectSwitch'
+import { THandleInputChange } from '../../../types/components/common'
+import { IFormErrors } from '../../../types/pages/common'
+import { IFtpFormData } from '../../../types/pages/ftp'
+import { ftpIcon } from '../../../utils/icons'
+import t from '../../../utils/translator'
 
 interface IProps {
   formData?: IFtpFormData
@@ -16,76 +17,78 @@ interface IProps {
 
 function FtpForm({ formData, handleInputChange, formErrors, disabled, isLoading }: IProps) {
   return (
-    <FormCardWithHeader icon={ftpIcon} header="Ftp Configuration">
-      <SwitchButton
-        name="is_active"
-        label="Enable"
-        checked={formData?.is_active}
+    <FormCardWithHeader icon={ftpIcon} header={t`Ftp Configuration`}>
+      <SwitchButtonSelect
+        name="Enable"
+        label={t`Enable`}
+        value={formData?.Enable}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
         isLoading={isLoading}
       />
       <div>
-        {formData?.is_active && (
+        {formData?.Enable?.value === '1' && (
           <Input
-            name="host"
-            label="Server Address"
-            value={formData?.host}
+            name="ServerAddr"
+            label={t`Server Address`}
+            value={formData?.ServerAddr}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.host}
+            error={formErrors?.ServerAddr}
             isLoading={isLoading}
           />
         )}
       </div>
       <div>
-        {formData?.is_active && (
+        {formData?.Enable?.value === '1' && (
           <Input
-            name="port"
-            label="Server Port"
-            value={formData?.port}
+            name="ServerPort"
+            label={t`Server Port`}
+            type="number"
+            value={formData?.ServerPort}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.port}
+            error={formErrors?.ServerPort}
             isLoading={isLoading}
           />
         )}
       </div>
       <div>
-        {formData?.is_active && (
+        {formData?.Enable?.value === '1' && (
           <Input
-            name="username"
-            label="User ID"
-            value={formData?.username}
+            name="UserId"
+            label={t`User ID`}
+            value={formData?.UserId}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.username}
+            error={formErrors?.UserId}
             isLoading={isLoading}
           />
         )}
       </div>
       <div>
-        {formData?.is_active && (
+        {formData?.Enable?.value === '1' && (
           <Input
-            name="password"
+            name="Password"
             type="password"
-            label="Password"
-            value={formData?.password}
+            label={t`Password`}
+            value={formData?.Password}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
-            error={formErrors?.password}
+            error={formErrors?.Password}
             isLoading={isLoading}
           />
         )}
       </div>
       <div>
-        {formData?.is_active && (
-          <SwitchButton
-            name="path"
-            label="Path"
-            checked={formData?.path}
+        {formData?.Enable?.value === '1' && (
+          <Input
+            name="Path"
+            label={t`Path`}
+            value={formData?.Path}
             onChange={handleInputChange}
             disabled={disabled || typeof handleInputChange === 'undefined'}
+            error={formErrors?.Path}
             isLoading={isLoading}
           />
         )}

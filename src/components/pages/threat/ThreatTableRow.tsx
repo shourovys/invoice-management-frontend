@@ -1,8 +1,9 @@
-import TableData from 'components/HOC/style/table/TableData'
-import TableDataAction from 'components/HOC/style/table/TableDataAction'
-import TableRow from 'components/HOC/style/table/TableRow'
-import routeProperty from 'routes/routeProperty'
-import { IThreatResult } from 'types/pages/threat'
+import TableData from '../../../components/HOC/style/table/TableData'
+import TableDataAction from '../../../components/HOC/style/table/TableDataAction'
+import TableRow from '../../../components/HOC/style/table/TableRow'
+import routeProperty from '../../../routes/routeProperty'
+import { elevatorThreatLevelObject } from '../../../types/pages/elevator'
+import { IThreatResult } from '../../../types/pages/threat'
 import Checkbox from '../../atomic/Checkbox'
 
 type IProps = {
@@ -10,24 +11,25 @@ type IProps = {
   selected: string[]
   handleSelectRow: (_selectedId: string) => void
 }
+
 function ThreatTableRow({ row, selected, handleSelectRow }: IProps) {
   return (
     <TableRow
-      key={row.id}
-      link={routeProperty.threatInfo.path(row.id)}
-      selected={selected.indexOf(row.id.toString()) !== -1}
+      key={row.ThreatNo}
+      link={routeProperty.threatInfo.path(row.ThreatNo.toString())}
+      selected={selected.indexOf(row.ThreatNo.toString()) !== -1}
     >
-      <TableData>{row.id}</TableData>
-      <TableData>{row.partition.name}</TableData>
-      <TableData>{row.name}</TableData>
-      <TableData>{row.description}</TableData>
-      {/* <TableData>{row.threatLevel}</TableData> */}
-      <TableDataAction selected={selected.indexOf(row.id.toString()) !== -1}>
+      <TableData>{row.ThreatNo}</TableData>
+      <TableData>{row.Partition.PartitionName}</TableData>
+      <TableData>{row.ThreatName}</TableData>
+      <TableData>{row.ThreatDesc}</TableData>
+      <TableData>{elevatorThreatLevelObject[row.ThreatLevel]}</TableData>
+      <TableDataAction selected={selected.indexOf(row.ThreatNo.toString()) !== -1}>
         <Checkbox
-          value={`select-row-${row.id}`}
-          checked={selected.indexOf(row.id.toString()) !== -1}
+          value={`select-row-${row.ThreatNo}`}
+          checked={selected.indexOf(row.ThreatNo.toString()) !== -1}
           onChange={() => {
-            handleSelectRow(row.id.toString())
+            handleSelectRow(row.ThreatNo.toString())
           }}
         />
       </TableDataAction>
