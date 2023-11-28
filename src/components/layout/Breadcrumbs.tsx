@@ -107,13 +107,14 @@ export default function Breadcrumbs({
                 ))}
           </ol>
         </nav>
-        {children && (
-          <div className="flex-1 shrink w-max">
-            <div className="grid justify-center">{children}</div>
-          </div>
-        )}
+
         {/* action buttons */}
         <div className="flex items-center gap-3.5 lg:gap-4 shrink-0">
+          {children && (
+            <div className="flex-1 shrink w-max">
+              <div className="grid justify-center">{children}</div>
+            </div>
+          )}
           <div className="lg:hidden">
             {breadcrumbsActionsButtons ? (
               <ActionButtons actionButtons={breadcrumbsActionsButtons} allowsShow />

@@ -18,6 +18,15 @@ export const userApi = {
   details: (id: string) => `/user/${id}/`,
 }
 
+export const invoiceApi = {
+  list: (queryString: string) => `/invoice/all/?${queryString}`,
+  add: '/invoice/',
+  edit: (id: string) => `/invoice/${id}/`,
+  delete: (id: string) => `/invoice/${id}/`,
+  deleteMultiple: '/invoice/',
+  details: (id: string) => `/invoice/${id}/`,
+}
+
 export const userRoleApi = {
   list: (queryString: string) => `/users/roles/?${queryString}`,
   add: '/users/roles/',

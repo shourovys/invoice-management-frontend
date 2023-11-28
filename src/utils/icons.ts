@@ -38,7 +38,6 @@ import {
   faArrowsSpin,
   faBackward,
   faBan,
-  faBars,
   faBarsProgress,
   faBarsStaggered,
   faBell,
@@ -80,6 +79,7 @@ import {
   faDoorClosed,
   faDoorOpen,
   faDownLeftAndUpRightToCenter,
+  faDownload,
   faDungeon,
   faElevator,
   faEllipsisVertical,
@@ -138,6 +138,7 @@ import {
   faSquarePen,
   faStar,
   faStop,
+  faStopwatch,
   faT,
   faTableCellsLarge,
   faTableColumns,
@@ -161,13 +162,13 @@ import {
   faWarning,
   faWifi,
   faXmark,
-  faStopwatch,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // pages icons
 export const addIcon = faAdd
+export const downloadIcon = faDownload
 export const selectIcon = faSquareCheck
 export const importIcon = faArrowRightToBracket
 export const exportIcon = faFileImport
@@ -195,6 +196,7 @@ export const accessDeviceIcon = faMobile
 export const inactiveIcon = faPersonArrowDownToLine
 export const activeIcon = faPersonArrowUpFromLine
 export const autoIcon = faRobot
+export const invoiceIcon = faRectangleXmark
 export const lockDownIcon = faRectangleXmark
 export const lockDownWithRexIcon = faHillRockslide
 export const lockIcon = faLock
