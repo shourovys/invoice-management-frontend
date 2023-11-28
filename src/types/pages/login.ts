@@ -32,9 +32,9 @@ export interface ISystemConfigResponse {
   language: Language
 }
 
-export interface IConfigWithToken {
+export interface IUserWithToken {
   token: string
-  config: ISystemConfigResponse
+  user: IUserResult
 }
 
 export interface IOemResult {

@@ -1,4 +1,4 @@
-import { ISystemConfigResponse } from '../pages/login'
+import { IUserResult } from '../pages/user'
 
 export type IPermission =
   | {
@@ -26,16 +26,13 @@ export type LicenseCheckType =
   | 'Facegate'
   | 'Intercom'
 
-export type IAuthContext = Pick<
-  ISystemConfigResponse,
-  'user' | 'partition' | 'license' | 'layout' | 'permissions'
-> & {
+export type IAuthContext = {
+  user: IUserResult | null
   loading: boolean
   isAuthenticated: boolean
   logout: () => void
-  login: (config: ISystemConfigResponse) => void
+  login: (user: IUserResult) => void
   refresh: () => void
-  has_license: (k: LicenseCheckType) => boolean
 }
 
 // extends ISystemConfigResponse {

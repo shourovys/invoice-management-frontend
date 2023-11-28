@@ -12,16 +12,13 @@ import Input from '../../components/atomic/Input'
 import GuestGuard from '../../guards/GuestGuard'
 import useAuth from '../../hooks/useAuth'
 import routeProperty from '../../routes/routeProperty'
-import { IPermissionResult } from '../../types/context/auth'
 import {
   IFormErrors,
   IServerCommandErrorResponse,
   IServerErrorResponse,
   ISingleServerResponse,
 } from '../../types/pages/common'
-import { IConfigWithToken, IOemResult } from '../../types/pages/login'
-import { ILabeledRoute } from '../../types/routes'
-import checkPermission from '../../utils/checkPermission'
+import { IOemResult, IUserWithToken } from '../../types/pages/login'
 import { setSession } from '../../utils/jwt'
 import serverErrorHandler from '../../utils/serverErrorHandler'
 import { warningToast } from '../../utils/toast'
@@ -38,7 +35,7 @@ export default function Login() {
     }
   }, [isAuthenticated])
 
-  const [formData, setFormData] = useState({ username: '', password: '' })
+  const [formData, setFormData] = useState({ email: '', password: '' })
   const [formErrors, setFormErrors] = useState<IFormErrors>({})
 
   const { trigger, isMutating } = useSWRMutation(authApi.login, sendPostRequest, {
@@ -47,9 +44,9 @@ export default function Login() {
   })
 
   // Function to handle successful login
-  function handleLoginSuccess({ data }: ISingleServerResponse<IConfigWithToken>) {
+  function handleLoginSuccess({ data }: ISingleServerResponse<IUserWithToken>) {
     setSession(data.token)
-    contextLogin(data.config)
+    contextLogin(data.user)
     refreshAuthData()
 
     // Handle redirection after login
@@ -62,108 +59,14 @@ export default function Login() {
   }
 
   // Function to handle redirection after login
-  function handleRedirection(data: IConfigWithToken) {
-    const layout = data?.config?.layout
-    // const previousPath = location.state?.previousPath
-    const favoritePages = data.config.permissions.filter((page) => page.is_favorite)
-
-    if (layout === 'Initial') {
+  function handleRedirection(data: IUserWithToken) {
+    const role = data?.user?.role
+    if (role === 'agent') {
       navigate(routeProperty.licenseInfo.path())
       return // No need to proceed further
-    } else if (layout === 'Worker') {
+    } else if (role === 'admin') {
       navigate(routeProperty.dashboard.path())
       return // No need to proceed further
-    } else {
-      // if user is admin then go to dashboard
-      if (data.config.user?.UserId === 'admin') {
-        navigate(routeProperty.dashboard.path())
-        return // No need to proceed further
-      } else {
-        // nagiagate to the first user role page
-        const userRolePages = data.config.permissions.find((page) => page.access)
-        if (userRolePages) {
-          // match id with route id
-          const labelRoute = Object.values(routeProperty).filter((obj) =>
-            Object.prototype.hasOwnProperty.call(obj, 'label')
-          )
-
-          const firstPermittedUserRolePageRoute = labelRoute
-            .map((route) => route as ILabeledRoute)
-            .find(
-              (route) =>
-                route.id === userRolePages.id.toString() &&
-                checkPermission(route.permissions, data.config.permissions)
-            )
-
-          if (firstPermittedUserRolePageRoute) {
-            navigate(firstPermittedUserRolePageRoute.path())
-            return // No need to proceed further
-          }
-        }
-      }
-
-      //navigate(redirectToFirstFavoritePage(favoritePages))
-      // window.location.href = redirectToFirstFavoritePage(favoritePages)
-      // Navigate to the first favorite page if available
-      return // No need to proceed further
-    }
-
-    // if (previousPath) {
-    //   const previousRoute = ReactRoutes.find((route) => route.path() === previousPath)
-    //
-    //   if (previousRoute && checkPermission(previousRoute.permissions, data.config.permissions)) {
-    //     navigate(previousPath) // Navigate back to the previous page
-    //   } else {
-    //     redirectToFirstFavoritePage(favoritePages) // Navigate to the first favorite page if available
-    //   }
-    //   return // No need to proceed further
-    // }
-
-    // const hasDashboardPermission = checkPermission(
-    //   routeProperty.dashboard.permissions,
-    //   data.config.permissions
-    // )
-
-    //   const historyState = window.history.length > 1
-    //   const previousRoute = ReactRoutes.find((route) => route.path() === window.location.pathname)
-
-    //   if (
-    //     historyState &&
-    //     previousRoute &&
-    //     checkPermission(previousRoute.permissions, data.config.permissions)
-    //   ) {
-    //     navigate(-1) // Navigate back to the previous page
-    //   } else {
-    //     redirectToFirstFavoritePage(favoritePages) // Navigate to the first favorite page if available
-    //   }
-    // }
-  }
-
-  // Function to redirect to the first favorite page if available, else navigate to the favorite page
-  function redirectToFirstFavoritePage(favoritePages: IPermissionResult[]): string {
-    if (!favoritePages.length) {
-      return routeProperty.favorite.path()
-    }
-
-    const sortedFavoritePages: IPermissionResult[] = favoritePages.sort(
-      (a, b) => a.position - b.position
-    )
-    const labelRoute = Object.values(routeProperty).filter((obj) =>
-      Object.prototype.hasOwnProperty.call(obj, 'label')
-    )
-
-    const firstPermittedFavoritePageRoute = labelRoute
-      .map((route) => route as ILabeledRoute)
-      .find(
-        (route) =>
-          route.id === sortedFavoritePages[0].id.toString() &&
-          checkPermission(route.permissions, favoritePages)
-      )
-
-    if (firstPermittedFavoritePageRoute) {
-      return firstPermittedFavoritePageRoute.path()
-    } else {
-      return routeProperty.favorite.path()
     }
   }
 
@@ -173,9 +76,9 @@ export default function Login() {
   }, [])
 
   // Function to validate the form
-  function validateForm(username?: string, password?: string) {
+  function validateForm(email?: string, password?: string) {
     const errors: IFormErrors = {}
-    if (!username && !formData.username) errors.username = t`Username is required`
+    if (!email && !formData.email) errors.email = t`Email is required`
     if (!password && !formData.password) errors.password = t`Password is required`
     setFormErrors(errors)
 
@@ -184,10 +87,10 @@ export default function Login() {
   }
 
   // Function to handle form submission
-  const handleSubmit = (username?: string, password?: string) => {
-    if (validateForm(username, password)) {
+  const handleSubmit = (email?: string, password?: string) => {
+    if (validateForm(email, password)) {
       trigger({
-        username: formData.username || username,
+        email: formData.email || email,
         password: formData.password || password,
       })
     }
@@ -203,23 +106,16 @@ export default function Login() {
       if (error.status !== 403 && error.status !== 404) {
         return warningToast(error.message)
       }
-      // if (error.response && 'data' in error.response.data) {
-      //   if (error.response.data.data) {
-      //     warningToast(error.response.data.data)
-      //   } else {
-      //     warningToast(error.response.data.message)
-      //   }
-      // }
     },
   })
 
-  const oemNo = data?.data.OemNo
+  const oemNo = '0'
 
   useEffect(() => {
     window.onkeyup = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
         if (document.hasFocus()) {
-          handleSubmit(formData.username, formData.password)
+          handleSubmit(formData.email, formData.password)
         }
       }
     }
@@ -227,7 +123,7 @@ export default function Login() {
     return () => {
       window.onkeyup = null
     }
-  }, [formData.username, formData.password])
+  }, [formData.email, formData.password])
 
   useEffect(() => {
     if (oemNo) {
@@ -245,21 +141,14 @@ export default function Login() {
           className="flex items-center justify-center min-h-screen bg-white bg-no-repeat bg-cover md:justify-end "
           style={{
             ...(!isOemLoading &&
-              isOemNoPresent(oemNo) && {
+              isOemNoPresent(Number(oemNo)) && {
                 backgroundImage: `url('/oem/${oemNo}/images/LoginBg.png')`,
               }),
           }}
         >
-          <div className="flex justify-center md:justify-end w-full m-4 sm:m-10 md:mx-20 lg:mx-40">
+          <div className="flex justify-center w-full m-4 md:justify-end sm:m-10 md:mx-20 lg:mx-40">
             <div className="w-full max-w-xs sm:max-w-md min-w-max bg-[rgba(250,250,250,0.8)] rounded-md px-8 py-6 sm:py-12 lg:px-12 xl:px-16 sm:px-6 shadow-lg">
               <div className="max-w-xs mx-auto text-center sm:w-full">
-                {!isOemLoading && isOemNoPresent(oemNo) && (
-                  <img
-                    className="w-auto h-12 mx-auto mix-blend-color-burn"
-                    src={`/oem/${oemNo}/images/mainLogo.png`}
-                    alt="Workflow"
-                  />
-                )}
                 <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900 break-words">
                   {t`Sign in to your account`}
                 </h2>
@@ -268,11 +157,11 @@ export default function Login() {
               <div className="mt-6">
                 <FormContainer twoPart={false}>
                   <Input
-                    name="username"
-                    label={t`Username`}
-                    value={formData.username}
+                    name="email"
+                    label={t`Email`}
+                    value={formData.email}
                     onChange={handleInputChange}
-                    error={formErrors.username}
+                    error={formErrors.email}
                   />
                   <Input
                     name="password"
@@ -292,15 +181,6 @@ export default function Login() {
                       />
                       <p className="block ml-2 text-sm text-gray-900">{t`Remember me`}</p>
                     </label>
-
-                    {/*<div className="hidden text-sm sm:block">*/}
-                    {/*  <a*/}
-                    {/*    // href="#"*/}
-                    {/*    className="font-medium cursor-pointer text-primary hover:text-primary"*/}
-                    {/*  >*/}
-                    {/*    Forgot your password?*/}
-                    {/*  </a>*/}
-                    {/*</div>*/}
                   </div>
                   <div>
                     <Button
@@ -312,14 +192,6 @@ export default function Login() {
                       {t`Login`}
                     </Button>
                   </div>
-                  {/*<div className="text-sm text-center sm:hidden">*/}
-                  {/*  <a*/}
-                  {/*    // href="#"*/}
-                  {/*    className="font-medium cursor-pointer text-primary hover:text-primary"*/}
-                  {/*  >*/}
-                  {/*    Forgot your password?*/}
-                  {/*  </a>*/}
-                  {/*</div>*/}
                 </FormContainer>
               </div>
             </div>

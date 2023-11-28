@@ -1,17 +1,14 @@
 import { ISelectOption } from '../../components/atomic/Selector'
-import { IUserRoleResult } from '../../types/pages/userRole'
-import { IPartitionResult } from './partition'
-import { IPersonResult } from './person'
 
 export interface IUserResult {
-  UserNo: number
-  UserId: string
-  // Password: string
-  UserDesc: string
-  Email: string
-  Partition: IPartitionResult
-  Role: IUserRoleResult
-  Person: IPersonResult
+  id: string
+  no: number
+  name: string
+  email: string
+  role: 'admin' | 'agent'
+  contactNumber: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface IUserFormData {
