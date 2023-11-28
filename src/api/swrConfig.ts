@@ -1,8 +1,8 @@
 import { AxiosError, AxiosRequestConfig } from 'axios'
 import { SWRConfiguration } from 'swr'
 import { IServerCommandErrorResponse, IServerErrorResponse } from '../types/pages/common'
-import Axios from './apiConfig'
 import serverErrorHandler from '../utils/serverErrorHandler'
+import Axios from './apiConfig'
 
 export const fetcher = async (url: string) => {
   const res = await Axios.get(url)
@@ -11,8 +11,6 @@ export const fetcher = async (url: string) => {
 
 export const swrConfig: SWRConfiguration = {
   fetcher,
-  // dedupingInterval: 100,
-  // refreshInterval: 100,
   revalidateOnFocus: true,
   revalidateOnReconnect: true,
   revalidateOnMount: true,
@@ -22,21 +20,6 @@ export const swrConfig: SWRConfiguration = {
     serverErrorHandler(error)
   },
 }
-
-// export const onErrorRetry = () => (
-//   error: AxiosError,
-//   revalidate: (retryCount: { retryCount: number }) => void,
-//   { retryCount }: { retryCount: number },
-// ) => {
-//   // Never retry on 404.
-//   if (error.status === 404) return
-//
-//   // Only retry up to 10 times.
-//   if (retryCount >= 2) return
-//
-//   // Retry after 5 seconds.
-//   setTimeout(() => revalidate({ retryCount }), 1500)
-// }
 
 export async function sendPostRequest<T>(url: string, { arg }: { arg: T }) {
   return Axios.post(url, arg)
@@ -65,13 +48,6 @@ export async function sendPostRequestWithFile<
         formData.append(key, value, value.name)
       } else if (typeof value === 'object' && Array.isArray(value)) {
         formData.append(key, JSON.stringify(JSON.stringify(value)))
-        // if (value.length) {
-        //     value.forEach((id, index) => {
-        //         formData.append(`${key}[${index}]`, id);
-        //     });
-        // } else {
-        //     formData.append(key, "null");
-        // }
       } else if (typeof value === 'object') {
         const jsonValue = JSON.stringify(value)
         const blobValue = new Blob([jsonValue], {
@@ -86,7 +62,6 @@ export async function sendPostRequestWithFile<
   })
   const headers = {
     'Content-Type': 'multipart/form-data',
-    // Add any additional headers here
   }
 
   return Axios.post(url, formData, { headers })
@@ -107,7 +82,6 @@ export async function sendPostRequestWithFileAndProgress<T>(
   if (arg instanceof FormData) {
     const headers = {
       'Content-Type': 'multipart/form-data',
-      // Add any additional headers here
     }
 
     return Axios.post(url, arg, { headers })

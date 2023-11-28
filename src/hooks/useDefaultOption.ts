@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react'
+import useSWR from 'swr'
 import {
   actionApi,
   channelApi,
@@ -8,7 +10,6 @@ import {
   floorApi,
   formatApi,
   gatewayApi,
-  holidayApi,
   nodeApi,
   nvrApi,
   partitionApi,
@@ -17,8 +18,6 @@ import {
   timeApi,
   userRoleApi,
 } from '../api/urls'
-import React, { useEffect } from 'react'
-import useSWR from 'swr'
 import { IChannelResult } from '../types/pages/channel'
 import { IListServerResponse, ISingleServerResponse } from '../types/pages/common'
 import { IContGateResult } from '../types/pages/contGate'
@@ -29,7 +28,6 @@ import { IEventElementsResult } from '../types/pages/eventAndAction'
 import { IFloorResult } from '../types/pages/floor'
 import { IFormatResult } from '../types/pages/format'
 import { IGatewayResult } from '../types/pages/gateway'
-import { IHolidayResult } from '../types/pages/holiday'
 import { INodeResult } from '../types/pages/node'
 import { INvrResult } from '../types/pages/nvr'
 import { IPartitionResult } from '../types/pages/partition'
@@ -283,7 +281,7 @@ export function useDefaultUserRoleOption<T>(
       setState((prevState) => ({
         ...prevState,
         [keyName || 'Role']: {
-          label: userRoleData.data[0].RoleName,
+          label: userRoleData.data[0].role,
           value: userRoleData.data[0].RoleNo.toString(),
         },
       }))

@@ -1,9 +1,9 @@
+import { useParams } from 'react-router-dom'
+import useSWR from 'swr'
 import { partitionApi, personApi, userRoleApi } from '../../../../api/urls'
 import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
 import Input from '../../../../components/atomic/Input'
 import Selector from '../../../../components/atomic/Selector'
-import { useParams } from 'react-router-dom'
-import useSWR from 'swr'
 import { THandleInputChange } from '../../../../types/components/common'
 import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
 import { IPartitionResult } from '../../../../types/pages/partition'
@@ -122,7 +122,7 @@ function UserForm({ formData, handleInputChange, formErrors, disabled, isLoading
           value={formData?.Role}
           options={roleData?.data.map((result) => ({
             value: result.RoleNo.toString(),
-            label: result.RoleName,
+            label: result.role,
           }))}
           isClearable={false}
           onChange={handleInputChange}

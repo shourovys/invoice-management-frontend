@@ -36,7 +36,7 @@ function AuthGuard({ children }: IProps) {
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
-  const { isAuthenticated, loading, user } = useAuth()
+  const { isAuthenticated, loading } = useAuth()
 
   let token: string | null = null
   if (typeof window !== 'undefined') {
@@ -82,7 +82,7 @@ function AuthGuard({ children }: IProps) {
     // return checkPermission(routePermissions, user?.role)
     // return checkPermission(routePermissions, user?.role)
     return true
-  }, [isAuthenticated, pathname, user?.role])
+  }, [isAuthenticated, pathname])
 
   if (!loading && !isPermitted) {
     if (pathname === '/') {
@@ -100,6 +100,11 @@ function AuthGuard({ children }: IProps) {
 
   // if current page is not login page and user is not authenticated or is loading , show loading screen
   if (pathname !== routeProperty.login.path() && (loading || !isAuthenticated)) {
+    console.log(
+      '🚀 ~ file: AuthGuard.tsx:103 ~ AuthGuard ~ loading || !isAuthenticated:',
+      loading,
+      isAuthenticated
+    )
     return (
       <div
         className="flex items-center justify-center w-screen h-screen"

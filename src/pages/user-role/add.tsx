@@ -1,16 +1,17 @@
-import { sendPostRequest } from '../../api/swrConfig'
-import { userRoleApi } from '../../api/urls'
 import { AxiosError } from 'axios'
-import Page from '../../components/HOC/Page'
-import FormContainer from '../../components/HOC/style/form/FormContainer'
-import Breadcrumbs from '../../components/layout/Breadcrumbs'
-import { useDefaultPartitionOption } from '../../hooks/useDefaultOption'
-import useStateWithCallback from '../../hooks/useStateWithCallback'
 import { useState } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import { useNavigate } from 'react-router-dom'
-import routeProperty from '../../routes/routeProperty'
 import useSWRMutation from 'swr/mutation'
+import { sendPostRequest } from '../../api/swrConfig'
+import { userRoleApi } from '../../api/urls'
+import Page from '../../components/HOC/Page'
+import FormContainer from '../../components/HOC/style/form/FormContainer'
+import Breadcrumbs from '../../components/layout/Breadcrumbs'
+import UserRoleForm from '../../components/pages/userrole/form/UserRoleForm'
+import { useDefaultPartitionOption } from '../../hooks/useDefaultOption'
+import useStateWithCallback from '../../hooks/useStateWithCallback'
+import routeProperty from '../../routes/routeProperty'
 import { IActionsButton } from '../../types/components/actionButtons'
 import { THandleInputChange } from '../../types/components/common'
 import {
@@ -21,11 +22,10 @@ import {
 import { IUserRoleFormData } from '../../types/pages/userRole'
 import { applyIcon, cancelIcon } from '../../utils/icons'
 import scrollToErrorElement from '../../utils/scrollToErrorElement'
-import { addSuccessfulToast } from '../../utils/toast'
-import validateUserRoleFormData from '../../utils/validation/userRole'
-import UserRoleForm from '../../components/pages/userrole/form/UserRoleForm'
 import serverErrorHandler from '../../utils/serverErrorHandler'
+import { addSuccessfulToast } from '../../utils/toast'
 import t from '../../utils/translator'
+import validateUserRoleFormData from '../../utils/validation/userRole'
 
 // Component to create a UserRole
 function CreateUserRole() {
@@ -85,7 +85,7 @@ function CreateUserRole() {
     // Modify form data to match API requirements and trigger the mutation
     const modifiedFormData = {
       PartitionNo: formData.Partition?.value,
-      RoleName: formData.RoleName,
+      RoleName: formData.role,
       RoleDesc: formData.RoleDesc,
       PageIds: formData.PageIds,
     }

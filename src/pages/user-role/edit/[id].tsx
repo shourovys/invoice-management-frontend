@@ -1,17 +1,18 @@
-import { sendPutRequest } from '../../../api/swrConfig'
-import { userRoleApi } from '../../../api/urls'
 import { AxiosError } from 'axios'
-import Page from '../../../components/HOC/Page'
-import FormContainer from '../../../components/HOC/style/form/FormContainer'
-import Breadcrumbs from '../../../components/layout/Breadcrumbs'
-import useAuth from '../../../hooks/useAuth'
-import useStateWithCallback from '../../../hooks/useStateWithCallback'
 import { useEffect, useState } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import { useNavigate, useParams } from 'react-router-dom'
-import routeProperty from '../../../routes/routeProperty'
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
+import { sendPutRequest } from '../../../api/swrConfig'
+import { userRoleApi } from '../../../api/urls'
+import Page from '../../../components/HOC/Page'
+import FormContainer from '../../../components/HOC/style/form/FormContainer'
+import Breadcrumbs from '../../../components/layout/Breadcrumbs'
+import UserRoleForm from '../../../components/pages/userrole/form/UserRoleForm'
+import useAuth from '../../../hooks/useAuth'
+import useStateWithCallback from '../../../hooks/useStateWithCallback'
+import routeProperty from '../../../routes/routeProperty'
 import { IActionsButton } from '../../../types/components/actionButtons'
 import { THandleInputChange } from '../../../types/components/common'
 import {
@@ -22,13 +23,12 @@ import {
 } from '../../../types/pages/common'
 import { IUserRoleFormData, IUserRoleResult } from '../../../types/pages/userRole'
 import { applyIcon, cancelIcon } from '../../../utils/icons'
-import scrollToErrorElement from '../../../utils/scrollToErrorElement'
-import { editSuccessfulToast } from '../../../utils/toast'
-import validateUserRoleFormData from '../../../utils/validation/userRole'
-import UserRoleForm from '../../../components/pages/userrole/form/UserRoleForm'
-import serverErrorHandler from '../../../utils/serverErrorHandler'
-import t from '../../../utils/translator'
 import pagesLicenseFilter from '../../../utils/pagesLicenseFilter'
+import scrollToErrorElement from '../../../utils/scrollToErrorElement'
+import serverErrorHandler from '../../../utils/serverErrorHandler'
+import { editSuccessfulToast } from '../../../utils/toast'
+import t from '../../../utils/translator'
+import validateUserRoleFormData from '../../../utils/validation/userRole'
 
 // Component to edit a UserRole
 function EditUserRole() {
@@ -118,7 +118,7 @@ function EditUserRole() {
     // Modify form data to match API requirements and trigger the mutation
     const modifiedFormData = {
       PartitionNo: formData.Partition?.value,
-      RoleName: formData.RoleName,
+      RoleName: formData.role,
       RoleDesc: formData.RoleDesc,
       PageIds: formData.PageIds,
     }

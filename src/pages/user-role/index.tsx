@@ -1,3 +1,8 @@
+import QueryString from 'qs'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import useSWR from 'swr'
+import useSWRMutation from 'swr/mutation'
 import { fetcher, sendMultiDeleteRequest } from '../../api/swrConfig'
 import { userRoleApi } from '../../api/urls'
 import Page from '../../components/HOC/Page'
@@ -15,12 +20,7 @@ import UserRoleTableToolbar from '../../components/pages/userrole/UserRoleTableT
 import useAlert from '../../hooks/useAlert'
 import useTable, { emptyRows } from '../../hooks/useTable'
 import useUpdateRouteQueryWithReplace from '../../hooks/useUpdateRouteQueryWithReplace'
-import QueryString from 'qs'
-import { useEffect, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
 import routeProperty from '../../routes/routeProperty'
-import useSWR from 'swr'
-import useSWRMutation from 'swr/mutation'
 import { IActionsButton } from '../../types/components/actionButtons'
 import { THandleFilterInputChange } from '../../types/components/common'
 import { ITableAction, ITableHead } from '../../types/components/table'
@@ -94,7 +94,7 @@ function UserRole() {
     const queryParams: IUserRoleRouteQueryParams = {
       Page: 1,
       RoleNo: filterStateRef.current.RoleNo,
-      RoleName: filterStateRef.current.RoleName,
+      RoleName: filterStateRef.current.role,
       PartitionValue: filterStateRef.current.Partition?.value,
       PartitionLabel: filterStateRef.current.Partition?.label,
     }
@@ -127,7 +127,7 @@ function UserRole() {
 
     const queryState: IUserRoleFilters = {
       RoleNo: typeof queryParse.RoleNo === 'string' ? queryParse.RoleNo : '',
-      RoleName: typeof queryParse.RoleName === 'string' ? queryParse.RoleName : '',
+      RoleName: typeof queryParse.role === 'string' ? queryParse.role : '',
       Partition:
         typeof queryParse.PartitionValue === 'string' &&
         typeof queryParse.PartitionLabel === 'string'
@@ -151,8 +151,8 @@ function UserRole() {
     ...(filterStateRef.current.RoleNo && {
       RoleNo_icontains: filterStateRef.current.RoleNo,
     }),
-    ...(filterStateRef.current.RoleName && {
-      RoleName_icontains: filterStateRef.current.RoleName,
+    ...(filterStateRef.current.role && {
+      RoleName_icontains: filterStateRef.current.role,
     }),
     ...(filterStateRef.current.Partition?.value && {
       PartitionNo: filterStateRef.current.Partition?.value,

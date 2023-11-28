@@ -7,25 +7,18 @@ import { authApi } from '../../api/urls'
 import useAuth from '../../hooks/useAuth'
 import routeProperty from '../../routes/routeProperty'
 import { IActionsButton } from '../../types/components/actionButtons'
-import { IMAGE_URL } from '../../utils/config'
-import Icon, { avatarIcon, favoriteIcon, menuIcon } from '../../utils/icons'
+import Icon, { avatarIcon } from '../../utils/icons'
 import t from '../../utils/translator'
-import SideDrawer from '../HOC/SideDrawer'
 import Modal from '../HOC/modal/Modal'
 import TextButton from '../atomic/TextButton'
-import Flyout from '../common/Flyout'
-import FavoriteModal from './FavoriteModal'
-import Hamburger from './Hamburger'
-import NavbarMenu from './NavbarMenu'
 import ProfileModal from './ProfileModal'
 
 function Navbar() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const { user, license, partition, logout: contextLogout, layout } = useAuth()
+  const { user, logout: contextLogout } = useAuth()
 
   const [openProfileModal, setOpenProfileModal] = useState(false)
-  const [openFavoriteModal, setOpenFavoriteModal] = useState(false)
 
   const { trigger: logout, isMutating } = useSWRMutation(authApi.logout, fetcher, {
     onSuccess: () => {
@@ -42,86 +35,41 @@ function Navbar() {
     setOpenProfileModal(true)
   }
 
-  const handleFavoriteModalOpen = () => {
-    setOpenFavoriteModal(true)
-  }
-
   const userNavigation: IActionsButton[] = [
     { text: t`Your Profile`, onClick: handleProfileModalOpen },
     { text: t`Sign out`, onClick: handleLogout, isLoading: isMutating },
   ]
 
-  const isOemNoPresent = (_oemNo: number | undefined): boolean => {
-    return typeof _oemNo !== 'undefined' && !Number.isNaN(_oemNo)
-  }
-
   return (
     <div className="z-50 flex flex-col">
       <div className="relative z-10 flex h-12 shadow shrink-0 bg-navbarBg md:h-14">
         <Link to={routeProperty.dashboard.path()} className="flex items-center px-4 shrink-0 ">
-          <img
-            className="w-auto h-7 md:h-8"
-            src={
-              partition?.ImageFile
-                ? IMAGE_URL + partition?.ImageFile
-                : isOemNoPresent(license?.OemNo)
-                ? `/oem/${license?.OemNo}/images/mainLogo.png`
-                : '/images/logo/full_logo.svg'
-            }
-            alt="Workflow"
-          />
+          <img className="w-auto h-7 md:h-8" src={'/images/logo/full_logo.svg'} alt="Workflow" />
         </Link>
         <div className="flex justify-end flex-1 px-4 py-2">
           <div className="flex items-center gap-8 ml-4 md:gap-10 md:ml-6">
-            {/*{layout === 'Master' && (*/}
-            {/*  <div*/}
-            {/*    onClick={handleFavoriteModalOpen}*/}
-            {/*    className="items-center hidden gap-2 font-semibold rounded-full cursor-pointer sm:flex bg-navbarBtnBg text-navbarBtnText hover:bg-navbarBtnHoverBg hover:text-navbarBtnHoverText md:rounded-md md:h-full customer_text_hover"*/}
-            {/*  >*/}
-            {/*    <Icon icon={favoriteIcon} className="w-5 h-5" />*/}
-            {/*    <span className="hidden text-sm md:block">{t`Favorite`}</span>*/}
-            {/*  </div>*/}
-            {/*)}*/}
-
-            {/* mobile menu button  */}
-            {layout === 'Master' && (
-              <SideDrawer drawer={Hamburger} className="md:hidden" drawerClass="bg-navbarBtnBg">
-                <span className="flex items-center gap-2 font-semibold rounded-full bg-navbarBtnBg text-navbarBtnText hover:bg-navbarBtnHoverBg hover:text-navbarBtnHoverText md:h-full md:hidden customer_text_hover focus:outline-none">
-                  <Icon icon={menuIcon} className="w-5 h-5" />
-                </span>
-              </SideDrawer>
-            )}
-            {/* desktop menu button  */}
-            {layout === 'Master' && (
-              <Flyout flyout={NavbarMenu} className="hidden md:block md:h-full">
-                <div className="items-center hidden gap-2 font-semibold rounded-full outline-none bg-navbarBtnBg text-navbarBtnText hover:bg-navbarBtnHoverBg hover:text-navbarBtnHoverText md:h-full md:flex customer_text_hover md:rounded-md">
-                  <Icon icon={menuIcon} className="w-5 h-5" />
-                  <span className="hidden text-sm md:block">{t`Sitemap`}</span>
-                </div>
-              </Flyout>
-            )}
             {/* Profile dropdown */}
             <Menu as="div" className="relative" style={{ width: 'fit-content' }}>
               <div>
                 <Menu.Button className="flex items-center justify-center max-w-xs gap-2 text-sm rounded-full bg-navbarBtnBg text-navbarBtnText hover:bg-navbarBtnHoverBg hover:text-navbarBtnHoverText md:rounded-md md:h-full md:p-1">
                   <div className="hidden leading-4 text-right capitalize md:block">
-                    <div style={{ fontSize: '.9rem' }}>{user?.UserId}</div>
+                    <div style={{ fontSize: '.9rem' }}>{user?.name}</div>
                     <div style={{ fontSize: '.6rem' }} className="text-gray-700">
-                      {user?.Role.RoleName}
+                      {user?.role}
                     </div>
                   </div>
-                  {user?.Person?.ImageFile ? (
+                  {/* {user?.Person?.ImageFile ? (
                     <img
                       className="w-8 h-8 rounded-full md:w-9 md:h-9 md:rounded-md"
                       src={IMAGE_URL + user?.Person?.ImageFile}
                       alt=""
                     />
-                  ) : (
-                    <Icon
-                      icon={avatarIcon}
-                      className="w-6 h-6 rounded-full md:w-7 md:h-7 md:rounded-md"
-                    />
-                  )}
+                  ) : ( */}
+                  <Icon
+                    icon={avatarIcon}
+                    className="w-6 h-6 rounded-full md:w-7 md:h-7 md:rounded-md"
+                  />
+                  {/* )} */}
                 </Menu.Button>
               </div>
               <Transition
@@ -149,9 +97,6 @@ function Navbar() {
       </div>
       <Modal openModal={openProfileModal} setOpenModal={setOpenProfileModal}>
         <ProfileModal setOpenModal={setOpenProfileModal} />
-      </Modal>
-      <Modal openModal={openFavoriteModal} setOpenModal={setOpenFavoriteModal}>
-        <FavoriteModal setOpenModal={setOpenFavoriteModal} />
       </Modal>
     </div>
   )

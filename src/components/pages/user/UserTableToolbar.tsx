@@ -1,17 +1,17 @@
-import { partitionApi, userRoleApi } from '../../../api/urls'
 import useSWR from 'swr'
+import { partitionApi, userRoleApi } from '../../../api/urls'
 import { THandleFilterInputChange } from '../../../types/components/common'
 import { IListServerResponse } from '../../../types/pages/common'
 import { IPartitionResult } from '../../../types/pages/partition'
 import { IUserFilters } from '../../../types/pages/user'
 import { IUserRoleResult } from '../../../types/pages/userRole'
-import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import { SERVER_QUERY } from '../../../utils/config'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
+import t from '../../../utils/translator'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
 import Selector from '../../atomic/Selector'
-import t from '../../../utils/translator'
 
 interface IProps {
   filterState: IUserFilters
@@ -66,7 +66,7 @@ function UserTableToolbar({
           value={filterState.Role}
           options={roleData?.data.map((result) => ({
             value: result.RoleNo.toString(),
-            label: result.RoleName,
+            label: result.role,
           }))}
           onChange={handleInputChange}
           isLoading={roleIsLoading}

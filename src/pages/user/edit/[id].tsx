@@ -1,18 +1,18 @@
+import { AxiosError } from 'axios'
+import { useEffect, useState } from 'react'
+import { useBeforeunload } from 'react-beforeunload'
+import { useNavigate, useParams } from 'react-router-dom'
+import useSWR from 'swr'
+import useSWRMutation from 'swr/mutation'
 import { sendPutRequest } from '../../../api/swrConfig'
 import { userApi, userRoleApi } from '../../../api/urls'
-import { AxiosError } from 'axios'
 import Page from '../../../components/HOC/Page'
 import FormContainer from '../../../components/HOC/style/form/FormContainer'
 import Breadcrumbs from '../../../components/layout/Breadcrumbs'
 import UserForm from '../../../components/pages/user/form/UserForm'
 import useAuth from '../../../hooks/useAuth'
 import useStateWithCallback from '../../../hooks/useStateWithCallback'
-import { useEffect, useState } from 'react'
-import { useBeforeunload } from 'react-beforeunload'
-import { useNavigate, useParams } from 'react-router-dom'
 import routeProperty from '../../../routes/routeProperty'
-import useSWR from 'swr'
-import useSWRMutation from 'swr/mutation'
 import { IActionsButton } from '../../../types/components/actionButtons'
 import { THandleInputChange } from '../../../types/components/common'
 import {
@@ -27,8 +27,8 @@ import { IUserRoleResult } from '../../../types/pages/userRole'
 import { SERVER_QUERY } from '../../../utils/config'
 import { applyIcon, cancelIcon } from '../../../utils/icons'
 import scrollToErrorElement from '../../../utils/scrollToErrorElement'
-import { editSuccessfulToast } from '../../../utils/toast'
 import serverErrorHandler from '../../../utils/serverErrorHandler'
+import { editSuccessfulToast } from '../../../utils/toast'
 import t from '../../../utils/translator'
 
 // Component to edit a User
@@ -73,10 +73,10 @@ function EditUser() {
         Password: '',
         UserDesc,
         Email,
-        Role: Role?.RoleName
+        Role: Role?.role
           ? {
               value: Role.RoleNo.toString(),
-              label: Role.RoleName,
+              label: Role.role,
             }
           : null,
         Person: Person?.LastName
@@ -112,7 +112,7 @@ function EditUser() {
             [name]: value,
             Role: selectedPartitionRole
               ? {
-                  label: selectedPartitionRole?.RoleName,
+                  label: selectedPartitionRole?.role,
                   value: selectedPartitionRole?.RoleNo.toString(),
                 }
               : null,

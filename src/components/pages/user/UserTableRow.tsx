@@ -22,7 +22,7 @@ function UserTableRow({ row, selected, handleSelectRow }: IProps) {
       <TableData>{row.Partition?.PartitionName}</TableData>
       <TableData>{row.UserId}</TableData>
       <TableData>{row.UserDesc}</TableData>
-      <TableData>{row.Role.RoleName}</TableData>
+      <TableData>{row.Role.role}</TableData>
       <TableDataAction selected={selected.indexOf(row.UserNo.toString()) !== -1}>
         {row.UserNo !== 0 && (
           <Checkbox

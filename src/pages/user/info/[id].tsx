@@ -1,19 +1,19 @@
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import useSWR from 'swr'
+import useSWRMutation from 'swr/mutation'
 import { sendDeleteRequest } from '../../../api/swrConfig'
 import { userApi } from '../../../api/urls'
 import Page from '../../../components/HOC/Page'
 import FormContainer from '../../../components/HOC/style/form/FormContainer'
 import Breadcrumbs from '../../../components/layout/Breadcrumbs'
+import UserForm from '../../../components/pages/user/form/UserForm'
 import useAlert from '../../../hooks/useAlert'
-import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import routeProperty from '../../../routes/routeProperty'
-import useSWR from 'swr'
-import useSWRMutation from 'swr/mutation'
 import { IActionsButton } from '../../../types/components/actionButtons'
 import { ISingleServerResponse } from '../../../types/pages/common'
 import { IUserFormData, IUserResult } from '../../../types/pages/user'
 import { deleteIcon, editIcon, listIcon } from '../../../utils/icons'
-import UserForm from '../../../components/pages/user/form/UserForm'
 import t from '../../../utils/translator'
 
 // Component to show details of a user
@@ -53,10 +53,10 @@ function UserInfo() {
         Password: '',
         UserDesc,
         Email,
-        Role: Role?.RoleName
+        Role: Role?.role
           ? {
               value: Role.RoleNo.toString(),
-              label: Role.RoleName,
+              label: Role.role,
             }
           : null,
         Person: Person?.LastName

@@ -4,8 +4,8 @@ import t from '../translator'
 
 const validateUserRoleFormData = (formData: IUserRoleFormData): IFormErrors => {
   const errors: INewFormErrors<IUserRoleFormData> = {}
-  if (!formData.RoleName) {
-    errors.RoleName = t`User Role Name is required`
+  if (!formData.role) {
+    errors.role = t`User Role Name is required`
   }
   if (!formData.Partition?.value) {
     errors.Partition = t`Partition is required`

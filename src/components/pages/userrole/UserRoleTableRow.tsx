@@ -20,7 +20,7 @@ function UserRoleTableRow({ row, selected, handleSelectRow }: IProps) {
     >
       <TableData>{row.RoleNo}</TableData>
       <TableData>{row.Partition.PartitionName}</TableData>
-      <TableData>{row.RoleName}</TableData>
+      <TableData>{row.role}</TableData>
       <TableData>{row.RoleDesc}</TableData>
       <TableDataAction selected={selected.indexOf(row.RoleNo.toString()) !== -1}>
         {row.RoleNo !== 0 && (

@@ -8,10 +8,10 @@ interface IMainLayoutProps {
 }
 
 function MainLayout({ children }: IMainLayoutProps): JSX.Element {
-  const { isAuthenticated, layout } = useAuth()
-  if (isAuthenticated && layout === 'Master') {
+  const { isAuthenticated, user } = useAuth()
+  if (isAuthenticated && user?.role === 'admin') {
     return <MasterLayout>{children}</MasterLayout>
-  } else if (isAuthenticated && layout !== 'Master') {
+  } else if (isAuthenticated && user?.role !== 'admin') {
     return <WorkerLayout>{children}</WorkerLayout>
   }
   return <>{children}</>

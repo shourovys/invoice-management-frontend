@@ -1,8 +1,8 @@
+import useSWR from 'swr'
 import { partitionApi, personApi, userRoleApi } from '../../../../api/urls'
 import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
 import Input from '../../../../components/atomic/Input'
 import Selector from '../../../../components/atomic/Selector'
-import useSWR from 'swr'
 import { THandleInputChange } from '../../../../types/components/common'
 import { IFormErrors, IListServerResponse } from '../../../../types/pages/common'
 import { IPartitionResult } from '../../../../types/pages/partition'
@@ -104,7 +104,7 @@ function UserEditForm({ formData, handleInputChange, formErrors, disabled, isLoa
         value={formData?.Role}
         options={roleData?.data.map((result) => ({
           value: result.RoleNo.toString(),
-          label: result.RoleName,
+          label: result.role,
         }))}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}

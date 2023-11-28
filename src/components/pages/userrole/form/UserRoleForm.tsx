@@ -1,12 +1,13 @@
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import useSWR from 'swr'
 import { partitionApi } from '../../../../api/urls'
 import FormCardWithHeader from '../../../../components/HOC/FormCardWithHeader'
 import Input from '../../../../components/atomic/Input'
 import Selector, { TSelectValue } from '../../../../components/atomic/Selector'
 import Textarea from '../../../../components/atomic/Textarea'
 import MultiSelect from '../../../../components/common/form/MultiSelect'
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import useSWR from 'swr'
+import useAuth from '../../../../hooks/useAuth'
 import { THandleInputChange } from '../../../../types/components/common'
 import {
   IListServerResponse,
@@ -18,9 +19,8 @@ import { IPartitionResult } from '../../../../types/pages/partition'
 import { IUserRoleFormData, IUserRoleInfoFormData } from '../../../../types/pages/userRole'
 import { SERVER_QUERY } from '../../../../utils/config'
 import { userRoleIcon } from '../../../../utils/icons'
-import useAuth from '../../../../hooks/useAuth'
-import t from '../../../../utils/translator'
 import pagesLicenseFilter from '../../../../utils/pagesLicenseFilter'
+import t from '../../../../utils/translator'
 
 interface IProps {
   formData?: IUserRoleFormData | IUserRoleInfoFormData
@@ -89,10 +89,10 @@ function UserRoleForm({ formData, handleInputChange, formErrors, disabled, isLoa
       <Input
         name="RoleName"
         label={t`Role Name`}
-        value={formData?.RoleName}
+        value={formData?.role}
         onChange={handleInputChange}
         disabled={disabled || typeof handleInputChange === 'undefined'}
-        error={formErrors?.RoleName}
+        error={formErrors?.role}
         isLoading={isLoading}
       />
       <Input

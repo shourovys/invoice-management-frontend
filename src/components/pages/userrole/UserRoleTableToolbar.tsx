@@ -1,16 +1,16 @@
-import { partitionApi } from '../../../api/urls'
 import useSWR from 'swr'
+import { partitionApi } from '../../../api/urls'
 import { THandleFilterInputChange } from '../../../types/components/common'
 import { IListServerResponse } from '../../../types/pages/common'
 import { IPartitionResult } from '../../../types/pages/partition'
 import { IUserRoleFilters } from '../../../types/pages/userRole'
-import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
 import { SERVER_QUERY } from '../../../utils/config'
+import Icon, { applyIcon, resetIcon } from '../../../utils/icons'
+import t from '../../../utils/translator'
 import TableToolbarContainer from '../../HOC/style/table/TableToolbarContainer'
 import Button from '../../atomic/Button'
 import Input from '../../atomic/Input'
 import Selector from '../../atomic/Selector'
-import t from '../../../utils/translator'
 
 interface IProps {
   filterState: IUserRoleFilters
@@ -52,7 +52,7 @@ function UserRoleTableToolbar({
         <Input
           name="RoleName"
           placeholder={t`Role Name`}
-          value={filterState.RoleName}
+          value={filterState.role}
           onChange={handleInputChange}
         />
       </div>

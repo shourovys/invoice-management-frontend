@@ -1,12 +1,10 @@
 import classNames from 'classnames'
-import { useFavoritePages } from '../../hooks/useFavoritePages'
-import { lazy, useState } from 'react'
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { ReactRoutes } from '../../routes/routeProperty'
 import { ILabeledRoute } from '../../types/routes'
 import Icon, { leftArrowIcon, rightArrowIcon } from '../../utils/icons'
 import t from '../../utils/translator'
-
-const FavoriteEdit = lazy(() => import('../../pages/favorite'))
 
 interface IProps {
   route: ILabeledRoute
@@ -60,7 +58,7 @@ interface SidebarProps {
 }
 
 function Sidebar({ isSidebarShowing, toggleSidebar }: SidebarProps) {
-  const { favoritePages, isLoading } = useFavoritePages()
+  const onlyLabelRoutes = ReactRoutes.filter((route) => 'label' in route)
 
   const [isHovering, setIsHovering] = useState(false)
 
@@ -98,9 +96,9 @@ function Sidebar({ isSidebarShowing, toggleSidebar }: SidebarProps) {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {favoritePages.map((route) => (
+        {onlyLabelRoutes.slice(1, 4).map((route) => (
           <SidebarIconButton
-            route={route}
+            route={route as ILabeledRoute}
             key={route.id}
             isSidebarShowing={isSidebarShowing}
             isHovering={isHovering}

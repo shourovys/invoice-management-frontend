@@ -1,8 +1,9 @@
+import classNames from 'classnames'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import useLocalStorage from '../../hooks/useLocalStorage'
 import useSWRGlobalState from '../../hooks/useSWRGlobalState'
 import Navbar from './Navbar'
-import TopAndSideMenu from './TopAndSideMenu'
+import Sidebar from './Sidebar'
 
 interface IMasterLayoutProps {
   children: JSX.Element | JSX.Element[]
@@ -27,8 +28,7 @@ function MasterLayout({ children }: IMasterLayoutProps): JSX.Element {
           <Navbar />
         </div>
       </div>
-      <TopAndSideMenu>{children}</TopAndSideMenu>
-      {/* <div className="flex flex-col h-full grow md:flex-row">
+      <div className="flex flex-col h-full grow md:flex-row">
         <div className="top-0 left-0 z-40 hidden md:h-screen md:fixed md:block">
           <Sidebar
             isSidebarShowing={isSidebarShowing}
@@ -43,7 +43,7 @@ function MasterLayout({ children }: IMasterLayoutProps): JSX.Element {
         >
           <div className="h-full mx-auto md:px-5">{children}</div>
         </main>
-      </div> */}
+      </div>
     </div>
   )
 }
