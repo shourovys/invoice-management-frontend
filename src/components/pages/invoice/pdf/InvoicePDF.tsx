@@ -243,6 +243,10 @@ const InvoicePDF: React.FC<IInvoicePDFProps> = ({ invoice }) => {
           {/* error  */}
         </View>
 
+        <View style={[styles.gridContainer, styles.footer]}>
+          <Text style={styles.sign}>Seller Signature</Text>
+          <Text style={styles.sign}>Agent Signature</Text>
+        </View>
         {/* <View style={[styles.gridContainer, styles.footer]}>
           <View style={styles.col8}>
             <Text style={{ fontSize: 9, textTransform: 'capitalize' }}>RETURN POLICY</Text>
