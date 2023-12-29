@@ -1,12 +1,9 @@
 import { IApiQueryParamsBase } from './common'
 import { IUserResult } from './user'
 
-export interface IInvoiceResult {
+export interface IInvoice {
   _id: string
-  agent: {
-    id: IUserResult['_id']
-    name: IUserResult['name']
-  }
+  agent: IUserResult
   product: {
     id: string
     name: string
@@ -24,6 +21,10 @@ export interface IInvoiceResult {
   createdAt: Date
   updatedAt: Date
 }
+export interface IInvoiceResult {
+  agent: IUserResult
+  invoice: IInvoice
+}
 
 export interface IInvoiceRouteQueryParams {
   page: number
@@ -39,8 +40,8 @@ export interface IInvoiceApiQueryParams extends IApiQueryParamsBase {
 }
 
 export interface IInvoiceFormData {
-  product: IInvoiceResult['product']
-  sellerInfo: IInvoiceResult['sellerInfo']
+  product: IInvoice['product']
+  sellerInfo: IInvoice['sellerInfo']
 }
 
 export interface IInvoiceFilters {

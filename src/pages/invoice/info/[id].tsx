@@ -39,12 +39,13 @@ function InvoiceInfo() {
   const { isLoading, data } = useSWR<ISingleServerResponse<IInvoiceResult>>(
     isDeleted || !queryId ? null : invoiceApi.details(queryId)
   )
+  console.log('🚀 ~ file: [id].tsx:40 ~ InvoiceInfo ~ data:', data)
 
   useEffect(() => {
     if (data) {
       setFormData({
-        sellerInfo: data.data.sellerInfo,
-        product: data.data.product,
+        sellerInfo: data.data.invoice.sellerInfo,
+        product: data.data.invoice.product,
       })
     }
   }, [data])

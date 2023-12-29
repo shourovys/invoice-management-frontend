@@ -27,9 +27,9 @@ import { THandleFilterInputChange } from '../../types/components/common'
 import { ITableHead } from '../../types/components/table'
 import { IListServerResponse } from '../../types/pages/common'
 import {
+  IInvoice,
   IInvoiceApiQueryParams,
   IInvoiceFilters,
-  IInvoiceResult,
   IInvoiceRouteQueryParams,
 } from '../../types/pages/invoice'
 import t from '../../utils/translator'
@@ -151,7 +151,7 @@ function Invoice() {
 
   const apiQueryString = QueryString.stringify(apiQueryParams)
 
-  const { isLoading, data, mutate } = useSWR<IListServerResponse<IInvoiceResult[]>>(
+  const { isLoading, data, mutate } = useSWR<IListServerResponse<IInvoice[]>>(
     invoiceApi.list(apiQueryString)
   )
 

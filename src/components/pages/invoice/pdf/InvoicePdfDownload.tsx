@@ -14,7 +14,7 @@ const InvoicePdfDownload: React.FC<IProps> = ({ invoice }) => {
     <div>
       <PDFDownloadLink
         document={<InvoicePDF invoice={invoice} />}
-        fileName={invoice?._id}
+        fileName={invoice?.invoice._id}
         style={{ textDecoration: 'none' }}
       >
         {({ loading }: { loading: boolean }) => (

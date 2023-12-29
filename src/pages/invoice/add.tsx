@@ -7,7 +7,9 @@ import { v4 as uuidv4 } from 'uuid'
 import { sendPostRequest } from '../../api/swrConfig'
 import { invoiceApi } from '../../api/urls'
 import Page from '../../components/HOC/Page'
+import FormActionButtonsContainer from '../../components/HOC/style/form/FormActionButtonsContainer'
 import FormContainer from '../../components/HOC/style/form/FormContainer'
+import Button from '../../components/atomic/Button'
 import Breadcrumbs from '../../components/layout/Breadcrumbs'
 import InvoiceProductFrom from '../../components/pages/invoice/form/InvoiceProductFrom'
 import InvoiceSellerForm from '../../components/pages/invoice/form/InvoiceSellerForm'
@@ -20,8 +22,8 @@ import {
   IServerCommandErrorResponse,
   IServerErrorResponse,
 } from '../../types/pages/common'
-import { IInvoiceFormData, IInvoiceResult } from '../../types/pages/invoice'
-import { addIcon, applyIcon, cancelIcon } from '../../utils/icons'
+import { IInvoice, IInvoiceFormData } from '../../types/pages/invoice'
+import Icon, { addIcon, applyIcon, cancelIcon } from '../../utils/icons'
 import scrollToErrorElement from '../../utils/scrollToErrorElement'
 import serverErrorHandler from '../../utils/serverErrorHandler'
 import { addSuccessfulToast } from '../../utils/toast'
@@ -100,7 +102,7 @@ function CreateInvoice() {
 
   // Define the mutation function to send the form data to the server
   const { trigger, isMutating } = useSWRMutation(invoiceApi.add, sendPostRequest, {
-    onSuccess: (data: IInvoiceResult) => {
+    onSuccess: (data: IInvoice) => {
       addSuccessfulToast()
       // redirect to invoice list page on success
       navigate(routeProperty.invoiceInfo.path(data._id))
@@ -185,19 +187,19 @@ function CreateInvoice() {
       text: t`Add Product`,
       onClick: handleAddProduct,
     },
-    {
-      color: 'apply',
-      icon: applyIcon,
-      text: t`Apply`,
-      onClick: handleSubmit,
-      isLoading: isMutating,
-    },
-    {
-      color: 'cancel',
-      icon: cancelIcon,
-      text: t`Cancel`,
-      link: routeProperty.invoice.path(),
-    },
+    // {
+    //   color: 'apply',
+    //   icon: applyIcon,
+    //   text: t`Apply`,
+    //   onClick: handleSubmit,
+    //   isLoading: isMutating,
+    // },
+    // {
+    //   color: 'cancel',
+    //   icon: cancelIcon,
+    //   text: t`Cancel`,
+    //   link: routeProperty.invoice.path(),
+    // },
   ]
 
   return (
@@ -221,16 +223,16 @@ function CreateInvoice() {
           />
         ))}
       </FormContainer>
-      {/* <FormActionButtonsContainer>
-        <Button color='apply' size='large' onClick={handleSubmit} isLoading={isMutating}>
+      <FormActionButtonsContainer allowsShow>
+        <Button color="apply" size="large" onClick={handleSubmit} isLoading={isMutating}>
           <Icon icon={applyIcon} />
           <span>{t`Apply`}</span>
         </Button>
-        <Button size='large' color='cancel' link={routeProperty.invoice.path()}>
+        <Button size="large" color="cancel" link={routeProperty.invoice.path()}>
           <Icon icon={cancelIcon} />
           <span>{t`Cancel`}</span>
         </Button>
-      </FormActionButtonsContainer> */}
+      </FormActionButtonsContainer>
     </Page>
   )
 }
