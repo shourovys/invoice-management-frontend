@@ -1,10 +1,10 @@
 import routeProperty from '../../../routes/routeProperty'
-import { IInvoiceResult } from '../../../types/pages/invoice'
+import { IInvoice } from '../../../types/pages/invoice'
 import TableData from '../../HOC/style/table/TableData'
 import TableRow from '../../HOC/style/table/TableRow'
 
 type IProps = {
-  row: IInvoiceResult
+  row: IInvoice
   selected: string[]
   handleSelectRow: (_selectedId: string) => void
 }

@@ -14,7 +14,8 @@ interface IInvoicePDFProps {
 }
 
 const InvoicePDF: React.FC<IInvoicePDFProps> = ({ invoice }) => {
-  const { createdAt, _id, sellerInfo, agent, product } = invoice
+  const { agent } = invoice
+  const { createdAt, _id, sellerInfo, product } = invoice.invoice
 
   const totalProductPrice = product.reduce((acc, pd) => (acc = acc + pd.price * pd.quantity), 0)
 
@@ -50,14 +51,14 @@ const InvoicePDF: React.FC<IInvoicePDFProps> = ({ invoice }) => {
                   </View>
                 </View>
 
-                <View style={[styles.tableRow, styles.noBorder]}>
+                {/* <View style={[styles.tableRow, styles.noBorder]}>
                   <View style={{ width: '50%' }}>
                     <Text>Agent Name:</Text>
                   </View>
                   <View style={[styles.alignRight]}>
                     <Text>{agent.name}</Text>
                   </View>
-                </View>
+                </View> */}
               </View>
             </View>
           </View>
@@ -73,6 +74,37 @@ const InvoicePDF: React.FC<IInvoicePDFProps> = ({ invoice }) => {
             marginBottom: 40,
           }}
         >
+          <View style={(styles.table, styles.col40)}>
+            {/* order info  */}
+            <View>
+              <View style={[styles.tableRow, styles.noBorder]}>
+                <View style={{ width: '32%' }}>
+                  <Text>Agent Name:</Text>
+                </View>
+                <View style={[styles.alignRight]}>
+                  <Text>{agent.name}</Text>
+                </View>
+              </View>
+              <View style={[styles.tableRow, styles.noBorder]}>
+                <View style={{ width: '32%' }}>
+                  <Text>Agent Email:</Text>
+                </View>
+                <View style={[styles.alignRight]}>
+                  <Text>{agent.email}</Text>
+                </View>
+              </View>
+              {agent.contactNumber && (
+                <View style={[styles.tableRow, styles.noBorder]}>
+                  <View style={{ width: '32%' }}>
+                    <Text>Agent Contact:</Text>
+                  </View>
+                  <View style={[styles.alignRight]}>
+                    <Text>{agent.contactNumber}</Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          </View>
           <View style={(styles.table, styles.col40)}>
             {/* order info  */}
             <View>

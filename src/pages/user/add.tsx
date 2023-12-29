@@ -6,7 +6,9 @@ import useSWRMutation from 'swr/mutation'
 import { sendPostRequest } from '../../api/swrConfig'
 import { userApi } from '../../api/urls'
 import Page from '../../components/HOC/Page'
+import FormActionButtonsContainer from '../../components/HOC/style/form/FormActionButtonsContainer'
 import FormContainer from '../../components/HOC/style/form/FormContainer'
+import Button from '../../components/atomic/Button'
 import Breadcrumbs from '../../components/layout/Breadcrumbs'
 import UserForm from '../../components/pages/user/form/UserForm'
 import useStateWithCallback from '../../hooks/useStateWithCallback'
@@ -19,7 +21,7 @@ import {
   IServerErrorResponse,
 } from '../../types/pages/common'
 import { IUserFormData, userRoleOptions } from '../../types/pages/user'
-import { applyIcon, cancelIcon } from '../../utils/icons'
+import Icon, { applyIcon, cancelIcon } from '../../utils/icons'
 import scrollToErrorElement from '../../utils/scrollToErrorElement'
 import serverErrorHandler from '../../utils/serverErrorHandler'
 import { addSuccessfulToast } from '../../utils/toast'
@@ -102,19 +104,19 @@ function CreateUser() {
 
   // Define the actions for the breadcrumbs bar
   const breadcrumbsActionsButtons: IActionsButton[] = [
-    {
-      color: 'apply',
-      icon: applyIcon,
-      text: t`Apply`,
-      onClick: handleSubmit,
-      isLoading: isMutating,
-    },
-    {
-      color: 'cancel',
-      icon: cancelIcon,
-      text: t`Cancel`,
-      link: routeProperty.user.path(),
-    },
+    // {
+    //   color: 'apply',
+    //   icon: applyIcon,
+    //   text: t`Apply`,
+    //   onClick: handleSubmit,
+    //   isLoading: isMutating,
+    // },
+    // {
+    //   color: 'cancel',
+    //   icon: cancelIcon,
+    //   text: t`Cancel`,
+    //   link: routeProperty.user.path(),
+    // },
   ]
 
   return (
@@ -129,16 +131,16 @@ function CreateUser() {
           formErrors={formErrors}
         />
       </FormContainer>
-      {/* <FormActionButtonsContainer>
-        <Button color='apply' size='large' onClick={handleSubmit} isLoading={isMutating}>
+      <FormActionButtonsContainer allowsShow>
+        <Button color="apply" size="large" onClick={handleSubmit} isLoading={isMutating}>
           <Icon icon={applyIcon} />
           <span>{t`Apply`}</span>
         </Button>
-        <Button size='large' color='cancel' link={routeProperty.user.path()}>
+        <Button size="large" color="cancel" link={routeProperty.user.path()}>
           <Icon icon={cancelIcon} />
           <span>{t`Cancel`}</span>
         </Button>
-      </FormActionButtonsContainer> */}
+      </FormActionButtonsContainer>
     </Page>
   )
 }
